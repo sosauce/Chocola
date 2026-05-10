@@ -1,3 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="theme">Motyw</string>
+    <string name="settings">Ustawienia</string>
+    <string name="dark_mode">Ciemny</string>
+    <string name="light_mode">Jasny</string>
+    <string name="amoled_mode">Amoled</string>
+    <string name="version">Wersja</string>
+    <string name="support">Wsparcie</string>
+    <string name="update">Sprawdź aktualizacje</string>
+    <string name="about">O</string>
+    <string name="size">Rozmiar</string>
+    <string name="type">Typ</string>
+    <string name="bitrate">Bitrate</string>
+    <string name="previous_song">Poprzednia piosenka</string>
+    <string name="play_pause_button">Przycisk Odtwórz/Pauza</string>
+    <string name="next_button">Następna piosenka</string>
+    <string name="no_artists_found">Nie znaleziono artystów !</string>
 </resources>
