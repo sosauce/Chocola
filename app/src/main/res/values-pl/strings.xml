@@ -175,7 +175,7 @@
     <string name="playlist_tag_no_edit">Po utworzeniu tagów nie można ich edytować, ale można je usuwać</string>
     <string name="already_in_queue">Już w kolejce</string>
     <string name="already_in_playlist">Utwór już znajduje się na liście odtwarzania</string>
-    <string name="new_rate">Wprowadź nową stawkę od %1$.1f do %2$d</string>
+    <string name="new_rate">Wprowadź nową wartość od %1$.1f do %2$d</string>
     <string name="rate_error">Stawka powinna mieścić się w przedziale od %1$.1f do %2$d.</string>
     <string name="hide_from_tracklist">Ukryj na liście utworów</string>
     <string name="hidden_tracks">Ukryte utwory</string>
@@ -215,4 +215,7 @@
         <item quantity="other">%d albumów</item>
     </plurals>
     <string name="error_pasting">Błąd podczas wklejania schowka</string>
+    <string name="cm_by_sosauce">Chocola by sosauce</string>
+    <string name="pitch">Pitch</string>
+    <string name="cute_searchbar">CuteSearchbar</string>
 </resources>
