@@ -215,4 +215,5 @@
     <string name="not_a_lyric_file">Ce n\'est pas un fichier de paroles !</string>
     <string name="error_pasting">Erreur lors du collage du contenu du presse-papiers</string>
     <string name="seek_buttons_duration">Durée des boutons de recherche</string>
+    <string name="no_saf_tracks">Pas de titres S.A.F !</string>
 </resources>
