@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="theme">Theme</string>
-    <string name="settings">Settings</string>
+    <string name="settings">Einstellungen</string>
     <string name="dark_mode">Dunkel</string>
     <string name="light_mode">Hell</string>
     <string name="amoled_mode">Amoled</string>
@@ -188,4 +188,29 @@
     <string name="click_to_add">Klicke zum hinzufügen</string>
     <string name="playlist_tag_add">Füge neuen Tag hinzu</string>
     <string name="playlist_tag_exists">Tag existiert schon auf dieser Playlist.</string>
+    <string name="hide_from_tracklist">Aus der Titelliste ausblenden</string>
+    <string name="hidden_tracks">Versteckte Titel</string>
+    <string name="show_album_name">Albumnamen anzeigen</string>
+    <string name="alignment">Ausrichtung</string>
+    <string name="font_size">Schriftgröße</string>
+    <string name="select_all">Alles auswählen</string>
+    <string name="unselect_all">Alle abwählen</string>
+    <string name="palette">Farbpalette</string>
+    <string name="no_hidden_tracks">Keine versteckten Titel!</string>
+    <string name="playback">Wiedergabe</string>
+    <string name="seek_buttons_duration">Dauer der Such-Tasten</string>
+    <string name="centered_title">Zentrierter Titel</string>
+    <string name="ongoing_sleep_timer">Der Sleep-Timer ist aktiviert</string>
+    <string name="timer_will_end_in">Der aktuelle Timer endet in:</string>
+    <string name="equalizer">Equalizer</string>
+    <string name="enable_equalizer">Equalizer aktivieren</string>
+    <string name="path">Pfad</string>
+    <string name="channels">Kanäle</string>
+    <string name="no">Nein</string>
+    <string name="about_track">Info Titel</string>
+    <string name="about_file">Über die Datei</string>
+    <string name="name_and_emoji">Name &amp; emoji</string>
+    <string name="load">Laden</string>
+    <string name="not_a_lyric_file">Das ist keine Liedtextdatei!</string>
+    <string name="error_pasting">Fehler beim Einfügen aus der Zwischenablage</string>
 </resources>
