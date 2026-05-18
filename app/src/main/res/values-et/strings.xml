@@ -208,4 +208,7 @@
     <string name="playback">Taasesitus</string>
     <string name="no_saf_tracks">S.A.F.-lugusid pole!</string>
     <string name="empty_playlist_desc">*Ritsikad siristavad*</string>
+    <string name="from_saf">See lugu on laaditud Storage Access Frameworki alusel</string>
+    <string name="open_saf">Lugude lisamiseks ava Storage Access Framework</string>
+    <string name="snap">Fikseeri kiirus ja helikõrgus</string>
 </resources>
