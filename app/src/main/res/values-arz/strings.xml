@@ -1,3 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="theme">سمه</string>
+    <string name="settings">إعدادات</string>
+    <string name="dark_mode">مظلم</string>
+    <string name="light_mode">ضوء</string>
+    <string name="amoled_mode">شاشة أموليد</string>
+    <string name="version">إصدار</string>
+    <string name="update">تحقق من التحديثات</string>
+    <string name="about">عن</string>
+    <string name="size">مقاس</string>
+    <string name="bitrate">معدل البت</string>
 </resources>
