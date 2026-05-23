@@ -36,7 +36,7 @@
     <string name="error_deleting_song">C\'è stato un errore durante l\'eliminazione del brano</string>
     <string name="deleting_song_OK">Brano cancellato.</string>
     <string name="okay">okey</string>
-    <string name="misc">Vari</string>
+    <string name="misc">Varie</string>
     <string name="no_albums_found">Nessun album trovato!</string>
     <string name="follow_sys">Come sistema</string>
     <string name="system">Sistema</string>
@@ -57,7 +57,7 @@
     <string name="track_nb">Numero traccia</string>
     <string name="disc_nb">numero disco</string>
     <string name="edit">Modifica</string>
-    <string name="delete">Cancella</string>
+    <string name="delete">Elimina</string>
     <string name="ntg_playing">Nulla in riproduzione!</string>
     <string name="ui">UI</string>
     <string name="use_art">Material art</string>
@@ -132,9 +132,9 @@
     <string name="thumbless_slider">Cursore senza pollice</string>
     <string name="art_as_bg">Copertina come sfondo</string>
     <string name="default_text">Predefinito</string>
-    <string name="font">Font</string>
+    <string name="font">Carattere</string>
     <string name="cute_searchbar">Barra di ricerca carina</string>
-    <string name="show_back_button">Mostra pulsante indietro</string>
+    <string name="show_back_button">Mostra tasto indietro</string>
     <string name="album">Album</string>
     <string name="artist">Artista</string>
     <string name="shuffle">Mischia</string>
