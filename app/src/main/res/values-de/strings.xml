@@ -7,7 +7,7 @@
     <string name="amoled_mode">Amoled</string>
     <string name="version">Version</string>
     <string name="support">Support</string>
-    <string name="update">Prüfe nach Updates</string>
+    <string name="update">Nach Update suchen</string>
     <string name="about">Über</string>
     <string name="size">Größe</string>
     <string name="type">Art</string>
@@ -136,7 +136,7 @@
     <string name="thumbless_slider">Daumenloser Schieberegler</string>
     <string name="art_as_bg">Titelbild als Hintergrund</string>
     <string name="default_text">Standard</string>
-    <string name="font">Schriftart</string>
+    <string name="font">Schrift</string>
     <string name="cute_searchbar">CuteSearchbar</string>
     <string name="show_back_button">Zurück-Button anzeigen</string>
     <string name="album">Album</string>
