@@ -69,9 +69,9 @@
     <string name="misc">Varia</string>
     <string name="no_albums_found">Ühtegi albumit ei leidu!</string>
     <string name="follow_sys">Järgi süsteemi seadistust</string>
-    <string name="system">Süsteem</string>
-    <string name="ascending">Kasvav</string>
-    <string name="descending">Kahanev</string>
+    <string name="system">Süsteemi määratud</string>
+    <string name="ascending">Järjesta kasvavalt</string>
+    <string name="descending">Järjesta kahanevalt</string>
     <string name="playback_speed">Määratle taasesituse kiirus</string>
     <string name="yes">Jah</string>
     <string name="initial_folder_selection">Vali kaustad, mida sa lubad kasutada. Kõik muud kaustad jäävad sel puhul keelatuks</string>
@@ -112,7 +112,7 @@
     <string name="emoji">Emoji</string>
     <string name="remove_emoji">Eemalda emoji</string>
     <string name="look_and_feel">Välimus ja tunnetus</string>
-    <string name="look_and_feel_desc">Muusika on sinu oma, seega kas kujundus võiks ju ka olla?</string>
+    <string name="look_and_feel_desc">Muusika on sinu oma, seega kujundus võiks ju ka olla?</string>
     <string name="now_playing">Hetkel esitamisel</string>
     <string name="now_playing_desc">Muuda stiil enda omaks!</string>
     <string name="library">Muusikakogu</string>
@@ -211,4 +211,9 @@
     <string name="from_saf">See lugu on laaditud Storage Access Frameworki alusel</string>
     <string name="open_saf">Lugude lisamiseks ava Storage Access Framework</string>
     <string name="snap">Fikseeri kiirus ja helikõrgus</string>
+    <string name="rate">Sagedus</string>
+    <string name="thumbless_slider">Pöidlata liugurnupp</string>
+    <string name="new_rate">Sisesta sagedus vahemikust %1$.1f kuni %2$d</string>
+    <string name="rate_error">Sagedus peaks olema vahemikust %1$.1f kuni %2$d.</string>
+    <string name="seek_buttons_duration">Kerimisnuppude samm</string>
 </resources>
