@@ -101,7 +101,7 @@ To get started with contributing, please check the [get started readme](https://
 ---
 
 <p align="center">
-Enjoying Chocola ? Then please consider giving a ⭐️ to support a teen develop the experiences you love most ❤️
+Enjoying Chocola? Then please consider giving a ⭐️ to support a teen develop the experiences you love most ❤️
 <img align="center" width="512" height="auto" alt="chocola chibi hi" src="https://github.com/user-attachments/assets/325060e0-d54c-4fb1-8562-990badc97b1c" />
 
 </p>

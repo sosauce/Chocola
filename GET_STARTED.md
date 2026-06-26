@@ -3,14 +3,14 @@
 
 ### Code Guidelines
 
-CuteApps currently don't have alot of guidelines, but it is best if you follow the few ones they have such as :
+CuteApps currently don't have a lot of guidelines, but it is best if you follow the few ones they have such as :
 
 - Clutter-free experience : This is self explanatory, avoid adding elements if un-needed, two example could be :
     - flashing music icon : The music icon in the searchbar flashes red, indicating that it is clickable / has an action related to it
     - the restart button, the seek to previous automatically becomes one 10 seconds in the song instead being a whole new button which brings us to the next guideline :
- - Make things clear : If you are adding a feature, make sure it is clear of what it does, clear text/description, accurate icon
+ - Make things clear : If you are adding a feature, make sure it is clear what it does, clear text/description, accurate icon
  - Landscape : CuteApps <b>MUST</b> be fully compatible with landscape mode, if a portrait design doesn't adapt well to landscape, you will have to make a separate landscape one
- - Creativity : This isn't mandatory, but if you are designing a screen or something else, be creative ! Try things no other apps has before, be unique ! Remember, failure is just a step closer to perfection !
+ - Creativity : This isn't mandatory, but if you are designing a screen or something else, be creative! Try things no other apps has before, be unique! Remember, failure is just a step closer to perfection!
 
 ### Prerequisites
 
