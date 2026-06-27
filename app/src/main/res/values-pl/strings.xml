@@ -113,14 +113,14 @@
     <string name="export_playlist">Eksportuj listę odtwarzania</string>
     <string name="edit_playlist">Edytuj listę odtwarzania</string>
     <string name="remove_from_playlist">Usuń z listy odtwarzania</string>
-    <string name="seek_prev_song">Przejdź do poprzedniego utworu</string>
+    <string name="seek_prev_song">Przejdź do poprzedniej piosenki</string>
     <string name="seek_next_song">Przejdź do następnego utworu</string>
     <string name="sort">Sortuj</string>
     <string name="stop_playback">Zatrzymaj odtwarzanie</string>
     <string name="screen_selection">Wybór ekranu</string>
     <string name="emoji">Emoji</string>
     <string name="remove_emoji">Usuń emoji</string>
-    <string name="look_and_feel">Wygląd i obsługa</string>
+    <string name="look_and_feel">Wygląd i styl</string>
     <string name="look_and_feel_desc">Muzyka jest Twoja, ale dlaczego nie miałbyś mieć też swojego stylu?</string>
     <string name="now_playing">Teraz odtwarzane</string>
     <string name="now_playing_desc">Stwórz swój własny styl!</string>
@@ -253,4 +253,8 @@
         <item quantity="many">Czy na pewno chcesz usunąć %d utworów? Tego nie da się cofnąć!</item>
         <item quantity="other">Czy na pewno chcesz usunąć %d utworów? Tego nie da się cofnąć!</item>
     </plurals>
+    <string name="type_lyrics_here">Wpisz tutaj tekst</string>
+    <string name="art_lyrics">Tekst i okładka</string>
+    <string name="art_lyrics_desc">Wyświetla tekst bezpośrednio na grafice, a nie na osobnej stronie. Kliknij grafikę, aby wyświetlić tekst.</string>
+    <string name="rate">Ocena</string>
 </resources>

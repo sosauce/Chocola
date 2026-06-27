@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Chocola</string>
-    <string name="empty" translatable="false" />
+    <string name="empty" translatable="false"/>
     <string name="theme">Theme</string>
     <string name="settings">Settings</string>
     <string name="dark_mode">Dark</string>
@@ -16,7 +17,7 @@
     <string name="previous_song">Previous Song</string>
     <string name="play_pause_button">Play/Pause Button</string>
     <string name="next_button">Next Song</string>
-    <string name="no_artists_found">No artists found !</string>
+    <string name="no_artists_found">No artists found!</string>
     <string name="artwork">Artwork</string>
     <string name="artists">Artists</string>
     <string name="albums">Albums</string>
@@ -31,14 +32,14 @@
     <string name="permission_granted">Permission granted, you shall continue…</string>
     <string name="request_permission">Grant permission</string>
     <string name="next_step">Next step</string>
-    <string name="no_music_title">No tracks found !</string>
-    <string name="no_music_desc">Why did you install the app then ?</string>
+    <string name="no_music_title">No tracks found!</string>
+    <string name="no_music_desc">Why did you install the app then?</string>
     <string name="no_music_tip">Tip: Don\'t forget to whitelist folders you want to scan in settings!</string>
     <string name="error_deleting_song">There was an error deleting the song.</string>
     <string name="deleting_song_OK">Successfully deleted song.</string>
     <string name="okay">Okay</string>
     <string name="misc">Misc</string>
-    <string name="no_albums_found">No albums found !</string>
+    <string name="no_albums_found">No albums found!</string>
     <string name="follow_sys">Follow system</string>
     <string name="system">System</string>
     <string name="ascending">Ascending</string>
@@ -48,7 +49,7 @@
     <string name="initial_folder_selection">Select folders you want to whitelist, others will be blacklisted</string>
     <string name="blacklisted_folders">Blacklisted folders</string>
     <string name="delete_folder">Delete folder</string>
-    <string name="folder_delete_u_sure">Are you sure you want to delete this folder ?</string>
+    <string name="folder_delete_u_sure">Are you sure you want to delete this folder?</string>
     <string name="alrdy_blacklisted">Folder already blacklisted!</string>
     <string name="pls_restart">Please restart the app for changes to take effect!</string>
     <string name="use_sys_font">Use system font</string>
@@ -82,7 +83,7 @@
     <string name="manage_shown_tabs">Manage shown tabs</string>
     <string name="set_sleep_timer">Set sleep timer</string>
     <string name="go_to">Go to: %s</string>
-    <string name="no_lyrics_note">No lyrics found !</string>
+    <string name="no_lyrics_note">No lyrics found!</string>
     <string name="open_eq">Equalizer</string>
     <string name="from_saf">This track comes from the S.A.F</string>
     <string name="open_saf">Open S.A.F to add tracks</string>
@@ -91,7 +92,7 @@
     <string name="whitelisted">Whitelisted</string>
     <string name="saf_manager">S.A.F manager</string>
     <string name="saf">S.A.F</string>
-    <string name="no_playlists">No playlist found !</string>
+    <string name="no_playlists">No playlist found!</string>
     <string name="alrdy_in_playlist">Track already in playlist!</string>
     <string name="del_playlist">Delete playlist</string>
     <string name="modify">Modify</string>
@@ -126,11 +127,11 @@
     <string name="emoji">Emoji</string>
     <string name="remove_emoji">Remove emoji</string>
     <string name="look_and_feel">Look and feel</string>
-    <string name="look_and_feel_desc">The music is yours, why not the style too ?</string>
+    <string name="look_and_feel_desc">The music is yours, why not the style too?</string>
     <string name="now_playing">Now playing</string>
-    <string name="now_playing_desc">Make it your style !</string>
+    <string name="now_playing_desc">Make it your style!</string>
     <string name="library">Library</string>
-    <string name="library_desc">Manage all your tracks, like a DJ !</string>
+    <string name="library_desc">Manage all your tracks, like a DJ!</string>
     <string name="more_desc">Other settings that didn\'t deserve their own page.</string>
     <string name="add_queue">Add to queue</string>
     <string name="import_lrc">Import .lrc file</string>
@@ -144,15 +145,15 @@
     <string name="album">Album</string>
     <string name="artist">Artist</string>
     <string name="shuffle">Shuffle</string>
-    <string name="no_result_found">No result found !</string>
-    <string name="better_luck_next_time">Better luck next time !</string>
+    <string name="no_result_found">No result found!</string>
+    <string name="better_luck_next_time">Better luck next time!</string>
     <string name="no_playlist_desc">You\'d be cool if you created one</string>
     <string name="no_album_desc">You rock singles and that\'s okay</string>
     <string name="no_artist_desc">I\'m sure you sing better anyways</string>
-    <string name="are_u_sure">Are you sure ?</string>
+    <string name="are_u_sure">Are you sure?</string>
     <string name="lyrics">Lyrics</string>
     <string name="playback_controls">Playback controls</string>
-    <string name="playback_controls_desc">For true music nerds !</string>
+    <string name="playback_controls_desc">For true music nerds!</string>
     <string name="audio">Audio</string>
     <string name="pause_on_mute">Pause on mute</string>
     <string name="pause_on_mute_desc">Playback will be paused when the device\'s volume is muted</string>
@@ -209,7 +210,7 @@
     <string name="load">Load</string>
     <string name="not_a_lyric_file">Not a lyric file!</string>
     <string name="error_pasting">Error pasting clipboard</string>
-    <string name="lyrics_settings_desc">Make them as beautiful as your singing !</string>
+    <string name="lyrics_settings_desc">Make them as beautiful as your singing!</string>
     <string name="add_lyrics">Add lyrics</string>
     <string name="type_lyrics_here">Type lyrics here</string>
     <string name="no_lyrics_added_yet">You haven\'t added lyrics yet!</string>
@@ -222,8 +223,6 @@
     <string name="generic_error">An error occured!</string>
     <string name="art_lyrics">Art lyrics</string>
     <string name="art_lyrics_desc">Shows lyrics directly on the artwork instead of a separate page. Click the artwork to view lyrics.</string>
-
-
     <plurals name="tracks">
         <item quantity="one">%d track</item>
         <item quantity="other">%d tracks</item>
@@ -241,11 +240,11 @@
         <item quantity="other">Delete tracks</item>
     </plurals>
     <plurals name="delete_playlists_u_sure">
-        <item quantity="one">Are you sure you want to delete %d playlist ? This can\'t be undone!</item>
-        <item quantity="other">Are you sure you want to delete %d playlists ? This can\'t be undone!</item>
+        <item quantity="one">Are you sure you want to delete %d playlist? This can\'t be undone!</item>
+        <item quantity="other">Are you sure you want to delete %d playlists? This can\'t be undone!</item>
     </plurals>
     <plurals name="delete_tracks_u_sure">
-        <item quantity="one">Are you sure you want to delete %d track ? This can\'t be undone!</item>
-        <item quantity="other">Are you sure you want to delete %d tracks ? This can\'t be undone!</item>
+        <item quantity="one">Are you sure you want to delete %d track? This can\'t be undone!</item>
+        <item quantity="other">Are you sure you want to delete %d tracks? This can\'t be undone!</item>
     </plurals>
 </resources>
