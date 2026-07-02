@@ -65,11 +65,11 @@
     <string name="details">Szczegóły</string>
     <string name="classic_slider">Użyj klasycznego suwaka</string>
     <string name="cancel">Anuluj</string>
-    <string name="set_sap">Ustaw prędkość i wysokość dźwięku</string>
+    <string name="set_sap">Ustaw prędkość i tonację</string>
     <string name="set_speed">Ustaw prędkość</string>
-    <string name="set_pitch">Ustaw wysokość dźwięku</string>
+    <string name="set_pitch">Ustaw ton</string>
     <string name="speed">Prędkość</string>
-    <string name="snap">Wiąż tempo i tonację</string>
+    <string name="snap">Wiąż prędkość i tonację</string>
     <string name="share">Udostępnij</string>
     <string name="show_close_button">Pokaż przycisk zamykania</string>
     <string name="duration">Czas trwania</string>
@@ -165,7 +165,7 @@
     <string name="min_track_length_hint">Możesz również zdecydować się na nieodpytywanie utworów krótszych niż określony czas trwania</string>
     <string name="min_track_length_text">Minimalny czas trwania utworu</string>
     <string name="min_track_duration_desc">Utwory krótsze od podanego czasu trwania nie zostaną pobrane.</string>
-    <string name="as_added">Dodano</string>
+    <string name="as_added">Dodane</string>
     <string name="unknown">Nieznane</string>
     <string name="tags">Tagi</string>
     <string name="color">Kolor</string>
@@ -216,9 +216,9 @@
     </plurals>
     <string name="error_pasting">Błąd podczas wklejania schowka</string>
     <string name="cm_by_sosauce">Chocola by sosauce</string>
-    <string name="pitch">Pitch</string>
+    <string name="pitch">Ton</string>
     <string name="cute_searchbar">CuteSearchbar</string>
-    <string name="follow_sys">Razem z systemem</string>
+    <string name="follow_sys">System</string>
     <string name="lyrics_settings_desc">Zrób go tak pięknym, jak Twój śpiew!</string>
     <string name="add_lyrics">Dodaj tekst</string>
     <string name="no_lyrics_added_yet">Nie dodałeś jeszcze tekstu piosenki!</string>
@@ -256,5 +256,16 @@
     <string name="type_lyrics_here">Wpisz tutaj tekst</string>
     <string name="art_lyrics">Tekst i okładka</string>
     <string name="art_lyrics_desc">Wyświetla tekst bezpośrednio na grafice, a nie na osobnej stronie. Kliknij grafikę, aby wyświetlić tekst.</string>
-    <string name="rate">Ocena</string>
+    <string name="rate">Tempo</string>
+    <string name="play_next">Odtwórz następny</string>
+    <string name="default_launch_screen">Domyślny ekran startowy</string>
+    <string name="main">Głowny</string>
+    <string name="start">Do lewej</string>
+    <string name="center">Wyśrodkuj</string>
+    <string name="end">Do prawej</string>
+    <string name="text_alignment">Wyrównanie tekstu</string>
+    <string name="music_and_audio_perm"><![CDATA[Uprawnienia do muzyki i dźwięku]]></string>
+    <string name="audio_perm_desc">To uprawnienie jest wymagane w celu uzyskania dostępu do utworów.</string>
+    <string name="navigation">Nawigacja</string>
+    <string name="navigation_desc">Do tego nie będziesz potrzebować mapy!</string>
 </resources>
