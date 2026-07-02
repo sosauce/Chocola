@@ -233,9 +233,7 @@
     <string name="music_and_audio_perm"><![CDATA[Music & audio permission]]></string>
     <string name="audio_perm_desc">This permission is required in order to access your tracks.</string>
     <string name="navigation">Navigation</string>
-    <string name="navigation_desc">You won\'t need a map for this !</string>
-
-
+    <string name="navigation_desc">You won\'t need a map for this!</string>
     <plurals name="tracks">
         <item quantity="one">%d track</item>
         <item quantity="other">%d tracks</item>
