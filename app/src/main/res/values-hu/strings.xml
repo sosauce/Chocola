@@ -1,3 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="theme">Téma</string>
+    <string name="settings">Beálítasok</string>
+    <string name="dark_mode">Sötét</string>
+    <string name="light_mode">Világos</string>
+    <string name="amoled_mode">Amoled</string>
+    <string name="version">Verzió</string>
+    <string name="update">Frissitések keresése</string>
+    <string name="font">Betűtípus</string>
+    <string name="system">Rendszer</string>
+    <string name="misc">Egyéb</string>
+    <string name="ascending">Növekvő</string>
+    <string name="descending">Csökkenő</string>
 </resources>
