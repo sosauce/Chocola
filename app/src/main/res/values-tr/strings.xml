@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="theme">Tema</string>
+    <string name="theme">Görünüm</string>
     <string name="settings">Ayarlar</string>
-    <string name="dark_mode">Karanlık mod</string>
+    <string name="dark_mode">Karanlık</string>
     <string name="amoled_mode">Amoled modu</string>
-    <string name="version">Sürüm</string>
+    <string name="version">Versiyon</string>
     <string name="support">Destek</string>
     <string name="update">Güncellemeleri kontrol et</string>
     <string name="about">Hakkında</string>
@@ -134,7 +134,7 @@
     <string name="slider">Kaydırıcı</string>
     <string name="thumbless_slider">Baş parmaksız kaydırıcı</string>
     <string name="default_text">Varsayılan</string>
-    <string name="font">Yazı tipi</string>
+    <string name="font">Yazı Tipi</string>
     <string name="show_back_button">Geri düğmesini göster</string>
     <string name="album">Albüm</string>
     <string name="artist">Sanatçı</string>
