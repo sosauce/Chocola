@@ -4,7 +4,7 @@
     <string name="settings">Paramètres</string>
     <string name="dark_mode">Sombre</string>
     <string name="light_mode">Clair</string>
-    <string name="amoled_mode">Amoled</string>
+    <string name="amoled_mode">mode_AMOLED</string>
     <string name="version">Version</string>
     <string name="support">Assistance</string>
     <string name="update">Vérifier les mises à jour</string>
@@ -18,7 +18,7 @@
     <string name="no_artists_found">Aucun artiste trouvé !</string>
     <string name="artwork">Artwork</string>
     <string name="artists">Artistes</string>
-    <string name="albums">Albums</string>
+    <string name="albums">Album</string>
     <string name="music">Titres</string>
     <string name="cm_by_sosauce">Chocola par sosauce</string>
     <string name="app_icon">Icône de l\’application</string>
