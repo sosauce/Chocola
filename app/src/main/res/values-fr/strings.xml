@@ -4,7 +4,7 @@
     <string name="settings">Paramètres</string>
     <string name="dark_mode">Sombre</string>
     <string name="light_mode">Clair</string>
-    <string name="amoled_mode">mode_AMOLED</string>
+    <string name="amoled_mode">mode_amoled</string>
     <string name="version">Version</string>
     <string name="support">Assistance</string>
     <string name="update">Vérifier les mises à jour</string>
