@@ -30,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -39,6 +38,8 @@ import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import coil3.compose.AsyncImage
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberArtistSort
+import com.sosauce.chocola.data.datastore.rememberMatchCaseFilter
+import com.sosauce.chocola.data.datastore.rememberRegexFilter
 import com.sosauce.chocola.data.datastore.rememberSortArtistsAscending
 import com.sosauce.chocola.data.models.Artist
 import com.sosauce.chocola.data.states.MusicState
@@ -64,6 +65,8 @@ fun SharedTransitionScope.ArtistsScreen(
 
     val lazyState = rememberLazyListState()
     var artistSort by rememberArtistSort()
+    var regexFilter by rememberRegexFilter()
+    var matchCaseFilter by rememberMatchCaseFilter()
     var isSortedByASC by rememberSortArtistsAscending()
 
     if (state.isLoading) {
@@ -86,6 +89,10 @@ fun SharedTransitionScope.ArtistsScreen(
                         SortingDropdownMenu(
                             isSortedAscending = isSortedByASC,
                             onChangeSorting = { isSortedByASC = it },
+                            isMatchCaseFilter = matchCaseFilter,
+                            onChangeMatchCaseFilter = { matchCaseFilter = it },
+                            isRegexFilter = regexFilter,
+                            onChangeRegexFilter = { regexFilter = it },
                         ) {
                             repeat(3) { i ->
                                 val text = when (i) {

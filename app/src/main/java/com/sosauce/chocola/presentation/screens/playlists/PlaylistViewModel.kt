@@ -15,6 +15,7 @@ import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.models.Playlist
 import com.sosauce.chocola.data.playlist.PlaylistDao
 import com.sosauce.chocola.domain.actions.PlaylistActions
+import com.sosauce.chocola.utils.combine
 import com.sosauce.chocola.utils.ordered
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -22,11 +23,11 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.time.Duration.Companion.milliseconds
 
 class PlaylistViewModel(
     private val application: Application,
@@ -35,7 +36,7 @@ class PlaylistViewModel(
 ) : AndroidViewModel(application) {
 
     val textFieldState = TextFieldState()
-    private val userQuery = snapshotFlow { textFieldState.text }.debounce(250)
+    private val userQuery = snapshotFlow { textFieldState.text }.debounce(250.milliseconds)
 
     private val _state = MutableStateFlow(PlaylistsState(isLoading = true))
     val state = _state.asStateFlow()
@@ -46,11 +47,13 @@ class PlaylistViewModel(
             combine(
                 dao.getPlaylists(),
                 userPreferences.getPlaylistsSort,
+                userPreferences.getRegexFilter,
+                userPreferences.getMatchCaseFilter,
                 userPreferences.sortPlaylistsAscending,
                 userQuery
-            ) { playlists, sort, ascending, query ->
+            ) { playlists, sort, regex, matchCase, ascending, query ->
 
-                val sortedPlaylists = playlists.ordered(sort, ascending, query.toString())
+                val sortedPlaylists = playlists.ordered(sort, regex, matchCase, ascending, query.toString())
 
                 PlaylistsState(
                     playlists = sortedPlaylists,

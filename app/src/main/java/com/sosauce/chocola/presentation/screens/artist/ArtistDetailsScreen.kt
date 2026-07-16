@@ -10,8 +10,6 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,7 +17,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
@@ -44,26 +41,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import coil3.compose.AsyncImage
 import com.sosauce.chocola.R
-import com.sosauce.chocola.data.datastore.rememberIsLandscape
 import com.sosauce.chocola.data.datastore.rememberSortTracksAscending
 import com.sosauce.chocola.data.datastore.rememberTrackSort
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.presentation.navigation.Screen
-import com.sosauce.chocola.presentation.screens.album.components.AlbumCard
 import com.sosauce.chocola.presentation.screens.album.components.NumberOfTracks
 import com.sosauce.chocola.presentation.screens.artist.components.ArtistHeader
 import com.sosauce.chocola.presentation.screens.artist.components.NumberOfAlbums
@@ -78,8 +70,6 @@ import com.sosauce.chocola.utils.ImageUtils
 import com.sosauce.chocola.utils.barsContentTransform
 import com.sosauce.chocola.utils.selfAlignHorizontally
 import com.sosauce.sweetselect.rememberSweetSelectState
-import sv.lib.squircleshape.CornerSmoothing
-import sv.lib.squircleshape.SquircleShape
 
 @Composable
 fun SharedTransitionScope.ArtistDetailsScreen(
@@ -251,6 +241,10 @@ fun SharedTransitionScope.ArtistDetailsScreen(
                                 SortingDropdownMenu(
                                     isSortedAscending = sortTracksAscending,
                                     onChangeSorting = { sortTracksAscending = it },
+                                    isMatchCaseFilter = null,
+                                    isRegexFilter = null,
+                                    onChangeMatchCaseFilter = null,
+                                    onChangeRegexFilter = null
                                 ) {
                                     repeat(5) { i ->
                                         val text = when (i) {

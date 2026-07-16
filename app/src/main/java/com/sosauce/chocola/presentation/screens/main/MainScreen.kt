@@ -42,6 +42,8 @@ import androidx.compose.ui.util.fastForEach
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberGroupByFolders
 import com.sosauce.chocola.data.datastore.rememberHiddenFolders
+import com.sosauce.chocola.data.datastore.rememberMatchCaseFilter
+import com.sosauce.chocola.data.datastore.rememberRegexFilter
 import com.sosauce.chocola.data.datastore.rememberShowShuffleButton
 import com.sosauce.chocola.data.datastore.rememberSortTracksAscending
 import com.sosauce.chocola.data.datastore.rememberTrackSort
@@ -79,6 +81,8 @@ fun SharedTransitionScope.MainScreen(
     var groupByFolders by rememberGroupByFolders()
     val showShuffleButton by rememberShowShuffleButton()
     var trackSort by rememberTrackSort()
+    var regexFilter by rememberRegexFilter()
+    var matchCaseFilter by rememberMatchCaseFilter()
     var sortTracksAscending by rememberSortTracksAscending()
     val multiSelectState = rememberSweetSelectState<CuteTrack>()
 
@@ -96,8 +100,8 @@ fun SharedTransitionScope.MainScreen(
                 AnimatedContent(
                     targetState = multiSelectState.isInSelectionMode,
                     transitionSpec = { barsContentTransform },
-                ) {
-                    if (it) {
+                ) { isInSelectionMode ->
+                    if (isInSelectionMode) {
                         TracksSelectedBar(
                             modifier = Modifier.selfAlignHorizontally(),
                             tracks = state.tracks,
@@ -114,6 +118,10 @@ fun SharedTransitionScope.MainScreen(
                                 SortingDropdownMenu(
                                     isSortedAscending = sortTracksAscending,
                                     onChangeSorting = { sortTracksAscending = it },
+                                    isMatchCaseFilter = matchCaseFilter,
+                                    onChangeMatchCaseFilter = { matchCaseFilter = it },
+                                    isRegexFilter = regexFilter,
+                                    onChangeRegexFilter = { regexFilter = it },
                                     topContent = {
                                         DropdownMenuItem(
                                             selected = groupByFolders,

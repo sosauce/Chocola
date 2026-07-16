@@ -25,14 +25,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.materialkolor.DynamicMaterialExpressiveTheme
@@ -40,7 +37,6 @@ import com.materialkolor.dynamiccolor.ColorSpec
 import com.materialkolor.rememberDynamicMaterialThemeState
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberAppTheme
-import com.sosauce.chocola.data.datastore.rememberIsLandscape
 import com.sosauce.chocola.data.datastore.rememberPaletteStyle
 import com.sosauce.chocola.data.datastore.rememberSortTracksAscending
 import com.sosauce.chocola.data.datastore.rememberTrackSort
@@ -167,7 +163,11 @@ fun SharedTransitionScope.PlaylistDetailsScreen(
                                 sortMenu = {
                                     SortingDropdownMenu(
                                         isSortedAscending = sortTracksAsc,
-                                        onChangeSorting = { sortTracksAsc = it }
+                                        onChangeSorting = { sortTracksAsc = it },
+                                        isMatchCaseFilter = null,
+                                        isRegexFilter = null,
+                                        onChangeMatchCaseFilter = null,
+                                        onChangeRegexFilter = null,
                                     ) {
                                         repeat(6) { i ->
                                             val text = when (i) {

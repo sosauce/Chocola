@@ -44,11 +44,13 @@ class ArtistsViewModel(
 
             combine(
                 userPreferences.getArtistsSort,
+                userPreferences.getRegexFilter,
+                userPreferences.getMatchCaseFilter,
                 userPreferences.sortArtistsAscending,
                 userQuery
-            ) { sort, ascending, query ->
+            ) { sort, regex, matchCase, ascending, query ->
 
-                val sortedArtists = artists.ordered(sort, ascending, query.toString())
+                val sortedArtists = artists.ordered(sort, regex, matchCase, ascending, query.toString())
 
                 ArtistsState(
                     isLoading = false,

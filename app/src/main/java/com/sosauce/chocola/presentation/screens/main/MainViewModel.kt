@@ -3,32 +3,25 @@
 package com.sosauce.chocola.presentation.screens.main
 
 import android.app.Application
-import android.media.MediaScannerConnection
-import android.net.Uri
-import android.os.Environment
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.util.fastFilter
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sosauce.chocola.data.AbstractTracksScanner
 import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.models.CuteTrack
-import com.sosauce.chocola.utils.TrackSort
-import com.sosauce.chocola.utils.copyMutate
+import com.sosauce.chocola.utils.combine
 import com.sosauce.chocola.utils.ordered
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.system.measureTimeMillis
+import kotlin.time.Duration.Companion.milliseconds
 
 class MainViewModel(
     private val application: Application,
@@ -37,7 +30,7 @@ class MainViewModel(
 ) : AndroidViewModel(application) {
 
     val textFieldState = TextFieldState()
-    private val userQuery = snapshotFlow { textFieldState.text }.debounce(250)
+    private val userQuery = snapshotFlow { textFieldState.text }.debounce(250.milliseconds)
 
     private val _state = MutableStateFlow(MainState(isLoading = true, textFieldState = textFieldState))
     val state = _state.asStateFlow()
@@ -49,9 +42,11 @@ class MainViewModel(
                 abstractTracksScanner.fetchLatestTracks(null, null),
                 userQuery,
                 userPreferences.getTrackSort,
+                userPreferences.getRegexFilter,
+                userPreferences.getMatchCaseFilter,
                 userPreferences.sortTracksAscending
-            ) { tracks, query, trackSort, ascending ->
-                tracks.ordered(trackSort, ascending, query) to query.isNotEmpty()
+            ) { tracks, query, trackSort, regex, matchCase, ascending ->
+                tracks.ordered(trackSort,regex, matchCase, ascending, query.toString()) to query.isNotEmpty()
             }
                 .flowOn(Dispatchers.Default)
                 .collectLatest { (tracks, isSearching) ->
@@ -65,8 +60,6 @@ class MainViewModel(
                 }
         }
     }
-
-
 }
 
 

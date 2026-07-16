@@ -4,7 +4,6 @@ package com.sosauce.chocola.presentation.screens.album
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -14,9 +13,7 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -29,13 +26,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberAlbumGrids
 import com.sosauce.chocola.data.datastore.rememberAlbumSort
+import com.sosauce.chocola.data.datastore.rememberMatchCaseFilter
+import com.sosauce.chocola.data.datastore.rememberRegexFilter
 import com.sosauce.chocola.data.datastore.rememberSortAlbumsAscending
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
@@ -56,6 +54,8 @@ fun SharedTransitionScope.AlbumsScreen(
 ) {
     var isSortedByASC by rememberSortAlbumsAscending()
     var albumSort by rememberAlbumSort()
+    var regexFilter by rememberRegexFilter()
+    var matchCaseFilter by rememberMatchCaseFilter()
     val lazyState = rememberLazyGridState()
     var numberOfAlbumGrids by rememberAlbumGrids()
 
@@ -79,6 +79,10 @@ fun SharedTransitionScope.AlbumsScreen(
                         SortingDropdownMenu(
                             isSortedAscending = isSortedByASC,
                             onChangeSorting = { isSortedByASC = it },
+                            isRegexFilter = regexFilter,
+                            onChangeRegexFilter = { regexFilter = it },
+                            isMatchCaseFilter = matchCaseFilter,
+                            onChangeMatchCaseFilter = { matchCaseFilter = it },
                             topContent = {
                                 DropdownMenuItem(
                                     onClick = {

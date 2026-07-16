@@ -45,7 +45,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
+import com.sosauce.chocola.data.datastore.rememberMatchCaseFilter
 import com.sosauce.chocola.data.datastore.rememberPlaylistSort
+import com.sosauce.chocola.data.datastore.rememberRegexFilter
 import com.sosauce.chocola.data.datastore.rememberSortPlaylistsAscending
 import com.sosauce.chocola.data.models.Playlist
 import com.sosauce.chocola.data.states.MusicState
@@ -79,6 +81,8 @@ fun SharedTransitionScope.PlaylistsScreen(
     var showPlaylistCreatorDialog by remember { mutableStateOf(false) }
     val lazyState = rememberLazyListState()
     var isSortedByASC by rememberSortPlaylistsAscending()
+    var regexFilter by rememberRegexFilter()
+    var matchCaseFilter by rememberMatchCaseFilter()
     var fabMenuExpanded by remember { mutableStateOf(false) }
     var showDeletionDialog by remember { mutableStateOf(false) }
     var playlistSort by rememberPlaylistSort()
@@ -127,8 +131,8 @@ fun SharedTransitionScope.PlaylistsScreen(
                 AnimatedContent(
                     targetState = multiSelectState.isInSelectionMode,
                     transitionSpec = { barsContentTransform }
-                ) {
-                    if (it) {
+                ) { isInSelectionMode ->
+                    if (isInSelectionMode) {
                         SelectedBarSurface(
                             modifier = Modifier.selfAlignHorizontally(),
                             items = state.playlists,
@@ -158,7 +162,11 @@ fun SharedTransitionScope.PlaylistsScreen(
                             sortingMenu = {
                                 SortingDropdownMenu(
                                     isSortedAscending = isSortedByASC,
-                                    onChangeSorting = { isSortedByASC = it }
+                                    onChangeSorting = { isSortedByASC = it },
+                                    isMatchCaseFilter = matchCaseFilter,
+                                    onChangeMatchCaseFilter = { matchCaseFilter = it },
+                                    isRegexFilter = regexFilter,
+                                    onChangeRegexFilter = { regexFilter = it },
                                 ) {
                                     repeat(4) { i ->
                                         val text = when (i) {

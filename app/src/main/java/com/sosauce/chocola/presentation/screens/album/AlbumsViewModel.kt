@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.system.measureTimeMillis
 import kotlin.time.Duration.Companion.milliseconds
 
 class AlbumsViewModel(
@@ -39,10 +38,12 @@ class AlbumsViewModel(
 
             combine(
                 userPreferences.getAlbumsSort,
+                userPreferences.getRegexFilter,
+                userPreferences.getMatchCaseFilter,
                 userPreferences.sortAlbumsAscending,
                 userQuery
-            ) { sort, ascending, query ->
-                val sortedAlbums = albums.ordered(sort, ascending, query.toString())
+            ) { sort, regex, matchCase, ascending, query ->
+                val sortedAlbums = albums.ordered(sort, regex, matchCase, ascending, query.toString())
 
                 AlbumsState(
                     isLoading = false,
