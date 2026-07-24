@@ -159,17 +159,23 @@ class PlaybackService : MediaLibraryService(), MediaLibrarySession.Callback, Pla
     }
 
     private suspend fun setupEqualizerBands(equalizer: Equalizer) {
-        val tempEqBands = mutableListOf<EqualizerBand>()
+        val targetFrequencies = intArrayOf(
+            31_000,
+            63_000,
+            125_000,
+            250_000,
+            500_000,
+            1_000_000,
+            2_000_000,
+            4_000_000,
+            8_000_000,
+            16_000_000
+        )
 
-
-        (0 until equalizer.numberOfBands).forEach { index ->
-            val band = index.toShort()
-            val centerFreq = equalizer.getCenterFreq(band) // millihertz
-            val decibel = equalizer.getBandLevel(band) // millibels
-
-            tempEqBands.add(
-                EqualizerBand(centerFreq, decibel)
-            )
+        val tempEqBands = targetFrequencies.map { centerFreq ->
+            val band = equalizer.getBand(centerFreq)
+            val decibel = if (band >= 0) equalizer.getBandLevel(band) else 0.toShort()
+            EqualizerBand(centerFreq, decibel)
         }
 
         userPreferences.saveEqualizerBands(tempEqBands)
