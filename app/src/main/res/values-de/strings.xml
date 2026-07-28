@@ -4,7 +4,7 @@
     <string name="settings">Einstellungen</string>
     <string name="dark_mode">Dunkel</string>
     <string name="light_mode">Hell</string>
-    <string name="amoled_mode">Pechschwarz</string>
+    <string name="amoled_mode">Rein schwarz</string>
     <string name="version">Version</string>
     <string name="support">Hilfe</string>
     <string name="update">Nach Update suchen</string>
@@ -18,7 +18,7 @@
     <string name="no_artists_found">Keine Künstler gefunden!</string>
     <string name="artwork">Titelbild</string>
     <string name="artists">Kunstschaffender</string>
-    <string name="albums">Ordner</string>
+    <string name="albums">Alben</string>
     <string name="music">Lieder</string>
     <string name="cm_by_sosauce">Chocola von sosauce</string>
     <string name="app_icon">App Ikon</string>
@@ -34,10 +34,10 @@
     <string name="no_music_tip">Tipp: Vergiss nicht, die Ordner, die du scannen möchten, in den Einstellungen auf die Whitelist zu setzen!</string>
     <string name="error_deleting_song">Beim Löschen des Songs ist ein Fehler aufgetreten.</string>
     <string name="deleting_song_OK">Lied wurde erfolgreich gelöscht.</string>
-    <string name="okay">Okay</string>
+    <string name="okay">Ok</string>
     <string name="misc">Verschiedenes</string>
     <string name="no_albums_found">Keine Alben gefunden!</string>
-    <string name="follow_sys">Systemstandard folgen</string>
+    <string name="follow_sys">System Standard folgen</string>
     <string name="system">System</string>
     <string name="ascending">Aufsteigend</string>
     <string name="descending">Absteigend</string>
@@ -124,7 +124,7 @@
     <string name="emoji">Emoji</string>
     <string name="remove_emoji">Emoji entfernen</string>
     <string name="look_and_feel">Aussehen und Verhalten</string>
-    <string name="look_and_feel_desc">Die Musik gehört dir, warum nicht auch der Stil?</string>
+    <string name="look_and_feel_desc">Die Musik ist von dir, warum nicht auch der Stil?</string>
     <string name="now_playing">Wird gerade abgespielt</string>
     <string name="now_playing_desc">Mach es zu deinem Stil!</string>
     <string name="library">Bibliothek</string>
@@ -141,7 +141,7 @@
     <string name="show_back_button">Zurück-Taste anzeigen</string>
     <string name="album">Album</string>
     <string name="artist">Künstler</string>
-    <string name="shuffle">Shuffle</string>
+    <string name="shuffle">Zufallswiedergabe</string>
     <string name="no_result_found">Kein Resultat gefunden!</string>
     <string name="better_luck_next_time">Viel Glück beim nächsten Mal!</string>
     <string name="no_playlist_desc">Du wärst cool, wenn du eins erstellen würdest</string>
@@ -173,7 +173,7 @@
     <string name="unknown">Unbekannt</string>
     <string name="tags">Tags</string>
     <string name="color">Farbe</string>
-    <string name="playlist_tag_no_edit">Tags können nach ihrer Erstellung nicht mehr bearbeitet werden, aber du kannst sie löschen.</string>
+    <string name="playlist_tag_no_edit">Tags können nach ihrer Erstellung nicht mehr bearbeitet werden, aber du kannst sie löschen</string>
     <string name="already_in_queue">Schon in der Warteschlange</string>
     <string name="already_in_playlist">Titel ist schon in dieser Playlist</string>
     <plurals name="tracks">
@@ -184,7 +184,7 @@
         <item quantity="one">%d Album</item>
         <item quantity="other">%d Alben</item>
     </plurals>
-    <string name="min_track_length_hint">Du kannst auch festlegen, dass Titel, die kürzer als die angegebene Dauer sind, nicht gefunden werden.</string>
+    <string name="min_track_length_hint">Du kannst auch festlegen, dass Titel, die kürzer als die angegebene Dauer sind, nicht gefunden werden</string>
     <string name="click_to_add">Klicke zum hinzufügen</string>
     <string name="playlist_tag_add">Füge neuen Tag hinzu</string>
     <string name="playlist_tag_exists">Tag existiert schon auf dieser Playlist.</string>
