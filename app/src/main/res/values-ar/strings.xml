@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="theme">الثيم</string>
+    <string name="theme">ثيم</string>
     <string name="settings">الإعدادات</string>
-    <string name="dark_mode">عامق</string>
+    <string name="dark_mode">مظلم</string>
     <string name="light_mode">فاتح</string>
     <string name="amoled_mode">مظلم</string>
-    <string name="version">إصدار</string>
+    <string name="version">اصدار</string>
     <string name="support">دعم</string>
     <string name="update">تحقق من التحديثات</string>
     <string name="about">حول</string>
@@ -23,12 +23,12 @@
     <string name="error_deleting_song">خطأ أثناء حذف الاغنية.</string>
     <string name="deleting_song_OK">تم حذف الاغنية بنجاح.</string>
     <string name="okay">حسنا</string>
-    <string name="misc">متنوع</string>
+    <string name="misc">متفرقات</string>
     <string name="no_albums_found">لم يتم العثور علي البومات!</string>
     <string name="follow_sys">أتبع النظام</string>
     <string name="system">النظام</string>
-    <string name="ascending">تصاعدي</string>
-    <string name="descending">تنازلي</string>
+    <string name="ascending">تصاعدياً</string>
+    <string name="descending">تنازلياً</string>
     <string name="playback_speed">تحديد سرعه التشغيل</string>
     <string name="yes">نعم</string>
     <string name="initial_folder_selection">اختر المجلدات اللتي تريد وضعها في القائمة البيضاء ، الباقي سيوضع في القائمة السوداء</string>
@@ -72,7 +72,7 @@
     <string name="import_lrc">استيراد ملف .lrc للكلمات</string>
     <string name="slider">شريط السحب</string>
     <string name="thumbless_slider">شريط تمرير بدون كره</string>
-    <string name="show_back_button">اظهار زر الرجوع</string>
+    <string name="show_back_button">إظهار زر الرجوع</string>
     <string name="album">البوم</string>
     <string name="artist">فنان</string>
     <string name="shuffle">ترتيب عشوائي</string>
@@ -231,14 +231,14 @@
     <string name="screen_selection">اختيار الشاشة</string>
     <string name="emoji">ايموجي</string>
     <string name="remove_emoji">ازاله الايموجي</string>
-    <string name="look_and_feel">الشكل و المظهر</string>
+    <string name="look_and_feel">المظهر والملمس</string>
     <string name="look_and_feel_desc">الموسيقى ملكك، لماذا لا يكون الشكل ملكك ايضا؟</string>
     <string name="now_playing">تشغيل حالياً</string>
     <string name="now_playing_desc">اجعلها بتصميمك انت!</string>
     <string name="library">المكتبه</string>
     <string name="art_as_bg">صوره الغلاف كخلفية</string>
     <string name="default_text">افتراضي</string>
-    <string name="font">خط</string>
+    <string name="font">الخط</string>
     <string name="cute_searchbar">شريط البحث</string>
     <string name="name">اسم</string>
     <string name="number_of_tracks">رقم الأغاني</string>
@@ -261,4 +261,22 @@
     <string name="no_saf_tracks">لا يوجد اغاني تم تحديدها بأستخدام متصفح الملفات!</string>
     <string name="playback">تشغيل</string>
     <string name="centered_title">وضع القوائم في المنتصف</string>
+    <string name="ongoing_sleep_timer">لديك مؤقت نوم يعمل</string>
+    <string name="timer_will_end_in">الوقت المتبقي لإنتهاء المؤقت الحالي:</string>
+    <string name="equalizer">معادل الصوت</string>
+    <string name="enable_equalizer">تفعيل المعادل</string>
+    <string name="path">مسار</string>
+    <string name="channels">قنوات</string>
+    <string name="no">لا</string>
+    <string name="about_track">حول الاغنية</string>
+    <string name="about_file">حول الملف</string>
+    <string name="name_and_emoji">الاسم و الايموجي</string>
+    <string name="lyrics_editor">محرر الكلمات</string>
+    <string name="click_plus_to_start">انقر على زر علامة (+) للبدء!</string>
+    <string name="rescan_tracks">إعادة فحص الاغاني</string>
+    <string name="rescan_tracks_desc">سيؤدي هذا إلى إجبار نظام أندرويد على إعادة فحص جميع الملفات الموجودة على الجهاز</string>
+    <string name="generic_error">حدث خطأ!</string>
+    <string name="art_lyrics">كلمات الأغاني الفنية</string>
+    <string name="art_lyrics_desc">يعرض كلمات الأغنية مباشرةً على غلاف الألبوم بدلاً من صفحة منفصلة. انقر على غلاف الألبوم لعرض الكلمات.</string>
+    <string name="play_next">تشغيل التالي</string>
 </resources>
