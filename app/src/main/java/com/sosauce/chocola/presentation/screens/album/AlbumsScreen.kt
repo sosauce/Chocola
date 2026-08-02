@@ -90,7 +90,7 @@ fun SharedTransitionScope.AlbumsScreen(
                                             if (numberOfAlbumGrids == 4) 2 else numberOfAlbumGrids + 1
                                     },
                                     text = { Text(stringResource(R.string.no_of_grids)) },
-                                    trailingIcon = { Text("$numberOfAlbumGrids") },
+                                    trailingContent = { Text("$numberOfAlbumGrids") },
                                     shape = MenuDefaults.leadingItemShape
                                 )
                             }
@@ -107,7 +107,7 @@ fun SharedTransitionScope.AlbumsScreen(
                                     shapes = MenuDefaults.itemShape(i, 2),
                                     colors = MenuDefaults.selectableItemColors(),
                                     text = { Text(stringResource(text)) },
-                                    trailingIcon = {
+                                    trailingContent = {
                                         if (albumSort == i) {
                                             Icon(
                                                 painter = painterResource(R.drawable.check),

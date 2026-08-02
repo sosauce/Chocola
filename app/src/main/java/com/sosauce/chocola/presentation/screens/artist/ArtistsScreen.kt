@@ -108,7 +108,7 @@ fun SharedTransitionScope.ArtistsScreen(
                                     shapes = MenuDefaults.itemShape(i, 3),
                                     colors = MenuDefaults.selectableItemColors(),
                                     text = { Text(stringResource(text)) },
-                                    trailingIcon = {
+                                    trailingContent = {
                                         if (artistSort == i) {
                                             Icon(
                                                 painter = painterResource(R.drawable.check),

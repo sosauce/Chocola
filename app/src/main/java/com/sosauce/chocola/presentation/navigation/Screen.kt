@@ -30,6 +30,9 @@ sealed class Screen : NavKey {
     data object Lyrics : Screen()
 
     @Serializable
+    data object AlwaysOnDisplay : Screen()
+
+    @Serializable
     data class LyricsEditor(
         val trackPath: String
     ) : Screen()

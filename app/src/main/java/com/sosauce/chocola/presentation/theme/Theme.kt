@@ -71,7 +71,8 @@ fun CuteMusicTheme(
 }
 
 val nunitoFontFamily = FontFamily(
-    Font(R.font.nunito_extrabold, FontWeight.ExtraBold, FontStyle.Normal)
+    Font(R.font.nunito_extrabold, FontWeight.ExtraBold, FontStyle.Normal),
+    Font(R.font.nunito_extralight, FontWeight.ExtraLight, FontStyle.Normal)
 )
 
 val NunitoTypography = Typography().run {

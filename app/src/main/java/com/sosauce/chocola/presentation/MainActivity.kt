@@ -15,6 +15,7 @@ import androidx.core.view.WindowCompat
 import com.sosauce.chocola.data.datastore.rememberAppTheme
 import com.sosauce.chocola.data.models.Album
 import com.sosauce.chocola.presentation.navigation.Nav
+import com.sosauce.chocola.presentation.screens.aod.AlwaysOnDisplay
 import com.sosauce.chocola.presentation.shared_components.MusicViewModel
 import com.sosauce.chocola.presentation.theme.CuteMusicTheme
 import com.sosauce.chocola.utils.CuteTheme
@@ -43,6 +44,7 @@ class MainActivity : ComponentActivity() {
                         isAppearanceLightStatusBars = isLight
                         isAppearanceLightNavigationBars = isLight
                     }
+                //AlwaysOnDisplay("", "") { }
                 Nav(
                     musicViewModel = musicViewModel
                 )

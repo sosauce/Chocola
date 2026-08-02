@@ -18,7 +18,7 @@ fun AnimatedIconButton(
     buttonModifier: Modifier = Modifier,
     onClick: () -> Unit,
     icon: Int,
-    contentDescription: String
+    contentDescription: String?
 ) {
     val interactionSource = rememberInteractionSource()
     val isPressed by interactionSource.collectIsPressedAsState()

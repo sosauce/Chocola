@@ -239,7 +239,7 @@ private fun EqualizerBandSlider(
 
         VerticalSlider(
             modifier = Modifier.height(300.dp),
-            reverseDirection = true,
+            topToBottom = false,
             state = sliderState,
             thumb = { state ->
                 val rotation by animateFloatAsState(

@@ -5,8 +5,10 @@ package com.sosauce.chocola.presentation.navigation
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
@@ -19,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
@@ -36,6 +39,7 @@ import com.sosauce.chocola.presentation.screens.album.AlbumDetailsScreen
 import com.sosauce.chocola.presentation.screens.album.AlbumDetailsViewModel
 import com.sosauce.chocola.presentation.screens.album.AlbumsScreen
 import com.sosauce.chocola.presentation.screens.album.AlbumsViewModel
+import com.sosauce.chocola.presentation.screens.aod.AlwaysOnDisplay
 import com.sosauce.chocola.presentation.screens.artist.ArtistDetailsScreen
 import com.sosauce.chocola.presentation.screens.artist.ArtistDetailsViewModel
 import com.sosauce.chocola.presentation.screens.artist.ArtistsScreen
@@ -94,7 +98,7 @@ fun Nav(
                 predictivePopTransitionSpec = {
                     ContentTransform(
                         fadeIn(),
-                        slideOutHorizontally { it },
+                        slideOutHorizontally { it }
                     )
                 },
                 entryProvider = entryProvider {
@@ -117,12 +121,19 @@ fun Nav(
                         val viewModel = koinViewModel<MainViewModel>()
                         val state by viewModel.state.collectAsStateWithLifecycle()
 
-
                         MainScreen(
                             state = state,
                             musicState = musicState,
                             onNavigate = backStack::navigate,
                             onHandlePlayerAction = musicViewModel::handlePlayerActions
+                        )
+                    }
+
+                    entry<Screen.AlwaysOnDisplay> {
+                        AlwaysOnDisplay(
+                            title = musicState.track.title,
+                            artist = musicState.track.artist,
+                            onExitAod = backStack::removeLastOrNull
                         )
                     }
 

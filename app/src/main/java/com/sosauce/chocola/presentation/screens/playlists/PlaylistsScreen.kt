@@ -182,7 +182,7 @@ fun SharedTransitionScope.PlaylistsScreen(
                                             shapes = MenuDefaults.itemShape(i, 4),
                                             colors = MenuDefaults.selectableItemColors(),
                                             text = { Text(stringResource(text)) },
-                                            trailingIcon = {
+                                            trailingContent = {
                                                 if (playlistSort == i) {
                                                     Icon(
                                                         painter = painterResource(R.drawable.check),

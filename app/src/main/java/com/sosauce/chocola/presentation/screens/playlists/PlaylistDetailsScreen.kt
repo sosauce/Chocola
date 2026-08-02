@@ -185,7 +185,7 @@ fun SharedTransitionScope.PlaylistDetailsScreen(
                                                 shapes = MenuDefaults.itemShape(i, 6),
                                                 colors = MenuDefaults.selectableItemColors(),
                                                 text = { Text(stringResource(text)) },
-                                                trailingIcon = {
+                                                trailingContent = {
                                                     if (trackSort == i) {
                                                         Icon(
                                                             painter = painterResource(R.drawable.check),

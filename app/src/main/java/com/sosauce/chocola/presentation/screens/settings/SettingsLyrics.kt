@@ -148,7 +148,7 @@ fun SettingsLyrics() {
                         },
                         shapes = MenuDefaults.itemShape(index, 20),
                         text = { Text(size.toString()) },
-                        trailingIcon = {
+                        trailingContent = {
                             if (selected) {
                                 Icon(
                                     painter = painterResource(R.drawable.check),
