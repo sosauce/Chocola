@@ -9,9 +9,11 @@ import com.sosauce.chocola.data.datastore.PreferencesKeys.EQUALIZER_ENABLED
 import com.sosauce.chocola.data.datastore.PreferencesKeys.EQUALIZER_PRESETS
 import com.sosauce.chocola.data.datastore.PreferencesKeys.HIDDEN_TRACKS
 import com.sosauce.chocola.data.datastore.PreferencesKeys.LAST_MUSIC_STATE
+import com.sosauce.chocola.data.datastore.PreferencesKeys.MATCH_CASE_FILTER
 import com.sosauce.chocola.data.datastore.PreferencesKeys.MIN_TRACK_DURATION
 import com.sosauce.chocola.data.datastore.PreferencesKeys.PAUSE_ON_MUTE
 import com.sosauce.chocola.data.datastore.PreferencesKeys.PLAYLIST_SORT
+import com.sosauce.chocola.data.datastore.PreferencesKeys.REGEX_FILTER
 import com.sosauce.chocola.data.datastore.PreferencesKeys.SAF_TRACKS
 import com.sosauce.chocola.data.datastore.PreferencesKeys.SORT_ALBUMS_ASCENDING
 import com.sosauce.chocola.data.datastore.PreferencesKeys.SORT_ARTISTS_ASCENDING
@@ -30,7 +32,6 @@ import com.sosauce.chocola.utils.copyMutate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 class UserPreferences(
@@ -55,6 +56,14 @@ class UserPreferences(
     val getPlaylistsSort = context.dataStore.data.map {
         val sort = it[PLAYLIST_SORT] ?: 0
         PlaylistSort.entries[sort]
+    }
+
+    val getRegexFilter = context.dataStore.data.map {
+       it[REGEX_FILTER] ?: false
+    }
+
+    val getMatchCaseFilter = context.dataStore.data.map {
+        it[MATCH_CASE_FILTER] ?: false
     }
 
     val sortTracksAscending = context.dataStore.data.map {

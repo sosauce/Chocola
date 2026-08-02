@@ -4,7 +4,6 @@ package com.sosauce.chocola.data.datastore
 
 import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -29,11 +28,13 @@ import com.sosauce.chocola.data.datastore.PreferencesKeys.HIDDEN_TRACKS
 import com.sosauce.chocola.data.datastore.PreferencesKeys.INITIAL_SCREEN
 import com.sosauce.chocola.data.datastore.PreferencesKeys.LYRICS_ALIGNMENT
 import com.sosauce.chocola.data.datastore.PreferencesKeys.LYRICS_FONT_SIZE
+import com.sosauce.chocola.data.datastore.PreferencesKeys.MATCH_CASE_FILTER
 import com.sosauce.chocola.data.datastore.PreferencesKeys.MIN_TRACK_DURATION
 import com.sosauce.chocola.data.datastore.PreferencesKeys.NUMBER_OF_ALBUM_GRIDS
 import com.sosauce.chocola.data.datastore.PreferencesKeys.PALETTE_STYLE
 import com.sosauce.chocola.data.datastore.PreferencesKeys.PAUSE_ON_MUTE
 import com.sosauce.chocola.data.datastore.PreferencesKeys.PLAYLIST_SORT
+import com.sosauce.chocola.data.datastore.PreferencesKeys.REGEX_FILTER
 import com.sosauce.chocola.data.datastore.PreferencesKeys.SAF_TRACKS
 import com.sosauce.chocola.data.datastore.PreferencesKeys.SEEK_BUTTONS_DURATION
 import com.sosauce.chocola.data.datastore.PreferencesKeys.SHOW_ALBUM_NAME
@@ -86,6 +87,10 @@ data object PreferencesKeys {
     val ALBUM_SORT = intPreferencesKey("ALBUM_SORT")
     val TRACK_SORT = intPreferencesKey("TRACK_SORT")
     val ARTIST_SORT = intPreferencesKey("ARTIST_SORT")
+
+    val REGEX_FILTER = booleanPreferencesKey("REGEX_FILTER")
+    val MATCH_CASE_FILTER = booleanPreferencesKey("MATCH_CASE_FILTER")
+
     val PAUSE_ON_MUTE = booleanPreferencesKey("PAUSE_ON_MUTE")
     val MIN_TRACK_DURATION = intPreferencesKey("MIN_TRACK_DURATION")
     val PLAYLIST_SORT = intPreferencesKey("PLAYLIST_SORT")
@@ -202,6 +207,14 @@ fun rememberHasSeenTip() =
 @Composable
 fun rememberSortTracksAscending() =
     rememberPreference(key = SORT_TRACKS_ASCENDING, defaultValue = true)
+
+@Composable
+fun rememberRegexFilter() =
+    rememberPreference(key = REGEX_FILTER, defaultValue = false)
+
+@Composable
+fun rememberMatchCaseFilter() =
+    rememberPreference(key = MATCH_CASE_FILTER, defaultValue = false)
 
 @Composable
 fun rememberHiddenTracks() =

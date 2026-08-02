@@ -53,8 +53,6 @@ class AlbumDetailsViewModel(
             }
         }
     }
-
-
 }
 
 data class AlbumDetailsState(

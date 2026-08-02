@@ -33,6 +33,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberIsLandscape
+import com.sosauce.chocola.data.datastore.rememberMatchCaseFilter
+import com.sosauce.chocola.data.datastore.rememberRegexFilter
 import com.sosauce.chocola.data.datastore.rememberSortTracksAscending
 import com.sosauce.chocola.data.datastore.rememberTrackSort
 import com.sosauce.chocola.data.models.CuteTrack
@@ -63,6 +65,8 @@ fun SharedTransitionScope.AlbumDetailsScreen(
     val lazyState = rememberLazyListState()
     val isLandscape = rememberIsLandscape()
     var sortTracksAsc by rememberSortTracksAscending()
+    var regexFilter by rememberRegexFilter()
+    var matchCaseFilter by rememberMatchCaseFilter()
     var trackSort by rememberTrackSort()
     val multiSelectState = rememberSweetSelectState<CuteTrack>()
 
@@ -133,7 +137,11 @@ fun SharedTransitionScope.AlbumDetailsScreen(
                             sortMenu = {
                                 SortingDropdownMenu(
                                     isSortedAscending = sortTracksAsc,
-                                    onChangeSorting = { sortTracksAsc = it }
+                                    onChangeSorting = { sortTracksAsc = it },
+                                    isRegexFilter = regexFilter,
+                                    onChangeRegexFilter = { regexFilter = it },
+                                    isMatchCaseFilter = matchCaseFilter,
+                                    onChangeMatchCaseFilter = { matchCaseFilter = it }
                                 ) {
                                     repeat(6) { i ->
                                         val text = when (i) {

@@ -13,7 +13,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.text.format.DateFormat
+import android.util.Log
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.Spring
@@ -27,30 +27,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.MaterialShapes
-import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
-import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.offset
 import androidx.compose.ui.util.fastFilter
-import androidx.core.net.toUri
-import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
@@ -64,19 +56,15 @@ import com.sosauce.chocola.data.models.Playlist
 import com.sosauce.chocola.presentation.navigation.Screen
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import sv.lib.squircleshape.CornerSmoothing
-import sv.lib.squircleshape.SquircleShape
 import java.io.File
 import java.io.FileOutputStream
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 import java.util.Locale
 import kotlin.math.round
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
+
 fun NavKey.showBackButton(): Boolean {
     return this is Screen.AlbumsDetails || this is Screen.ArtistsDetails || this is Screen.PlaylistDetails
 }
@@ -231,6 +219,7 @@ fun PropertyMap.toModifiableMap(separator: String = ", "): MutableMap<String, St
 fun String?.formatForField(separator: String = ","): Array<String> {
     return this?.split(separator)?.map { it.trim() }?.toTypedArray() ?: arrayOf(this ?: "")
 }
+
 @Stable
 data class AudioFileMetadata(
     val title: String?,
@@ -283,13 +272,37 @@ inline fun <T> List<T>.thenIf(
     crossinline block: List<T>.() -> List<T>
 ): List<T> = if (condition) block() else this
 
+
+fun String.regexOrNull(matchCase: Boolean): Regex? = try {
+    if (matchCase) {
+        this.toRegex()
+    } else {
+        this.toRegex(RegexOption.IGNORE_CASE)
+    }
+} catch (e: Exception) {
+    Log.e("RegexPattern", "Failed to parse regex pattern", e)
+    null
+}
+
 fun List<CuteTrack>.ordered(
     sort: TrackSort,
+    regex: Boolean,
+    matchCase: Boolean,
     ascending: Boolean,
-    query: CharSequence
+    query: String
 ): List<CuteTrack> {
 
-    return this.fastFilter { it.title.contains(query, true) }
+    val regexPattern = query.regexOrNull(matchCase)
+
+    val filtered = this.fastFilter { track ->
+        if (regex) {
+            regexPattern?.containsMatchIn(track.title) ?: false
+        } else {
+            track.title.contains(query, !matchCase)
+        }
+    }
+
+    return filtered
         .sortedWith(
             compareBy(String.CASE_INSENSITIVE_ORDER) {
                 when (sort) {
@@ -302,8 +315,9 @@ fun List<CuteTrack>.ordered(
                 }
             }
         ).thenIf(!ascending) { asReversed() }
-
 }
+
+
 // Having a version with no search (album/artist details for example) is actually faster than passing an empty query
 fun List<CuteTrack>.ordered(
     sort: TrackSort,
@@ -328,10 +342,22 @@ fun List<CuteTrack>.ordered(
 
 fun List<Album>.ordered(
     sort: AlbumSort,
+    regex: Boolean,
+    matchCase: Boolean,
     ascending: Boolean,
     query: String
 ): List<Album> {
-    return this.fastFilter { it.name.contains(query, true) }
+    val regexPattern = query.regexOrNull(matchCase)
+
+    val filtered = this.fastFilter { track ->
+        if (regex) {
+            regexPattern?.containsMatchIn(track.name) ?: false
+        } else {
+            track.name.contains(query, !matchCase)
+        }
+    }
+
+    return filtered
         .sortedWith(
             compareBy(String.CASE_INSENSITIVE_ORDER) {
                 when (sort) {
@@ -344,10 +370,22 @@ fun List<Album>.ordered(
 
 fun List<Artist>.ordered(
     sort: ArtistSort,
+    regex: Boolean,
+    matchCase: Boolean,
     ascending: Boolean,
     query: String
 ): List<Artist> {
-    return this.fastFilter { it.name.contains(query, true) }
+    val regexPattern = query.regexOrNull(matchCase)
+
+    val filtered = this.fastFilter { track ->
+        if (regex) {
+            regexPattern?.containsMatchIn(track.name) ?: false
+        } else {
+            track.name.contains(query, !matchCase)
+        }
+    }
+
+    return filtered
         .sortedWith(
             compareBy(String.CASE_INSENSITIVE_ORDER) {
                 when (sort) {
@@ -361,10 +399,22 @@ fun List<Artist>.ordered(
 
 fun List<Playlist>.ordered(
     sort: PlaylistSort,
+    regex: Boolean,
+    matchCase: Boolean,
     ascending: Boolean,
     query: String
 ): List<Playlist> {
-    return this.fastFilter { it.name.contains(query, true) }
+    val regexPattern = query.regexOrNull(matchCase)
+
+    val filtered = this.fastFilter { track ->
+        if (regex) {
+            regexPattern?.containsMatchIn(track.name) ?: false
+        } else {
+            track.name.contains(query, !matchCase)
+        }
+    }
+
+    return filtered
         .sortedWith(
             compareBy(String.CASE_INSENSITIVE_ORDER) {
                 when (sort) {
@@ -397,8 +447,6 @@ fun ContentResolver.observe(uri: Uri) = callbackFlow {
         unregisterContentObserver(observer)
     }
 }
-
-
 
 
 val Context.appVersion
@@ -490,7 +538,6 @@ fun <T> bouncySpec() = spring<T>(
 )
 
 
-
 val navigationBouncySpec = spring<IntOffset>(Spring.DampingRatioLowBouncy, Spring.StiffnessLow)
 
 
@@ -512,7 +559,7 @@ val barsContentTransform = ContentTransform(
 
 
 fun String.toLyricsAlignment(): TextAlign {
-    return when(this) {
+    return when (this) {
         LyricsAlignment.START -> TextAlign.Start
         LyricsAlignment.CENTERED -> TextAlign.Center
         LyricsAlignment.END -> TextAlign.End
