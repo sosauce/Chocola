@@ -1,9 +1,9 @@
 package com.sosauce.chocola.data.models
 
-import kotlinx.serialization.Serializable
+import androidx.collection.FloatList
 
-@Serializable
 data class EqualizerPreset(
     val name: String,
-    val band: Short
+    val emoji: String,
+    val gains: FloatList
 )

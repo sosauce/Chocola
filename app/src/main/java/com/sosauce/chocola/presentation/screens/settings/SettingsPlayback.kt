@@ -145,32 +145,9 @@ fun SettingsPlayback(
                         LazyRowWithScrollButton(
                             items = state.eqPresets
                         ) { preset ->
-                            val emoji = when {
-                                preset.name.contains("Normal", true) -> "🎧"
-                                preset.name.contains("Classic", true) || preset.name.contains("Classical", true) -> "🎹"
-                                preset.name.contains("Dance", true) -> "🕺"
-                                preset.name.contains("Flat", true) -> "📏"
-                                preset.name.contains("Folk", true) -> "🪕"
-                                preset.name.contains("Heavy Metal", true) || preset.name.contains("Metal", true) -> "🤘"
-                                preset.name.contains("Hip Hop", true) -> "🪩"
-                                preset.name.contains("Jazz", true) -> "🎷"
-                                preset.name.contains("Pop", true) -> "🎤"
-                                preset.name.contains("Rock", true) -> "🎸"
-                                preset.name.contains("Acoustic", true) -> "🎻"
-                                preset.name.contains("Bass", true) -> "🔊"
-                                preset.name.contains("Loudness", true) || preset.name.contains("Boost", true) -> "📢"
-                                preset.name.contains("Electronic", true) || preset.name.contains("Techno", true) -> "🎛️"
-                                preset.name.contains("Latin", true) -> "💃"
-                                preset.name.contains("Country", true) -> "🤠"
-                                preset.name.contains("Piano", true) -> "🎼"
-                                preset.name.contains("Vocal", true) -> "🗣️"
-                                else -> "🎵"
-                            }
-
                             EqualizerPresetSelector(
-                                emoji = emoji,
-                                name = preset.name,
-                                onClick = { onHandlePlaybackSettingsActions(PlaybackSettingsActions.UsePreset(preset.band)) }
+                                preset = preset,
+                                onClick = { onHandlePlaybackSettingsActions(PlaybackSettingsActions.UsePreset(preset.gains)) }
                             )
                         }
                     }
@@ -187,23 +164,35 @@ fun SettingsPlayback(
                         )
                     ) {
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .horizontalScroll(rememberScrollState())
-                                .padding(10.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            state.eqBands.fastForEach { (centerFrequency, milliBel) ->
-                                EqualizerBandSlider(
-                                    centerFrequency = centerFrequency,
-                                    milliBel = milliBel,
-                                    onBandGainChanged = { freq, gain ->
-                                        onHandlePlaybackSettingsActions(PlaybackSettingsActions.SetBandGain(freq, gain))
-                                    }
-                                )
-                            }
+                        LazyRowWithScrollButton(
+                            modifier = Modifier.padding(10.dp),
+                            items = state.eqBands
+                        ) { (frequency, gain) ->
+                            EqualizerBandSlider(
+                                frequency = frequency,
+                                gain = gain,
+                                onBandGainChanged = { freq, gain ->
+                                    onHandlePlaybackSettingsActions(PlaybackSettingsActions.SetBandGain(freq, gain))
+                                }
+                            )
                         }
+//                        Row(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .horizontalScroll(rememberScrollState())
+//                                .padding(10.dp),
+//                            horizontalArrangement = Arrangement.SpaceBetween
+//                        ) {
+//                            state.eqBands.fastForEach { (frequency, gain) ->
+//                                EqualizerBandSlider(
+//                                    frequency = frequency,
+//                                    gain = gain,
+//                                    onBandGainChanged = { freq, gain ->
+//                                        onHandlePlaybackSettingsActions(PlaybackSettingsActions.SetBandGain(freq, gain))
+//                                    }
+//                                )
+//                            }
+//                        }
                     }
                 }
             }
@@ -213,27 +202,25 @@ fun SettingsPlayback(
 
 @Composable
 private fun EqualizerBandSlider(
-    centerFrequency: Int,
-    milliBel: Short,
-    onBandGainChanged: (Int, Short) -> Unit
+    frequency: Float,
+    gain: Float,
+    onBandGainChanged: (Float, Float) -> Unit
 ) {
-    val targetValue = remember(milliBel) { milliBel / 100f }
 
     val sliderState = rememberSliderState(
-        value = targetValue,
+        value = gain,
         valueRange = -15f..15f
-    )
+    ).apply {
+        onValueChangeFinished = { onBandGainChanged(frequency, value) }
 
-    sliderState.onValueChangeFinished = {
-        val finalMilliBel = (sliderState.value * 100).toInt().toShort()
-        onBandGainChanged(centerFrequency, finalMilliBel)
     }
+
 
     Column(
         modifier = Modifier.padding(horizontal = 5.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val label = if (centerFrequency >= 1000) "${centerFrequency / 1000}kHz" else "${centerFrequency}Hz"
+        val label = if (frequency >= 1000) "${frequency.toInt() / 1000}kHz" else "${frequency.toInt()}Hz"
         Text(
             text = label,
             style = MaterialTheme.typography.labelMediumEmphasized

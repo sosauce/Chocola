@@ -1,12 +1,14 @@
 package com.sosauce.chocola.data.datastore
 
 import android.content.Context
+import androidx.collection.ArraySet
+import androidx.collection.FloatList
+import androidx.compose.ui.util.fastMap
 import androidx.datastore.preferences.core.edit
 import com.sosauce.chocola.data.datastore.PreferencesKeys.ALBUM_SORT
 import com.sosauce.chocola.data.datastore.PreferencesKeys.ARTIST_SORT
-import com.sosauce.chocola.data.datastore.PreferencesKeys.EQUALIZER_BANDS
 import com.sosauce.chocola.data.datastore.PreferencesKeys.EQUALIZER_ENABLED
-import com.sosauce.chocola.data.datastore.PreferencesKeys.EQUALIZER_PRESETS
+import com.sosauce.chocola.data.datastore.PreferencesKeys.EQUALIZER_GAINS
 import com.sosauce.chocola.data.datastore.PreferencesKeys.HIDDEN_TRACKS
 import com.sosauce.chocola.data.datastore.PreferencesKeys.LAST_MUSIC_STATE
 import com.sosauce.chocola.data.datastore.PreferencesKeys.MATCH_CASE_FILTER
@@ -21,7 +23,6 @@ import com.sosauce.chocola.data.datastore.PreferencesKeys.SORT_PLAYLISTS_ASCENDI
 import com.sosauce.chocola.data.datastore.PreferencesKeys.SORT_TRACKS_ASCENDING
 import com.sosauce.chocola.data.datastore.PreferencesKeys.TRACK_SORT
 import com.sosauce.chocola.data.datastore.PreferencesKeys.WHITELISTED_FOLDERS
-import com.sosauce.chocola.data.models.EqualizerBand
 import com.sosauce.chocola.data.models.EqualizerPreset
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.utils.AlbumSort
@@ -32,6 +33,7 @@ import com.sosauce.chocola.utils.copyMutate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.StringFormat
 import kotlinx.serialization.json.Json
 
 class UserPreferences(
@@ -110,7 +112,6 @@ class UserPreferences(
 
     suspend fun saveSavedMusicState(musicState: MusicState) =
         context.dataStore.edit {
-            println("Hello Nekopara: $musicState")
             it[LAST_MUSIC_STATE] = Json.encodeToString(musicState)
         }
 
@@ -122,37 +123,24 @@ class UserPreferences(
         }
     }
 
-    suspend fun saveEqualizerBands(bands: List<EqualizerBand>) {
-        context.dataStore.edit { it[EQUALIZER_BANDS] = Json.encodeToString(bands) }
-    }
-
-    suspend fun saveEqualizerPresets(presets: List<EqualizerPreset>) {
-        context.dataStore.edit { it[EQUALIZER_PRESETS] = Json.encodeToString(presets) }
-    }
-
-    suspend fun getEqualizerBands(): List<EqualizerBand> {
-        return context.dataStore.data.map {
-            val string = it[EQUALIZER_BANDS] ?: "[]"
-            Json.decodeFromString<List<EqualizerBand>>(string)
-        }.first()
-    }
-
-    suspend fun getEqualizerPresets(): List<EqualizerPreset> {
-        return context.dataStore.data.map {
-            val string = it[EQUALIZER_PRESETS] ?: "[]"
-            Json.decodeFromString<List<EqualizerPreset>>(string)
-        }.first()
-    }
-
-    fun getEqualizerBandsFlow(): Flow<List<EqualizerBand>> {
-        return context.dataStore.data.map {
-            val string = it[EQUALIZER_BANDS] ?: "[]"
-            Json.decodeFromString<List<EqualizerBand>>(string)
-        }
-    }
 
     suspend fun getIsEqualizerEnabled() = context.dataStore.data.map {
         it[EQUALIZER_ENABLED] ?: false
     }.first()
+
+    suspend fun getBandGains(): List<Float> {
+        val gainsString = context.dataStore.data.map {
+            it[EQUALIZER_GAINS] ?: "0,0,0,0,0,0,0,0,0,0"
+        }.first()
+        println("Gains - Get: ${gainsString.split(",").fastMap { it.toFloatOrNull() ?: 0f }}}")
+        return gainsString.split(",").fastMap { it.toFloatOrNull() ?: 0f }
+    }
+    suspend fun saveBandGains(gains: List<Float>) {
+        context.dataStore.edit {
+            println("Gains - Saved: ${gains.joinToString(",")}")
+            it[EQUALIZER_GAINS] = gains.joinToString(",")
+        }
+    }
+
 
 }

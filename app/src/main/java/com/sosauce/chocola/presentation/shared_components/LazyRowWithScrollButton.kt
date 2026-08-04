@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun <T> LazyRowWithScrollButton(
+    modifier: Modifier = Modifier,
     items: List<T>,
     content: @Composable (T) -> Unit
 ) {
@@ -28,7 +29,8 @@ fun <T> LazyRowWithScrollButton(
 
     Box {
         LazyRow(
-            state = state
+            state = state,
+            modifier = modifier
         ) {
             items(
                 items = items,

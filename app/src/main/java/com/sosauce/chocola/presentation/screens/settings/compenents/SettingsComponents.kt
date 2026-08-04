@@ -441,8 +441,7 @@ fun PaletteSelector(
 
 @Composable
 fun EqualizerPresetSelector(
-    emoji: String,
-    name: String,
+    preset: EqualizerPreset,
     onClick: () -> Unit
 ) {
     SelectorSurface(
@@ -455,8 +454,8 @@ fun EqualizerPresetSelector(
                 .clip(MaterialShapes.Cookie9Sided.toShape())
                 .background(MaterialTheme.colorScheme.surfaceContainerHighest),
             contentAlignment = Alignment.Center
-        ) { Text(emoji) }
-        Text(name)
+        ) { Text(preset.emoji) }
+        Text(preset.name)
     }
 }
 

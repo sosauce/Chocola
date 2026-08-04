@@ -6,6 +6,7 @@ import com.sosauce.chocola.data.LyricsParser
 import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.playlist.MIGRATION_1_2
 import com.sosauce.chocola.data.playlist.PlaylistDatabase
+import com.sosauce.chocola.domain.EqualizerManager
 import com.sosauce.chocola.domain.repository.AlbumsRepository
 import com.sosauce.chocola.domain.repository.ArtistsRepository
 import com.sosauce.chocola.domain.repository.FoldersRepository
@@ -56,6 +57,10 @@ val appModule = module {
     singleOf(::ArtistsRepository)
     singleOf(::PlaylistsRepository)
     singleOf(::UserPreferences)
+    singleOf(::EqualizerManager)
+
+
+
     viewModelOf(::MusicViewModel)
     viewModelOf(::MetadataViewModel)
     viewModelOf(::PlaylistViewModel)

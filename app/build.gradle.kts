@@ -23,7 +23,7 @@ android {
 
     defaultConfig {
         applicationId = "com.sosauce.cutemusic"
-        minSdk = 26
+        minSdk = 28
         targetSdk = 37
         versionCode = 50006
         versionName = "4.3.1"

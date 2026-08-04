@@ -5,6 +5,7 @@ package com.sosauce.chocola.data.datastore
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.datastore.core.DataMigration
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -12,6 +13,8 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.sosauce.chocola.data.datastore.LegacyPreferencesKeys.EQUALIZER_BANDS
+import com.sosauce.chocola.data.datastore.LegacyPreferencesKeys.EQUALIZER_PRESETS
 import com.sosauce.chocola.data.datastore.PreferencesKeys.ALBUM_SORT
 import com.sosauce.chocola.data.datastore.PreferencesKeys.ARTIST_SORT
 import com.sosauce.chocola.data.datastore.PreferencesKeys.ARTWORK_SHAPE
@@ -65,8 +68,15 @@ import kotlinx.coroutines.runBlocking
 
 private const val PREFERENCES_NAME = "settings"
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(PREFERENCES_NAME)
-
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
+    name = PREFERENCES_NAME,
+    produceMigrations = { listOf(CleanupEqualizerSettingsMigration) }
+)
+// keys that are no longer in use
+data object LegacyPreferencesKeys {
+    val EQUALIZER_PRESETS = stringPreferencesKey("EQUALIZER_PRESETS")
+    val EQUALIZER_BANDS = stringPreferencesKey("EQUALIZER_BANDS")
+}
 data object PreferencesKeys {
     val THEME = stringPreferencesKey("theme")
     val USE_SYSTEM_FONT = booleanPreferencesKey("use_sys_font")
@@ -109,13 +119,13 @@ data object PreferencesKeys {
     val PALETTE_STYLE = stringPreferencesKey("PALETTE_STYLE")
     val SEEK_BUTTONS_DURATION = intPreferencesKey("SEEK_BUTTONS_DURATION")
     val CENTER_TITLE = booleanPreferencesKey("CENTER_TITLE")
-    val EQUALIZER_BANDS = stringPreferencesKey("EQUALIZER_BANDS")
     val EQUALIZER_ENABLED = booleanPreferencesKey("EQUALIZER_ENABLED")
     val THUMB_STYLE = stringPreferencesKey("THUMB_STYLE")
     val TRACK_STYLE = stringPreferencesKey("TRACK_STYLE")
-    val EQUALIZER_PRESETS = stringPreferencesKey("EQUALIZER_PRESETS")
+
     val ART_LYRICS = booleanPreferencesKey("ART_LYRICS")
     val INITIAL_SCREEN = stringPreferencesKey("INITIAL_SCREEN")
+    val EQUALIZER_GAINS = stringPreferencesKey("EQUALIZER_GAINS")
 
 }
 
@@ -306,6 +316,21 @@ fun rememberInitialScreenBlocking(): Screen {
 //        defaultValue = LastPlayed("", 0L),
 //        context = context
 //    )
+
+
+private object CleanupEqualizerSettingsMigration : DataMigration<Preferences> {
+    override suspend fun cleanUp() = Unit
+
+    override suspend fun migrate(currentData: Preferences): Preferences {
+       return currentData.toMutablePreferences().apply {
+           remove(EQUALIZER_PRESETS)
+           remove(EQUALIZER_BANDS)
+           println("Keys were removed!")
+       }
+    }
+
+    override suspend fun shouldMigrate(currentData: Preferences): Boolean = currentData.contains(EQUALIZER_PRESETS) && currentData.contains(EQUALIZER_BANDS)
+}
 
 
 
