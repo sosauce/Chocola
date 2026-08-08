@@ -211,4 +211,27 @@
     </plurals>
     <string name="error_pasting">Errore nell\'icollare gli appunti</string>
     <string name="whitelisted">Inserito nella lista consentita</string>
+    <string name="navigation">Navigazione</string>
+    <string name="navigation_desc">Non hai bisogno di una mappa per questo!</string>
+    <string name="main">Principale</string>
+    <string name="end">Fine</string>
+    <string name="center">Centra</string>
+    <string name="music_and_audio_perm"><![CDATA[Autorizzazioni musica e audio]]></string>
+    <string name="audio_perm_desc">Questa autorizzazione è necessaria per accedere alle tracce.</string>
+    <string name="text_alignment">Allineamento del testo</string>
+    <string name="lyrics_settings_desc">Rendili belli come il tuo canto!</string>
+    <string name="add_lyrics">Aggiungi testo</string>
+    <string name="type_lyrics_here">Inserisci qui il testo</string>
+    <string name="no_lyrics_added_yet">Non hai ancora aggiunto il testo!</string>
+    <string name="click_to_add_lyrics">Clicca per raggiungere il testo</string>
+    <string name="lyrics_editor">Editor di testi</string>
+    <string name="click_plus_to_start">Clicca il tasto + per iniziare!</string>
+    <string name="rescan_tracks">Riscansiona i brani</string>
+    <string name="rescan_tracks_desc">Questo forzerà Android a riscansionare tutti i file nel dispositivo</string>
+    <string name="generic_error">Si è verificato un errore!</string>
+    <string name="default_launch_screen">Schermata di avvio predefinita</string>
+    <string name="new_rate">Inserisci un nuovo intervallo tra %1$.1f e %2$d</string>
+    <string name="rate_error">L\'intervallo deve essere tra %1$.1f e %2$d.</string>
+    <string name="play_next">Riproduci come successivo</string>
+    <string name="art_lyrics_desc">Mostra i testi direttamente sulla copertina invece che su una pagina separata. Clicca sulla copertina per visualizzare i testi.</string>
 </resources>

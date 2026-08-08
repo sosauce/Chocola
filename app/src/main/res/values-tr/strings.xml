@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="theme">Tema</string>
+    <string name="theme">Görünüm</string>
     <string name="settings">Ayarlar</string>
-    <string name="dark_mode">Karanlık mod</string>
-    <string name="amoled_mode">Amoled modu</string>
-    <string name="version">Sürüm</string>
+    <string name="dark_mode">Karanlık</string>
+    <string name="amoled_mode">amoled_modu</string>
+    <string name="version">Versiyon</string>
     <string name="support">Destek</string>
     <string name="update">Güncellemeleri kontrol et</string>
     <string name="about">Hakkında</string>
@@ -17,7 +17,7 @@
     <string name="no_artists_found">Sanatçı bulunamadı!</string>
     <string name="artwork">Albüm kapağı</string>
     <string name="artists">Sanatçılar</string>
-    <string name="albums">Albümler</string>
+    <string name="albums">Albüm</string>
     <string name="music">Parçalar</string>
     <string name="cm_by_sosauce">Chocola by sosauce</string>
     <string name="app_icon">Uygulama Simgesi</string>
@@ -134,7 +134,7 @@
     <string name="slider">Kaydırıcı</string>
     <string name="thumbless_slider">Baş parmaksız kaydırıcı</string>
     <string name="default_text">Varsayılan</string>
-    <string name="font">Yazı tipi</string>
+    <string name="font">Yazı Tipi</string>
     <string name="show_back_button">Geri düğmesini göster</string>
     <string name="album">Albüm</string>
     <string name="artist">Sanatçı</string>
@@ -245,4 +245,15 @@
     </plurals>
     <string name="art_lyrics">Resimdeki şarkı sözleri</string>
     <string name="art_lyrics_desc">Şarkı sözlerini başka bir sayfada göstermektense direkt şarkı resminde gösterir. Şarkı resmine basarak şarkı sözlerini görebilirsin.</string>
+    <string name="play_next">Sonrakini oynat</string>
+    <string name="default_launch_screen">Varsayılan başlatma ekranı</string>
+    <string name="main">Ana</string>
+    <string name="start">Baş</string>
+    <string name="center">Orta</string>
+    <string name="end">Son</string>
+    <string name="text_alignment">Yazı hizalaması</string>
+    <string name="music_and_audio_perm"><![CDATA[Müzik &amp; ses izinleri]]></string>
+    <string name="audio_perm_desc">Parçalarınıza erişmek için bu izin gereklidir.</string>
+    <string name="navigation">Navigasyon</string>
+    <string name="navigation_desc">Bunun için bir haritaya ihtiyacın yok!</string>
 </resources>

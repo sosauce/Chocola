@@ -241,4 +241,7 @@
     <string name="save">保存</string>
     <string name="set">确定</string>
     <string name="min_track_length_hint">你可以选择不扫描短于指定时长的曲目</string>
+    <string name="start">靠左</string>
+    <string name="center">居中</string>
+    <string name="end">靠右</string>
 </resources>
