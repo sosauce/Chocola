@@ -2,6 +2,7 @@
 
 package com.sosauce.chocola.presentation.theme
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
@@ -65,6 +66,7 @@ fun CuteMusicTheme(
         state = state,
         motionScheme = MotionScheme.expressive(),
         animate = true,
+        animationSpec = tween(500),
         typography = if (useSystemFont) MaterialTheme.typography else NunitoTypography,
         content = content
     )

@@ -4,10 +4,12 @@ package com.sosauce.chocola.presentation.screens.album
 
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.util.fastMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.models.Album
+import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.domain.repository.AlbumsRepository
 import com.sosauce.chocola.utils.ordered
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +36,7 @@ class AlbumsViewModel(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
+
             val albums = albumsRepository.fetchAlbums()
 
             combine(

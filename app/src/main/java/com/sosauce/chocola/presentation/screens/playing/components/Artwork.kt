@@ -173,7 +173,12 @@ fun Artwork(
                     Icon(
                         painter = painterResource(R.drawable.music_note_rounded),
                         contentDescription = null,
-                        modifier = Modifier.fillMaxSize(0.4f),
+                        modifier = Modifier
+                            .fillMaxSize(0.4f)
+                            .cloudy(
+                                radius = blur,
+                                enabled = blur > 0
+                            ),
                         tint = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
 
                     )
@@ -219,7 +224,12 @@ fun Artwork(
                 Icon(
                     painter = painterResource(R.drawable.music_note_rounded),
                     contentDescription = null,
-                    modifier = Modifier.fillMaxSize(0.4f),
+                    modifier = Modifier
+                        .fillMaxSize(0.4f)
+                        .cloudy(
+                            radius = blur,
+                            enabled = blur > 0
+                        ),
                     tint = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
 
                 )

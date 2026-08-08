@@ -34,6 +34,7 @@ import coil3.request.ImageRequest
 import coil3.request.allowHardware
 import coil3.toBitmap
 import com.google.common.util.concurrent.MoreExecutors
+import com.sosauce.chocola.data.AbstractTracksScanner
 import com.sosauce.chocola.data.LyricsParser
 import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.models.CuteTrack
@@ -54,9 +55,11 @@ import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -73,6 +76,7 @@ class MusicViewModel(
     private var mediaController: MediaController? = null
     private val _musicState = MutableStateFlow(MusicState())
     val musicState = _musicState.asStateFlow()
+
 
     var artworkImageBitmap by mutableStateOf<ImageBitmap?>(null)
         private set
@@ -235,6 +239,7 @@ class MusicViewModel(
                     ComponentName(application, PlaybackService::class.java)
                 )
             )
+
             .buildAsync()
             .apply {
                 addListener(
@@ -364,7 +369,6 @@ class MusicViewModel(
                         )
                     }
                     mediaController!!.setMediaItems(mediaItemsToPlay)
-                    println("meowmeow")
                 }
                 if (action.random) {
                     mediaController!!.playRandom()
