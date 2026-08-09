@@ -234,6 +234,8 @@
     <string name="audio_perm_desc">This permission is required in order to access your tracks.</string>
     <string name="navigation">Navigation</string>
     <string name="navigation_desc">You won\'t need a map for this !</string>
+    <string name="widget_4_1_description">Full width classic widget</string>
+    <string name="widget_1_1_description">Controls only</string>
 
 
     <plurals name="tracks">

@@ -5,95 +5,77 @@ package com.sosauce.chocola.data
 import android.content.ContentUris
 import android.content.Context
 import android.provider.MediaStore
+import androidx.compose.ui.util.fastFilter
 import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.utils.observe
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 /**
  * An abstract way of containing function related to scanning tracks, so any part of the app that needs to fetch tracks can use the same scanning rules
  */
 class AbstractTracksScanner(
     private val context: Context,
-    private val userPreferences: UserPreferences
+    private val userPreferences: UserPreferences,
+    private val ioCoroutineScope: CoroutineScope
 ) {
-    fun fetchLatestTracks(
-        extraSelection: String?,
-        extraSelectionArgs: Array<String>?,
-        onlyHiddenTracks: Boolean = false
-    ): Flow<List<CuteTrack>> {
 
+    val latestTracks = fetchLatestTracks().stateIn(
+        ioCoroutineScope,
+        SharingStarted.WhileSubscribed(5000),
+        emptyList()
+    )
 
-
+    private fun fetchLatestTracks(): Flow<List<CuteTrack>> {
         val mediaStoreFlow = context.contentResolver.observe(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI)
+        val minTrackDurationFlow = userPreferences.getMinTrackDuration()
         val hiddenTracksFlow = userPreferences.getHiddenTracks()
         val whitelistedFoldersFlow = userPreferences.getWhitelistedFolders()
-        val minTrackDurationFlow = userPreferences.getMinTrackDuration()
-
 
         return combine(
             mediaStoreFlow,
+            minTrackDurationFlow,
             hiddenTracksFlow,
-            whitelistedFoldersFlow,
-            minTrackDurationFlow
-        ) { _, hiddenTracks, whitelistedFolders, minTrackDuration ->
-            fetchTracks(
-                extraSelection = extraSelection,
-                extraSelectionArgs = extraSelectionArgs,
-                whitelistedFolders = whitelistedFolders,
-                minTrackDuration = minTrackDuration,
-                hiddenTracks = hiddenTracks,
-                onlyHiddenTracks = onlyHiddenTracks
-            )
-        }.flowOn(Dispatchers.IO)
+            whitelistedFoldersFlow
+        ) { _, minTrackDuration, hidden, whitelistedFolders ->
+
+            val rawTracks = fetchTracks(minTrackDuration = minTrackDuration)
+
+            rawTracks.fastFilter { track ->
+                val isNotHidden = !hidden.contains(track.mediaId)
+                val isWhitelisted = whitelistedFolders.contains(track.folder)
+
+                isNotHidden && isWhitelisted
+            }
+        }
     }
 
-    private fun fetchTracks(
-        extraSelection: String?,
-        extraSelectionArgs: Array<String>?,
-        whitelistedFolders: Set<String>,
-        minTrackDuration: Int,
-        hiddenTracks: Set<String>,
-        onlyHiddenTracks: Boolean
-    ): List<CuteTrack> {
+    private fun fetchTracks(minTrackDuration: Int): List<CuteTrack> {
         val musics = mutableListOf<CuteTrack>()
 
 
-        if (whitelistedFolders.isEmpty() || (onlyHiddenTracks && hiddenTracks.isEmpty())) return emptyList()
+        println("Going to hit db call")
 
         val selection = buildString {
             append("${MediaStore.Audio.Media.DURATION} >= ? AND ")
-            append("${MediaStore.Audio.Media.IS_MUSIC} != ? AND ")
-            append("(")
-            append(whitelistedFolders.joinToString(" OR ") { "${MediaStore.Audio.Media.DATA} LIKE ?" })
-            append(")")
-            extraSelection?.let {
-                append(" AND ")
-                append(it)
-            }
-            if (hiddenTracks.isNotEmpty()) {
-                val placeholders = hiddenTracks.joinToString(",") { "?" }
-                val onlyHidden = if (onlyHiddenTracks) "IN" else "NOT IN"
-                append(" AND ${MediaStore.Audio.Media._ID} $onlyHidden ($placeholders)")
-            }
+            append("${MediaStore.Audio.Media.IS_MUSIC} != ? ")
         }
         val selectionArgs = mutableListOf<String>().apply {
             add("${minTrackDuration * 1000}")
             add("0")
-            addAll(whitelistedFolders.map { "$it/%" })
-            extraSelectionArgs?.let {
-                addAll(it)
-            }
-            if (hiddenTracks.isNotEmpty()) {
-                addAll(hiddenTracks)
-            }
         }.toTypedArray()
 
         val projection = arrayOf(

@@ -2,7 +2,6 @@
 
 package com.sosauce.chocola.presentation.shared_components
 
-import android.annotation.SuppressLint
 import android.app.Application
 import android.content.ComponentName
 import android.content.Context
@@ -20,12 +19,9 @@ import androidx.compose.ui.util.fastFirstOrNull
 import androidx.compose.ui.util.fastMap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.C
 import androidx.media3.common.MediaItem
-import androidx.media3.common.Metadata
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
-import androidx.media3.common.Timeline
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
@@ -36,9 +32,8 @@ import coil3.toBitmap
 import com.google.common.util.concurrent.MoreExecutors
 import com.sosauce.chocola.data.LyricsParser
 import com.sosauce.chocola.data.datastore.UserPreferences
-import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.states.MusicState
-import com.sosauce.chocola.domain.PlaybackService
+import com.sosauce.chocola.domain.services.PlaybackService
 import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.utils.applyPlaybackPitch
 import com.sosauce.chocola.utils.applyPlaybackSpeed
@@ -50,7 +45,6 @@ import com.sosauce.chocola.utils.playOrPause
 import com.sosauce.chocola.utils.playRandom
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -60,7 +54,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import java.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 

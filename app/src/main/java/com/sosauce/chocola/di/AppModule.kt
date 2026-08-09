@@ -6,12 +6,14 @@ import com.sosauce.chocola.data.LyricsParser
 import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.playlist.MIGRATION_1_2
 import com.sosauce.chocola.data.playlist.PlaylistDatabase
+import com.sosauce.chocola.data.widgets.WidgetsHelper
 import com.sosauce.chocola.domain.EqualizerManager
 import com.sosauce.chocola.domain.repository.AlbumsRepository
 import com.sosauce.chocola.domain.repository.ArtistsRepository
 import com.sosauce.chocola.domain.repository.FoldersRepository
 import com.sosauce.chocola.domain.repository.PlaylistsRepository
 import com.sosauce.chocola.domain.repository.SafManager
+import com.sosauce.chocola.domain.helpers.AndroidAutoHelper
 import com.sosauce.chocola.presentation.screens.album.AlbumDetailsViewModel
 import com.sosauce.chocola.presentation.screens.album.AlbumsViewModel
 import com.sosauce.chocola.presentation.screens.artist.ArtistDetailsViewModel
@@ -29,6 +31,9 @@ import com.sosauce.chocola.presentation.screens.settings.SafViewModel
 import com.sosauce.chocola.presentation.screens.transformer.TransformerViewModel
 import com.sosauce.chocola.presentation.shared_components.dialogs.DeletionViewModel
 import com.sosauce.chocola.presentation.shared_components.MusicViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
@@ -47,7 +52,7 @@ val appModule = module {
             .dao
     }
 
-
+    single { CoroutineScope(Dispatchers.IO + SupervisorJob()) }
 
     singleOf(::AbstractTracksScanner)
     singleOf(::LyricsParser)
@@ -58,6 +63,8 @@ val appModule = module {
     singleOf(::PlaylistsRepository)
     singleOf(::UserPreferences)
     singleOf(::EqualizerManager)
+    singleOf(::AndroidAutoHelper)
+    singleOf(::WidgetsHelper)
 
 
 

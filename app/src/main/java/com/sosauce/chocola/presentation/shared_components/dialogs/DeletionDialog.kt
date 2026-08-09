@@ -162,7 +162,7 @@ fun DeletionDialog(
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Icon(
-                                        painter = painterResource(R.drawable.music_note_rounded),
+                                        painter = painterResource(R.drawable.music_note),
                                         contentDescription = null
                                     )
                                 }

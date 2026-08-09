@@ -9,9 +9,6 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -24,7 +21,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Badge
-import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.DropdownMenuGroup
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.DropdownMenuPopup
@@ -58,7 +54,6 @@ import androidx.core.app.ShareCompat
 import androidx.core.net.toUri
 import coil3.compose.AsyncImage
 import com.sosauce.chocola.R
-import com.sosauce.chocola.data.datastore.rememberAllSafTracks
 import com.sosauce.chocola.data.datastore.rememberHiddenTracks
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.states.MusicState
@@ -69,7 +64,6 @@ import com.sosauce.chocola.presentation.shared_components.animations.AnimatedSel
 import com.sosauce.chocola.presentation.shared_components.dialogs.DeletionDialog
 import com.sosauce.chocola.presentation.shared_components.dialogs.MusicDetailsDialog
 import com.sosauce.chocola.utils.LocalScreen
-import com.sosauce.chocola.utils.bouncySpec
 import com.sosauce.chocola.utils.copyMutate
 import sv.lib.squircleshape.CornerSmoothing
 import sv.lib.squircleshape.SquircleShape
@@ -165,7 +159,7 @@ fun MusicListItem(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.music_note_rounded),
+                        painter = painterResource(R.drawable.music_note),
                         contentDescription = null
                     )
                     AsyncImage(

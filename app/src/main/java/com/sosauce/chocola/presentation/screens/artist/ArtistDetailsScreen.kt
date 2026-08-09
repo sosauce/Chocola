@@ -318,7 +318,7 @@ fun SharedTransitionScope.ArtistDetailsScreen(
                         NoXFound(
                             headlineText = R.string.no_music_title,
                             bodyText = R.string.better_luck_next_time,
-                            icon = R.drawable.music_note_rounded
+                            icon = R.drawable.music_note
                         )
                     }
                 }

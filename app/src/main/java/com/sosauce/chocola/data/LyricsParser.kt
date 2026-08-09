@@ -31,7 +31,6 @@ class LyricsParser(private val context: Context) {
         val fileName = path.substringAfterLast('/').replaceAfterLast('.', "lrc")
         val lyricsFile = File(parent, fileName)
 
-        println("testing: $path")
 
         return@withContext if (lyricsFile.exists()) {
             lyricsFile.bufferedReader().useLines { lines ->

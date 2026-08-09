@@ -68,7 +68,7 @@ fun MusicDetailsDialog(
             data = track.durationMs.formatToReadableTime()
         ),
         TrackDetails(
-            icon = R.drawable.music_note_rounded,
+            icon = R.drawable.music_note,
             text = R.string.track_nb,
             data = track.trackNumber.toString()
         ),
@@ -167,7 +167,7 @@ fun MusicDetailsDialog(
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Icon(
-                                        painter = painterResource(R.drawable.music_note_rounded),
+                                        painter = painterResource(R.drawable.music_note),
                                         contentDescription = null
                                     )
                                 }
@@ -261,7 +261,7 @@ fun MusicDetailsDialog(
                         details = TrackDetails(
                             icon = R.drawable.folder_rounded,
                             text = R.string.path,
-                            data = track.path.substringBeforeLast("/")
+                            data = track.folder
                         ),
                         shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp, bottomStart = 24.dp, bottomEnd = 24.dp)
                     )

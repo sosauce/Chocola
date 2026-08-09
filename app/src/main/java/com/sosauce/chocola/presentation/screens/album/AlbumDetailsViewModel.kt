@@ -31,27 +31,27 @@ class AlbumDetailsViewModel(
             _state.update { it.copy(album = album) }
         }
 
-        viewModelScope.launch(Dispatchers.IO) {
-            combine(
-                albumsRepository.fetchLatestAlbumTracks(albumName),
-                userPreferences.getTrackSort,
-                userPreferences.sortTracksAscending
-            ) { tracks, sort, ascending ->
-                tracks.ordered(sort, ascending).sortedWith(
-                    compareBy(
-                        { it.trackNumber == 0 },
-                        { it.trackNumber }
-                    )
-                )
-            }.flowOn(Dispatchers.Default).collectLatest { sortedTracks ->
-                _state.update {
-                    it.copy(
-                        tracks = sortedTracks,
-                        isLoading = false
-                    )
-                }
-            }
-        }
+//        viewModelScope.launch(Dispatchers.IO) {
+//            combine(
+//                albumsRepository.fetchLatestAlbumTracks(albumName),
+//                userPreferences.getTrackSort,
+//                userPreferences.sortTracksAscending
+//            ) { tracks, sort, ascending ->
+//                tracks.ordered(sort, ascending).sortedWith(
+//                    compareBy(
+//                        { it.trackNumber == 0 },
+//                        { it.trackNumber }
+//                    )
+//                )
+//            }.flowOn(Dispatchers.Default).collectLatest { sortedTracks ->
+//                _state.update {
+//                    it.copy(
+//                        tracks = sortedTracks,
+//                        isLoading = false
+//                    )
+//                }
+//            }
+//        }
     }
 }
 

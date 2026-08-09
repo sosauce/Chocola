@@ -29,13 +29,7 @@ import sv.lib.squircleshape.CornerSmoothing
 import sv.lib.squircleshape.SquircleShape
 
 const val CUTE_MUSIC_ID = "CUTE_MUSIC_ID"
-const val PACKAGE = "com.sosauce.chocola"
-const val ROOT_ID = "cute_music_root"
 const val ICON_TEXT_SPACING = 5
-const val WIDGET_NEW_DATA = "WIDGET_NEW_DATA"
-const val WIDGET_NEW_IS_PLAYING = "WIDGET_NEW_IS_PLAYING"
-const val WIDGET_ACTION_BROADCAST = "WIDGET_NEW_DATA"
-const val EQUALIZER_ACTION_BROADCAST = "EQUALIZER_ACTION_BROADCAST"
 const val GITHUB_RELEASES = "https://github.com/sosauce/Chocola/releases"
 const val SUPPORT_PAGE = "https://sosauce.github.io/support/"
 
@@ -44,11 +38,8 @@ object SharedTransitionKeys {
     const val CURRENTLY_PLAYING = "CURRENTLY_PLAYING"
     const val ARTIST = "ARTIST"
     const val PLAY_PAUSE_BUTTON = "PLAY_PAUSE_BUTTON"
-    const val FAB = "FAB"
     const val SKIP_NEXT_BUTTON = "SKIP_NEXT_BUTTON"
     const val SKIP_PREVIOUS_BUTTON = "SKIP_PREVIOUS_BUTTON"
-    const val MUSIC_ARTWORK = "MUSIC_ARTWORK"
-    const val NOW_PLAYING_SCREEN = "NOW_PLAYING_SCREEN"
     const val SEARCHBAR = "SEARCHBAR"
 }
 

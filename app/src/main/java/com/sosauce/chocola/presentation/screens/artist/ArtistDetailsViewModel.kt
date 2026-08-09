@@ -44,22 +44,22 @@ class ArtistDetailsViewModel(
             }
         }
 
-        viewModelScope.launch(Dispatchers.IO) {
-            combine(
-                artistsRepository.fetchLatestArtistTracks(artistName),
-                userPreferences.getTrackSort,
-                userPreferences.sortTracksAscending
-            ) { tracks, sort, ascending ->
-                tracks.ordered(sort, ascending)
-            }.flowOn(Dispatchers.Default).collectLatest { sortedTracks ->
-                _state.update {
-                    it.copy(
-                        tracks = sortedTracks,
-                        isLoading = false
-                    )
-                }
-            }
-        }
+//        viewModelScope.launch(Dispatchers.IO) {
+//            combine(
+//                artistsRepository.fetchLatestArtistTracks(artistName),
+//                userPreferences.getTrackSort,
+//                userPreferences.sortTracksAscending
+//            ) { tracks, sort, ascending ->
+//                tracks.ordered(sort, ascending)
+//            }.flowOn(Dispatchers.Default).collectLatest { sortedTracks ->
+//                _state.update {
+//                    it.copy(
+//                        tracks = sortedTracks,
+//                        isLoading = false
+//                    )
+//                }
+//            }
+//        }
     }
 
 }

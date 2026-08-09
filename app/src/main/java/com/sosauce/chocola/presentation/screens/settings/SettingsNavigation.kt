@@ -33,7 +33,6 @@ import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberInitialScreen
 import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.presentation.screens.settings.compenents.SelectorSurface
-import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsSwitch
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsWithTitle
 import com.sosauce.chocola.presentation.shared_components.LazyRowWithScrollButton
 
@@ -45,7 +44,7 @@ fun SettingsNavigation() {
     val screenItems = listOf(
         ScreenItem(
             onClick = { initialScreen = Screen.Main.toString() },
-            icon = R.drawable.music_note_rounded,
+            icon = R.drawable.music_note,
             text = R.string.main,
             screen = Screen.Main.toString()
         ),

@@ -39,7 +39,7 @@ class MainViewModel(
     init {
         viewModelScope.launch {
             combine(
-                abstractTracksScanner.fetchLatestTracks(null, null),
+                abstractTracksScanner.latestTracks,
                 userQuery,
                 userPreferences.getTrackSort,
                 userPreferences.getRegexFilter,

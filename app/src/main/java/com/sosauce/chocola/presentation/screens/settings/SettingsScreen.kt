@@ -63,7 +63,7 @@ fun SettingsScreen(
             onNavigate = { backStack.add(SettingsScreens.LookAndFeel) }
         ),
         Item(
-            icon = R.drawable.music_note_rounded,
+            icon = R.drawable.music_note,
             name = stringResource(R.string.now_playing),
             description = stringResource(R.string.now_playing_desc),
             onNavigate = { backStack.add(SettingsScreens.NowPlaying) }

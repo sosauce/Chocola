@@ -8,6 +8,7 @@ import androidx.compose.ui.util.fastDistinctBy
 import com.sosauce.chocola.data.AbstractTracksScanner
 import com.sosauce.chocola.data.models.Album
 import com.sosauce.chocola.data.models.Artist
+import com.sosauce.chocola.data.models.CuteTrack
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
@@ -18,10 +19,11 @@ class ArtistsRepository(
     private val abstractTracksScanner: AbstractTracksScanner
 ) {
 
-    fun fetchLatestArtistTracks(artistName: String) = abstractTracksScanner.fetchLatestTracks(
-        extraSelection = "${MediaStore.Audio.Media.ARTIST} = ?",
-        extraSelectionArgs = arrayOf(artistName)
-    )
+    fun fetchLatestArtistTracks(artistName: String) = emptyList<CuteTrack>()
+//    fun fetchLatestArtistTracks(artistName: String) = abstractTracksScanner.fetchLatestTracks(
+//        extraSelection = "${MediaStore.Audio.Media.ARTIST} = ?",
+//        extraSelectionArgs = arrayOf(artistName)
+//    )
 
 
     suspend fun fetchArtists(): List<Artist> = withContext(Dispatchers.IO) {

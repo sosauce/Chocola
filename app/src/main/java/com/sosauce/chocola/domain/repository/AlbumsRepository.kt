@@ -6,6 +6,7 @@ import android.content.Context
 import android.provider.MediaStore
 import com.sosauce.chocola.data.AbstractTracksScanner
 import com.sosauce.chocola.data.models.Album
+import com.sosauce.chocola.data.models.CuteTrack
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
@@ -17,10 +18,12 @@ class AlbumsRepository(
 ) {
 
 
-    fun fetchLatestAlbumTracks(albumName: String) = abstractTracksScanner.fetchLatestTracks(
-        extraSelection = "${MediaStore.Audio.Media.ALBUM} = ?",
-        extraSelectionArgs = arrayOf(albumName)
-    )
+//    fun fetchLatestAlbumTracks(albumName: String) = abstractTracksScanner.fetchLatestTracks(
+//        extraSelection = "${MediaStore.Audio.Media.ALBUM} = ?",
+//        extraSelectionArgs = arrayOf(albumName)
+//    )
+
+    fun fetchLatestAlbumTracks(albumName: String) = emptyList<CuteTrack>()
 
     fun fetchAlbums(
         selection: String? = null,
