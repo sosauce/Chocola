@@ -249,4 +249,23 @@
     <string name="ongoing_sleep_timer">У вас уже идёт таймер сна</string>
     <string name="timer_will_end_in">Текущий таймер закончится через:</string>
     <string name="path">Путь</string>
+    <string name="seek_buttons_duration">Время перемотки кнопок</string>
+    <string name="about_track">О песне</string>
+    <string name="about_file">О файле</string>
+    <string name="play_next">Играть следующим</string>
+    <string name="palette">Цветовая палитра</string>
+    <string name="no_saf_tracks">Нет треков S.A.F!</string>
+    <string name="playback">Воспроизведение</string>
+    <string name="centered_title">Название песни по середине</string>
+    <string name="no">Нет</string>
+    <string name="default_launch_screen">Экран по умолчанию</string>
+    <string name="main">Главная</string>
+    <string name="start">Слева</string>
+    <string name="center">Центр</string>
+    <string name="end">Справа</string>
+    <string name="text_alignment">Выравнивание текста</string>
+    <string name="music_and_audio_perm"><![CDATA[Разрешение на доступ к музыке и аудио]]></string>
+    <string name="audio_perm_desc">Оно необходимо для доступа к песням на устройстве.</string>
+    <string name="navigation">Навигация</string>
+    <string name="navigation_desc">Здесь вы точно не заблудитесь!</string>
 </resources>

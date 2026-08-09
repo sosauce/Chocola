@@ -143,7 +143,7 @@
     <string name="no_playlist_desc">Oleks vahva, kui sellise koostad</string>
     <string name="no_album_desc">Sulle meeldivad singlid ja see on täiesti vahva</string>
     <string name="no_artist_desc">Eks ise laulad kindlasti paremini</string>
-    <string name="are_u_sure">Kas oled kindel?</string>
+    <string name="are_u_sure">Kas oled ikka kindel?</string>
     <string name="lyrics">Laulusõnad</string>
     <string name="playback_controls">Taasesituse juhtnupud</string>
     <string name="playback_controls_desc">Tõelistele muusikafännidele!</string>
@@ -216,4 +216,33 @@
     <string name="new_rate">Sisesta sagedus vahemikust %1$.1f kuni %2$d</string>
     <string name="rate_error">Sagedus peaks olema vahemikust %1$.1f kuni %2$d.</string>
     <string name="seek_buttons_duration">Kerimisnuppude samm</string>
+    <string name="lyrics_settings_desc">Muuda need sama kauniks nagu on sinu lauluhääl!</string>
+    <string name="add_lyrics">Lisa laulusõnad</string>
+    <string name="type_lyrics_here">Sisesta laulusõnad siia</string>
+    <string name="no_lyrics_added_yet">Sa pole veel laulusõnu lisanud!</string>
+    <string name="adjust_timestamp">Kohenda ajatemplit</string>
+    <string name="click_to_add_lyrics">Laulusõnade lisamiseks klõpsa</string>
+    <string name="lyrics_editor">Laulusõnade muutmisvaade</string>
+    <string name="click_plus_to_start">Alustamiseks klõpsa plussiga nuppu!</string>
+    <string name="rescan_tracks">Skaneeri lood uuest</string>
+    <string name="rescan_tracks_desc">Sellega sunnid Androidi nutiseadmest uuesti lugusid otsima</string>
+    <string name="generic_error">Tekkis viga!</string>
+    <plurals name="delete_playlists">
+        <item quantity="one">Kustuta esitusloend</item>
+        <item quantity="other">Kustuta esitusloendid</item>
+    </plurals>
+    <plurals name="delete_tracks">
+        <item quantity="one">Kustuta lugu</item>
+        <item quantity="other">Kustuta lood</item>
+    </plurals>
+    <plurals name="delete_playlists_u_sure">
+        <item quantity="one">Kas oled kindel, et soovid %d esitusloendi kustutada? Seda tegevust ei saa tagasi pöörata!</item>
+        <item quantity="other">Kas oled kindel, et soovid %d esitusloendit kustutada? Seda tegevust ei saa tagasi pöörata!</item>
+    </plurals>
+    <plurals name="delete_tracks_u_sure">
+        <item quantity="one">Kas oled kindel, et soovid %d loo kustutada? Seda tegevust ei saa tagasi pöörata!</item>
+        <item quantity="other">Kas oled kindel, et soovid %d logu kustutada? Seda tegevust ei saa tagasi pöörata!</item>
+    </plurals>
+    <string name="art_lyrics_desc">Eraldi vaate asemel kuvatakse laulusõnad kaanepildil. Üksikasjalikumaks vaateks klõpsa kaanepilti.</string>
+    <string name="art_lyrics">Laulusõnad kaanepildil</string>
 </resources>

@@ -25,6 +25,7 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.ShuffleOrder
 import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaConstants
@@ -105,36 +106,7 @@ class PlaybackService : MediaLibraryService(), MediaLibrarySession.Callback, Pla
     @SuppressLint("UnsafeOptInUsageError")
     override fun onAudioSessionIdChanged(audioSessionId: Int) {
         super.onAudioSessionIdChanged(audioSessionId)
-        lifecycleScope.launch {
-
-            equalizerManager.initDynamicsProcessing(audioSessionId)
-
-            val isEqualizerEnabled = userPreferences.getIsEqualizerEnabled()
-
-
-//            val equalizer = Equalizer(0, audioSessionId).apply {
-//                // TODO: Get saved bands levels and restore from datastore like below
-//
-//                //                bands.fastForEach { (centerFrequencyMilli, millibel) ->
-////
-////                    try {
-////                        val bandIndex = getBand(centerFrequencyMilli)
-////
-////                        val minLevel = bandLevelRange[0]
-////                        val maxLevel = bandLevelRange[1]
-////
-////                        val levelMilliBel = millibel.coerceIn(minLevel, maxLevel)
-////
-////                        setBandLevel(bandIndex, levelMilliBel)
-////                    } catch (e: Exception) {
-////                        e.printStackTrace()
-////                    }
-////                }
-//
-//                enabled = isEqualizerEnabled
-//            }
-//            equalizerManager.initEqualizer(equalizer)
-        }
+        lifecycleScope.launch { equalizerManager.initDynamicsProcessing(audioSessionId) }
     }
 
 
