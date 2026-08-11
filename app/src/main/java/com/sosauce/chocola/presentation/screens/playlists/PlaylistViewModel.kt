@@ -57,9 +57,7 @@ class PlaylistViewModel(
 
                 PlaylistsState(
                     playlists = sortedPlaylists,
-                    isLoading = false,
-                    textFieldState = textFieldState,
-                    isSearching = query.isNotEmpty()
+                    isLoading = false
                 )
 
             }.collectLatest { newState -> _state.update { newState } }
@@ -89,10 +87,9 @@ class PlaylistViewModel(
 
             is PlaylistActions.ImportM3uPlaylist -> {
 
-                val tracksFromFile = mutableListOf<String>()
+                val tracksFromFile = mutableSetOf<String>()
 
                 viewModelScope.launch(Dispatchers.IO) {
-                    ensureActive()
                     application.contentResolver.openInputStream(action.uri)?.bufferedReader()
                         ?.useLines { lines ->
                             for (line in lines) {
@@ -108,7 +105,7 @@ class PlaylistViewModel(
                             ?: "Imported playlist",
                         musics = tracksFromFile,
                         color = -1,
-                        tags = emptyList()
+                        tags = emptySet()
                     )
 
                     dao.upsertPlaylist(playlist)
@@ -117,10 +114,9 @@ class PlaylistViewModel(
 
             is PlaylistActions.ExportM3uPlaylist -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    ensureActive()
                     application.contentResolver.openOutputStream(action.uri)?.bufferedWriter()
                         ?.use { writer ->
-                            action.tracks.fastForEach { track ->
+                            action.tracks.forEach { track ->
                                 writer.write("${getFilePathFromMediaId(track)}\n")
                             }
                         }
@@ -191,7 +187,5 @@ class PlaylistViewModel(
 
 data class PlaylistsState(
     val isLoading: Boolean = false,
-    val playlists: List<Playlist> = emptyList(),
-    val textFieldState: TextFieldState = TextFieldState(),
-    val isSearching: Boolean = false
+    val playlists: List<Playlist> = emptyList()
 )

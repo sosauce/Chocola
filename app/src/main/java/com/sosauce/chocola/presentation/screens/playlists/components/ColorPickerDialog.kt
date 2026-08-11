@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
@@ -38,8 +37,8 @@ import androidx.core.graphics.toColorInt
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.sosauce.chocola.R
-import com.sosauce.chocola.presentation.shared_components.animations.Icon
-import com.sosauce.chocola.presentation.shared_components.animations.rememberClipboardIconController
+import com.sosauce.chocola.presentation.components.animations.Icon
+import com.sosauce.chocola.presentation.components.animations.rememberClipboardIconController
 import com.sosauce.chocola.utils.ColorUtils
 import kotlinx.coroutines.launch
 import sv.lib.squircleshape.CornerSmoothing

@@ -9,7 +9,7 @@ data class Playlist(
     val id: Int = 0,
     val emoji: String = "",
     val name: String = "",
-    val musics: List<String> = emptyList(), // List of songs ID aka mediaId
+    val musics: Set<String> = emptySet(), // List of songs ID aka mediaId
     val color: Int = -1,
-    val tags: List<String> = emptyList()
+    val tags: Set<String> = emptySet()
 )

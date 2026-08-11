@@ -28,7 +28,7 @@ import com.sosauce.chocola.R
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.models.Playlist
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.presentation.shared_components.animations.AnimatedFab
+import com.sosauce.chocola.presentation.components.animations.AnimatedFab
 
 @Composable
 fun PlaylistHeader(
@@ -67,7 +67,7 @@ fun PlaylistHeader(
                 verticalArrangement = Arrangement.spacedBy(2.dp),
                 horizontalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                playlist.tags.fastForEach { tag ->
+                playlist.tags.forEach { tag ->
                     Button(
                         onClick = {},
                         shapes = ButtonDefaults.shapes(),

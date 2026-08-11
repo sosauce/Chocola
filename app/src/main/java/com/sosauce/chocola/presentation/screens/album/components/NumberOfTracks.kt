@@ -1,7 +1,6 @@
 package com.sosauce.chocola.presentation.screens.album.components
 
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -16,10 +15,7 @@ import com.sosauce.chocola.R
 
 
 @Composable
-fun NumberOfTracks(
-    size: Int,
-    sortMenu: (@Composable () -> Unit)
-) {
+fun NumberOfTracks(size: Int) {
 
     CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.primary) {
         Row(
@@ -33,8 +29,6 @@ fun NumberOfTracks(
                     size
                 )
             )
-            Spacer(Modifier.weight(1f))
-            sortMenu()
         }
     }
 }

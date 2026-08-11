@@ -3,8 +3,6 @@
 package com.sosauce.chocola.presentation.screens.playing.components
 
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -26,7 +24,6 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.data.datastore.rememberThumbStyle
 import com.sosauce.chocola.data.datastore.rememberTrackStyle
-import com.sosauce.chocola.presentation.shared_components.animations.AnimatedSlider
 import com.sosauce.chocola.utils.ThumbStyle
 import com.sosauce.chocola.utils.TrackStyle
 import com.sosauce.chocola.utils.rememberInteractionSource

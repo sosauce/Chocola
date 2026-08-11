@@ -62,16 +62,17 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.models.Playlist
 import com.sosauce.chocola.domain.actions.PlaylistActions
+import com.sosauce.chocola.presentation.components.EmojiPicker
+import com.sosauce.chocola.presentation.components.Spacer
+import com.sosauce.chocola.presentation.components.animations.Icon
+import com.sosauce.chocola.presentation.components.animations.rememberClipboardIconController
 import com.sosauce.chocola.presentation.screens.playlists.PlaylistViewModel
-import com.sosauce.chocola.presentation.shared_components.EmojiPicker
-import com.sosauce.chocola.presentation.shared_components.Spacer
-import com.sosauce.chocola.presentation.shared_components.animations.Icon
-import com.sosauce.chocola.presentation.shared_components.animations.rememberClipboardIconController
 import com.sosauce.chocola.utils.ColorUtils
 import com.sosauce.chocola.utils.copyMutate
 import com.sosauce.chocola.utils.rememberInteractionSource
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
+import kotlin.time.Duration.Companion.milliseconds
 
 
 @SuppressLint("ResourceType")
@@ -110,7 +111,7 @@ fun EditPlaylist(
     if (showNewTagDialog) {
         NewTagDialog(
             onDismissRequest = { showNewTagDialog = false },
-            tags = newPlaylist.tags,
+            tags = newPlaylist.tags.toList(),
             onAddNewTag = { newTag ->
                 newPlaylist = newPlaylist.copy(
                     tags = newPlaylist.tags.copyMutate { add(newTag) }
@@ -313,7 +314,7 @@ fun EditPlaylist(
                             }
                         }
                         items(
-                            items = newPlaylist.tags
+                            items = newPlaylist.tags.toList()
                         ) { tag ->
                             val interactionSource = rememberInteractionSource()
                             val isPressed by interactionSource.collectIsPressedAsState()
@@ -322,7 +323,7 @@ fun EditPlaylist(
                             var canDelete by remember { mutableStateOf(false) }
                             LaunchedEffect(isPressed) {
                                 if (isPressed) {
-                                    delay(250)
+                                    delay(250.milliseconds)
                                     hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
                                     canDelete = true
                                 } else {

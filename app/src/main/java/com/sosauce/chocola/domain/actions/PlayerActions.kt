@@ -26,6 +26,15 @@ sealed interface PlayerActions {
         val random: Boolean = false
     ) : PlayerActions
 
+    /**
+     * @param data What we want to play, for example, an album's name. For a playlist, it will be it's mediaIds separated with a space, for main screen it will be null
+     */
+    data class Play2(
+        val mediaId: String,
+        val playlist: Int,
+        val data: String?
+    ) : PlayerActions
+
     data class UpdateCurrentPosition(
         val position: Long
     ) : PlayerActions

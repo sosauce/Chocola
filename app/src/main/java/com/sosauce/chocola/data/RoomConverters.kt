@@ -7,13 +7,13 @@ class MediaItemConverter {
 
 
     @TypeConverter
-    fun stringListToString(mediaItems: List<String>): String {
+    fun stringListToString(mediaItems: Set<String>): String {
         return Json.encodeToString(mediaItems)
     }
 
     @TypeConverter
-    fun stringToListString(string: String): List<String> {
-        return Json.decodeFromString<List<String>>(string)
+    fun stringToListString(string: String): Set<String> {
+        return Json.decodeFromString(string)
     }
 
 

@@ -22,6 +22,19 @@ object ColorUtils {
     fun Color?.definedOrNull(): Color? =
         this.takeIf { it != Color.Unspecified }
 
+    /**
+     * Transforms an [Int] into a color. If [Int] == -1, returns the fallback color
+     * @param fallback Fallback color in-case a [Color] cannot be created from the [Int]
+     * @return A [Color]
+     */
+    fun Int.toColor(
+        fallback: Color
+    ): Color {
+        return if (this == -1) {
+            fallback
+        } else Color(this)
+    }
+
 
 //    /**
 //     * Returns this [Color] if it is non-null, or [default] otherwise.

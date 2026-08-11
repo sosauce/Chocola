@@ -31,6 +31,7 @@ import com.sosauce.chocola.utils.PlaylistSort
 import com.sosauce.chocola.utils.TrackSort
 import com.sosauce.chocola.utils.copyMutate
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.StringFormat
@@ -142,5 +143,26 @@ class UserPreferences(
         }
     }
 
+    fun tracksSettings() = combine(
+        getTrackSort,
+        getRegexFilter,
+        getMatchCaseFilter,
+        sortTracksAscending
+    ) { sort, regex, matchCase, asc ->
+        TracksSettings(
+            sort = sort,
+            regex = regex,
+            matchCase = matchCase,
+            ascending = asc
+        )
+    }
+
 
 }
+
+data class TracksSettings(
+    val sort: TrackSort,
+    val regex: Boolean,
+    val matchCase: Boolean,
+    val ascending: Boolean
+)

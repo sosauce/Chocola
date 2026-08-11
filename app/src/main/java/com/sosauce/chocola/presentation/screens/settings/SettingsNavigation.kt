@@ -31,10 +31,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberInitialScreen
+import com.sosauce.chocola.presentation.components.LazyRowWithScrollButton
 import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.presentation.screens.settings.compenents.SelectorSurface
+import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsSelector
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsWithTitle
-import com.sosauce.chocola.presentation.shared_components.LazyRowWithScrollButton
 
 @Composable
 fun SettingsNavigation() {
@@ -46,20 +47,20 @@ fun SettingsNavigation() {
             onClick = { initialScreen = Screen.Main.toString() },
             icon = R.drawable.music_note,
             text = R.string.main,
-            screen = Screen.Main.toString()
+            isSelected = initialScreen == Screen.Main.toString()
         ),
         ScreenItem(
             onClick = { initialScreen = Screen.Albums.toString() },
             icon = R.drawable.album_filled,
             text = R.string.albums,
-            screen = Screen.Albums.toString()
+            isSelected = initialScreen == Screen.Albums.toString()
 
         ),
         ScreenItem(
             onClick = { initialScreen = Screen.Artists.toString() },
             icon = R.drawable.artists_filled,
             text = R.string.artists,
-            screen = Screen.Artists.toString()
+            isSelected = initialScreen == Screen.Artists.toString()
         )
     )
 
@@ -78,34 +79,12 @@ fun SettingsNavigation() {
                     LazyRowWithScrollButton(
                         items = screenItems
                     ) { screen ->
-                        val isSelected = screen.screen == initialScreen
-                        val borderColor by animateColorAsState(
-                            if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
+                        SettingsSelector(
+                            onClick = screen.onClick,
+                            icon = screen.icon,
+                            text = screen.text,
+                            isSelected = screen.isSelected
                         )
-
-                        SelectorSurface(
-                            onClick = screen.onClick
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .padding(10.dp)
-                                    .size(50.dp)
-                                    .clip(MaterialShapes.Cookie9Sided.toShape())
-                                    .border(
-                                        width = 2.dp,
-                                        color = borderColor,
-                                        shape = MaterialShapes.Cookie9Sided.toShape()
-                                    )
-                                    .background(MaterialTheme.colorScheme.surfaceContainerHighest),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    painter = painterResource(screen.icon),
-                                    contentDescription = null
-                                )
-                            }
-                            Text(stringResource(screen.text))
-                        }
                     }
                 }
             }
@@ -113,3 +92,10 @@ fun SettingsNavigation() {
     }
 
 }
+
+data class ScreenItem(
+    val onClick: () -> Unit,
+    val icon: Int,
+    val text: Int,
+    val isSelected: Boolean
+)

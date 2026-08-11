@@ -2,9 +2,9 @@
 
 package com.sosauce.chocola.presentation.screens.settings.compenents
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.background
@@ -23,7 +23,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -34,11 +37,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.rememberSliderState
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
@@ -50,9 +56,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -62,14 +70,15 @@ import com.materialkolor.rememberDynamicMaterialThemeState
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberAppTheme
 import com.sosauce.chocola.data.models.EqualizerPreset
+import com.sosauce.chocola.presentation.components.Spacer
 import com.sosauce.chocola.presentation.screens.playing.components.WavySlider
-import com.sosauce.chocola.presentation.screens.settings.FontItem
-import com.sosauce.chocola.presentation.screens.settings.FontStyle
-import com.sosauce.chocola.presentation.screens.settings.ThemeItem
 import com.sosauce.chocola.utils.ArtworkShape
 import com.sosauce.chocola.utils.CuteTheme
-import com.sosauce.chocola.utils.rememberInteractionSource
+import com.sosauce.chocola.utils.NumbersOnlyTransformation
+import com.sosauce.chocola.utils.rememberFocusRequester
 import com.sosauce.chocola.utils.toPaletteStyle
+import kotlinx.coroutines.android.awaitFrame
+import kotlin.math.max
 
 
 @Composable
@@ -172,17 +181,86 @@ fun ClickableSettingsCard(
     }
 }
 
+
 @Composable
-fun <T> SettingsDropdownMenu(
-    value: T,
+fun SettingsInput(
+    value: Int,
+    maxValue: Int,
+    minValue: Int,
+    onNewValue: (Int) -> Unit,
     topDp: Dp,
     bottomDp: Dp,
     text: Int,
     @StringRes optionalDescription: Int? = null,
-    dropdownContent: @Composable (ColumnScope.(onClose: () -> Unit) -> Unit)
 ) {
 
-    var expanded by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
+
+    if (showDialog) {
+
+        val focusRequester = rememberFocusRequester()
+        val textFieldState = rememberTextFieldState(value.toString())
+        val typedValue = remember(textFieldState.text) { textFieldState.text.toString().toIntOrNull() ?: 0 }
+        val isError = remember(typedValue) { typedValue !in minValue..maxValue }
+
+        LaunchedEffect(Unit) {
+            focusRequester.requestFocus()
+        }
+
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text(stringResource(R.string.enter_new_value)) },
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable._123),
+                    contentDescription = null
+                )
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showDialog = false },
+                    shapes = ButtonDefaults.shapes()
+                ) {
+                    Text(stringResource(R.string.cancel))
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onNewValue(typedValue)
+                        showDialog = false
+                    },
+                    shapes = ButtonDefaults.shapes(),
+                    enabled = !isError
+                ) {
+                    Text(stringResource(R.string.okay))
+                }
+            },
+            text = {
+                OutlinedTextField(
+                    state = textFieldState,
+                    modifier = Modifier.focusRequester(focusRequester),
+                    isError = isError,
+                    inputTransformation = NumbersOnlyTransformation,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Number
+                    ),
+                    supportingText = {
+                        if (isError) {
+                            Text(
+                                text = stringResource(
+                                    R.string.enter_value_between_range,
+                                    minValue,
+                                    maxValue
+                                )
+                            )
+                        }
+                    }
+                )
+            }
+        )
+    }
+
 
 
     Card(
@@ -219,7 +297,7 @@ fun <T> SettingsDropdownMenu(
                 }
             }
             TextButton(
-                onClick = { expanded = true },
+                onClick = { showDialog = true },
                 shapes = ButtonDefaults.shapes()
             ) {
                 AnimatedContent(
@@ -227,20 +305,10 @@ fun <T> SettingsDropdownMenu(
                 ) {
                     Text(
                         text = it.toString(),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontSize = 15.sp
+                        style = MaterialTheme.typography.bodyLargeEmphasized.copy(
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     )
-                }
-
-
-                DropdownMenuPopup(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    DropdownMenuGroup(
-                        shapes = MenuDefaults.groupShapes(),
-                        modifier = Modifier.verticalScroll(rememberScrollState())
-                    ) { dropdownContent { expanded = false } }
                 }
             }
         }
@@ -315,16 +383,30 @@ fun SliderSettingsCards(
     }
 }
 
+
 @Composable
-fun ThemeSelector(theme: ThemeItem) {
+fun SettingsSelector(
+    onClick: () -> Unit,
+    icon: Int,
+    text: Int,
+    isSelected: Boolean,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainerHigh,
+    contentColor: Color = contentColorFor(MaterialTheme.colorScheme.surfaceContainerHigh)
+) {
+
     val borderColor by animateColorAsState(
-        targetValue = if (theme.isSelected) MaterialTheme.colorScheme.secondary else Color.Transparent,
+        targetValue = if (isSelected) MaterialTheme.colorScheme.secondary else Color.Transparent,
+    )
+    val textColor by animateColorAsState(
+        targetValue = if (isSelected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSurface,
     )
 
-
-
-    SelectorSurface(
-        onClick = theme.onClick
+    Column(
+        modifier = Modifier
+            .padding(10.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .clickable(onClick = onClick),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
             modifier = Modifier
@@ -336,45 +418,24 @@ fun ThemeSelector(theme: ThemeItem) {
                     color = borderColor,
                     shape = MaterialShapes.Cookie9Sided.toShape()
                 )
-                .background(theme.backgroundColor),
+                .background(containerColor),
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                painter = painterResource(theme.iconAndTint.first),
+                painter = painterResource(icon),
                 contentDescription = null,
-                tint = theme.iconAndTint.second,
+                tint = contentColor
             )
         }
-        Text(theme.text)
-    }
-}
-
-@Composable
-fun FontSelector(fontItem: FontItem) {
-
-    SelectorSurface(
-        onClick = fontItem.onClick
-    ) {
-        Box(
-            modifier = Modifier
-                .padding(10.dp)
-                .size(50.dp)
-                .clip(MaterialShapes.Cookie9Sided.toShape())
-                .border(
-                    width = 2.dp,
-                    color = fontItem.borderColor,
-                    shape = MaterialShapes.Cookie9Sided.toShape()
-                )
-                .background(MaterialTheme.colorScheme.surfaceContainerHighest),
-            contentAlignment = Alignment.Center
-        ) { fontItem.text() }
         Text(
-            text = if (fontItem.fontStyle == FontStyle.SYSTEM) stringResource(R.string.system) else stringResource(
-                R.string.default_text
+            text = stringResource(text),
+            style = MaterialTheme.typography.bodyMediumEmphasized.copy(
+                color = textColor
             )
         )
     }
 }
+
 
 @Composable
 fun PaletteSelector(
@@ -384,10 +445,15 @@ fun PaletteSelector(
 ) {
     val isSystemInDarkTheme = isSystemInDarkTheme()
     val theme by rememberAppTheme()
+    val isDark = when(theme) {
+        CuteTheme.DARK, CuteTheme.AMOLED -> true
+        CuteTheme.SYSTEM -> isSystemInDarkTheme
+        else -> false
+    }
 
     val state = rememberDynamicMaterialThemeState(
         seedColor = MaterialTheme.colorScheme.primary,
-        isDark = if (theme == CuteTheme.SYSTEM) isSystemInDarkTheme else if (theme == CuteTheme.AMOLED) true else theme == CuteTheme.DARK,
+        isDark = isDark,
         isAmoled = theme == CuteTheme.AMOLED,
         specVersion = ColorSpec.SpecVersion.SPEC_2025,
         style = paletteStyle.toPaletteStyle()
@@ -395,6 +461,9 @@ fun PaletteSelector(
 
     val borderColor by animateColorAsState(
         targetValue = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
+    )
+    val textColor by animateColorAsState(
+        targetValue = if (isSelected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSurface,
     )
 
     DynamicMaterialExpressiveTheme(
@@ -409,18 +478,23 @@ fun PaletteSelector(
             MaterialTheme.colorScheme.secondaryContainer,
         )
 
-        SelectorSurface(
-            onClick = onSelectNewPalette
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .clickable(onClick = onSelectNewPalette)
+                .padding(5.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(
                 modifier = Modifier
-                    .padding(10.dp)
-                    .clip(ShapeDefaults.Medium)
+                    .clip(RoundedCornerShape(12.dp))
                     .width(60.dp)
                     .border(
-                        width = if (isSelected) 2.dp else 0.dp,
+                        width = 2.dp,
                         color = borderColor,
-                        shape = ShapeDefaults.Medium
+                        shape = RoundedCornerShape(12.dp)
                     ),
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
@@ -434,7 +508,14 @@ fun PaletteSelector(
                     )
                 }
             }
-            Text(paletteStyle)
+
+            Spacer(10.dp)
+            Text(
+                text = paletteStyle,
+                style = MaterialTheme.typography.bodyMediumEmphasized.copy(
+                    color = textColor
+                )
+            )
         }
     }
 }

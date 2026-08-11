@@ -8,15 +8,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MotionScheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import com.kmpalette.color
-import com.kmpalette.rememberDominantColorState
 import com.materialkolor.DynamicMaterialExpressiveTheme
 import com.materialkolor.dynamiccolor.ColorSpec
 import com.materialkolor.rememberDynamicMaterialThemeState
@@ -26,36 +24,33 @@ import com.sosauce.chocola.data.datastore.rememberPaletteStyle
 import com.sosauce.chocola.data.datastore.rememberUseArtTheme
 import com.sosauce.chocola.data.datastore.rememberUseSystemFont
 import com.sosauce.chocola.utils.CuteTheme
-import com.sosauce.chocola.utils.anyDarkColorScheme
 import com.sosauce.chocola.utils.toPaletteStyle
 
 @Composable
-fun CuteMusicTheme(
-    artImageBitmap: ImageBitmap?,
+fun ChocolaTheme(
+    artImageBitmap: ImageBitmap? = null,
     content: @Composable () -> Unit,
 ) {
+
     val theme by rememberAppTheme()
     val useArtTheme by rememberUseArtTheme()
     val isSystemInDarkTheme = isSystemInDarkTheme()
-    val paletteState = rememberDominantColorState()
     val useSystemFont by rememberUseSystemFont()
     val paletteStyle by rememberPaletteStyle()
-    val seedColor = if (useArtTheme && artImageBitmap != null) {
-        paletteState.result?.paletteOrNull?.vibrantSwatch?.color
-            ?: MaterialTheme.colorScheme.primary
-    } else {
-        anyDarkColorScheme().primary
+    val isDark = when(theme) {
+        CuteTheme.DARK, CuteTheme.AMOLED -> true
+        CuteTheme.SYSTEM -> isSystemInDarkTheme
+        else -> false
     }
-
-    LaunchedEffect(artImageBitmap) {
-        if (artImageBitmap != null) {
-            paletteState.updateFrom(artImageBitmap)
-        }
-    }
+    val seedColor = rememberSeedColor(
+        isDark = isDark,
+        useMaterialArt = useArtTheme,
+        imageBitmap = artImageBitmap
+    )
 
     val state = rememberDynamicMaterialThemeState(
         seedColor = seedColor,
-        isDark = if (theme == CuteTheme.SYSTEM) isSystemInDarkTheme else if (theme == CuteTheme.AMOLED) true else theme == CuteTheme.DARK,
+        isDark = isDark,
         isAmoled = theme == CuteTheme.AMOLED,
         specVersion = ColorSpec.SpecVersion.SPEC_2025,
         style = paletteStyle.toPaletteStyle()
@@ -64,7 +59,6 @@ fun CuteMusicTheme(
     DynamicMaterialExpressiveTheme(
         state = state,
         motionScheme = MotionScheme.expressive(),
-        animate = true,
         typography = if (useSystemFont) MaterialTheme.typography else NunitoTypography,
         content = content
     )

@@ -30,7 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
-import com.sosauce.chocola.presentation.shared_components.Spacer
+import com.sosauce.chocola.presentation.components.Spacer
 
 @Composable
 fun SetupPermissions(

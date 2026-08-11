@@ -236,6 +236,13 @@
     <string name="navigation_desc">You won\'t need a map for this !</string>
     <string name="widget_4_1_description">Full width classic widget</string>
     <string name="widget_1_1_description">Controls only</string>
+    <string name="enter_new_value">Enter a new value</string>
+    <string name="enter_value_between_range">Please enter a value between %1$d and %2$d.</string>
+    <string name="tracks">Tracks</string>
+    <string name="library_setup">Library setup</string>
+    <string name="library_setup_desc">Choose folders to scan and set a minimum track duration.</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="allow_perform_changes">Please allow the app to perform changes</string>
 
 
     <plurals name="tracks">

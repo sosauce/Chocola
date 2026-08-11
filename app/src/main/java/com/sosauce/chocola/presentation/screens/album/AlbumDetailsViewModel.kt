@@ -1,62 +1,77 @@
+@file:OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+
 package com.sosauce.chocola.presentation.screens.album
 
+import android.net.Uri
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.util.fastFilter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sosauce.chocola.data.AbstractTracksScanner
+import com.sosauce.chocola.data.datastore.TracksSettings
 import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.models.Album
-import com.sosauce.chocola.data.models.CuteTrack
-import com.sosauce.chocola.domain.repository.AlbumsRepository
+import com.sosauce.chocola.data.repositories.IDRepositories
+import com.sosauce.chocola.utils.TrackSort
+import com.sosauce.chocola.utils.orderAlbumTrackNumber
 import com.sosauce.chocola.utils.ordered
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.stateIn
+import kotlin.time.Duration.Companion.milliseconds
 
 class AlbumDetailsViewModel(
     private val albumName: String,
-    private val albumsRepository: AlbumsRepository,
-    private val userPreferences: UserPreferences
+    private val userPreferences: UserPreferences,
+    private val abstractTracksScanner: AbstractTracksScanner,
+    private val idRepositories: IDRepositories
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(AlbumDetailsState(isLoading = true))
-    val state = _state.asStateFlow()
 
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            val album = albumsRepository.fetchAlbumDetails(albumName)
-            _state.update { it.copy(album = album) }
-        }
+    val textFieldState = TextFieldState()
+    private val searchQuery = snapshotFlow { textFieldState.text }.debounce(250.milliseconds)
 
-//        viewModelScope.launch(Dispatchers.IO) {
-//            combine(
-//                albumsRepository.fetchLatestAlbumTracks(albumName),
-//                userPreferences.getTrackSort,
-//                userPreferences.sortTracksAscending
-//            ) { tracks, sort, ascending ->
-//                tracks.ordered(sort, ascending).sortedWith(
-//                    compareBy(
-//                        { it.trackNumber == 0 },
-//                        { it.trackNumber }
-//                    )
-//                )
-//            }.flowOn(Dispatchers.Default).collectLatest { sortedTracks ->
-//                _state.update {
-//                    it.copy(
-//                        tracks = sortedTracks,
-//                        isLoading = false
-//                    )
-//                }
-//            }
-//        }
-    }
+
+    val state = combine(
+        abstractTracksScanner.latestTracks,
+        userPreferences.tracksSettings(),
+        searchQuery
+    ) { tracks, settings, search ->
+        val orderedTracks = tracks
+            .fastFilter { it.album == albumName }
+            .ordered(settings, search.toString())
+            .orderAlbumTrackNumber()
+
+
+        val lastTrack = tracks.lastOrNull()
+        val artist = lastTrack?.artist ?: ""
+
+        val album = Album(
+            id = idRepositories.getAlbumId(albumName),
+            name = albumName,
+            artist = artist,
+            tracks = orderedTracks
+        )
+
+        AlbumDetailsState(
+            isLoading = false,
+            album = album
+        )
+    }.flowOn(Dispatchers.Default).stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        AlbumDetailsState()
+    )
+
 }
 
 data class AlbumDetailsState(
-    val isLoading: Boolean = false,
-    val album: Album = Album(),
-    val tracks: List<CuteTrack> = emptyList()
+    val isLoading: Boolean = true,
+    val album: Album = Album()
 )

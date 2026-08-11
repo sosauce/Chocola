@@ -5,14 +5,14 @@ import com.sosauce.chocola.data.AbstractTracksScanner
 import com.sosauce.chocola.data.LyricsParser
 import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.playlist.MIGRATION_1_2
+import com.sosauce.chocola.data.playlist.PlaylistCleanup
 import com.sosauce.chocola.data.playlist.PlaylistDatabase
 import com.sosauce.chocola.data.widgets.WidgetsHelper
 import com.sosauce.chocola.domain.EqualizerManager
-import com.sosauce.chocola.domain.repository.AlbumsRepository
-import com.sosauce.chocola.domain.repository.ArtistsRepository
-import com.sosauce.chocola.domain.repository.FoldersRepository
-import com.sosauce.chocola.domain.repository.PlaylistsRepository
-import com.sosauce.chocola.domain.repository.SafManager
+import com.sosauce.chocola.data.repositories.ArtistsRepository
+import com.sosauce.chocola.data.repositories.FoldersRepository
+import com.sosauce.chocola.data.repositories.IDRepositories
+import com.sosauce.chocola.data.repositories.SafManager
 import com.sosauce.chocola.domain.helpers.AndroidAutoHelper
 import com.sosauce.chocola.presentation.screens.album.AlbumDetailsViewModel
 import com.sosauce.chocola.presentation.screens.album.AlbumsViewModel
@@ -25,12 +25,11 @@ import com.sosauce.chocola.presentation.screens.playlists.PlaylistDetailsViewMod
 import com.sosauce.chocola.presentation.screens.playlists.PlaylistViewModel
 import com.sosauce.chocola.presentation.screens.quickplay.QuickPlayViewModel
 import com.sosauce.chocola.presentation.screens.settings.FoldersViewModel
-import com.sosauce.chocola.presentation.screens.settings.HiddenTracksViewModel
 import com.sosauce.chocola.presentation.screens.settings.PlaybackSettingsViewModel
-import com.sosauce.chocola.presentation.screens.settings.SafViewModel
 import com.sosauce.chocola.presentation.screens.transformer.TransformerViewModel
-import com.sosauce.chocola.presentation.shared_components.dialogs.DeletionViewModel
-import com.sosauce.chocola.presentation.shared_components.MusicViewModel
+import com.sosauce.chocola.presentation.components.dialogs.DeletionViewModel
+import com.sosauce.chocola.presentation.components.MusicViewModel
+import com.sosauce.chocola.presentation.screens.settings.SettingsLibraryViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -58,13 +57,13 @@ val appModule = module {
     singleOf(::LyricsParser)
     singleOf(::FoldersRepository)
     singleOf(::SafManager)
-    singleOf(::AlbumsRepository)
     singleOf(::ArtistsRepository)
-    singleOf(::PlaylistsRepository)
     singleOf(::UserPreferences)
     singleOf(::EqualizerManager)
     singleOf(::AndroidAutoHelper)
     singleOf(::WidgetsHelper)
+    singleOf(::IDRepositories)
+    singleOf(::PlaylistCleanup)
 
 
 
@@ -79,10 +78,9 @@ val appModule = module {
     viewModelOf(::AlbumDetailsViewModel)
     viewModelOf(::MainViewModel)
     viewModelOf(::FoldersViewModel)
-    viewModelOf(::SafViewModel)
-    viewModelOf(::HiddenTracksViewModel)
     viewModelOf(::PlaybackSettingsViewModel)
     viewModelOf(::TransformerViewModel)
     viewModelOf(::DeletionViewModel)
     viewModelOf(::LyricsEditorViewModel)
+    viewModelOf(::SettingsLibraryViewModel)
 }

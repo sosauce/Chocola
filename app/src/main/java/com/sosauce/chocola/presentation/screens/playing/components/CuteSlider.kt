@@ -2,7 +2,7 @@
 
 package com.sosauce.chocola.presentation.screens.playing.components
 
-import android.media.MediaMetadataRetriever
+import android.text.format.DateUtils
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -34,8 +34,6 @@ import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.utils.formatToReadableTime
-import kotlin.math.abs
 
 @Composable
 fun CuteSlider(
@@ -72,7 +70,7 @@ fun CuteSlider(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = musicState.position.formatToReadableTime(),
+                text = DateUtils.formatElapsedTime(musicState.position / 1000),
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(Modifier.width(5.dp))
@@ -107,7 +105,7 @@ fun CuteSlider(
                     )
                     Spacer(Modifier.width(5.dp))
                     Text(
-                        text = time.formatToReadableTime(),
+                        text = DateUtils.formatElapsedTime(time / 1000),
                         style = MaterialTheme.typography.bodyMediumEmphasized.copy(
                             color = MaterialTheme.colorScheme.primaryContainer
                         )
@@ -116,7 +114,7 @@ fun CuteSlider(
             }
             Spacer(Modifier.weight(1f))
             Text(
-                text = musicState.track.durationMs.formatToReadableTime(),
+                text = DateUtils.formatElapsedTime(musicState.track.durationMs / 1000),
                 color = MaterialTheme.colorScheme.primary
             )
         }

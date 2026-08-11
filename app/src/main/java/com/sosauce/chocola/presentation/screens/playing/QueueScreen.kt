@@ -25,8 +25,8 @@ import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.presentation.shared_components.MusicListItem
-import com.sosauce.chocola.presentation.shared_components.animations.AnimatedFab
+import com.sosauce.chocola.presentation.components.MusicListItem
+import com.sosauce.chocola.presentation.components.animations.AnimatedFab
 import com.sosauce.chocola.utils.selfAlignHorizontally
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
@@ -71,7 +71,7 @@ fun QueueScreen(
             ) { track ->
                 ReorderableItem(
                     state = reorderableLazyListState,
-                    key = track.uri
+                    key = track.mediaItem.mediaId
                 ) { isDragging ->
                     val scale by animateFloatAsState(
                         targetValue = if (isDragging) 1.01f else 1f

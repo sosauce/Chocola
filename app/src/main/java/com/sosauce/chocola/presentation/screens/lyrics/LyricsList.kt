@@ -3,7 +3,6 @@ package com.sosauce.chocola.presentation.screens.lyrics
 import android.app.SearchManager
 import android.content.ClipData
 import android.content.Intent
-import android.net.Uri
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.compose.LocalActivity
@@ -41,9 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
@@ -58,7 +55,6 @@ import com.sosauce.chocola.data.datastore.rememberLyricsAlignment
 import com.sosauce.chocola.data.datastore.rememberLyricsFontSize
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.domain.model.Lyrics
 import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.utils.ICON_TEXT_SPACING
 import com.sosauce.chocola.utils.toLyricsAlignment

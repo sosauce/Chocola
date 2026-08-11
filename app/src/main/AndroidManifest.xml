@@ -49,7 +49,7 @@
             android:name=".presentation.MainActivity"
             android:enableOnBackInvokedCallback="true"
             android:exported="true"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:theme="@style/Theme.CuteSplash"
             android:windowSoftInputMode="adjustResize"
             tools:targetApi="tiramisu">
@@ -71,7 +71,7 @@
         <activity
             android:name=".presentation.screens.quickplay.QuickPlayActivity"
             android:exported="true"
-            android:theme="@style/Theme.CuteSplash">
+            android:theme="@style/Theme.QuickPlay">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

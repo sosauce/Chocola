@@ -11,7 +11,7 @@ import androidx.compose.runtime.setValue
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.presentation.shared_components.dialogs.SpeedAndPitchDialog
+import com.sosauce.chocola.presentation.components.dialogs.SpeedAndPitchDialog
 
 
 @Composable

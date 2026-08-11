@@ -2,6 +2,7 @@
 
 package com.sosauce.chocola.presentation.screens.settings
 
+import android.widget.Toast
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -21,6 +22,8 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
@@ -33,13 +36,13 @@ import androidx.navigation3.ui.NavDisplay
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
+import com.sosauce.chocola.presentation.components.ObserveAsEvents
+import com.sosauce.chocola.presentation.components.animations.AnimatedFab
 import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.presentation.screens.settings.compenents.AboutCard
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsCategoryCard
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsScreens
-import com.sosauce.chocola.presentation.shared_components.animations.AnimatedFab
 import com.sosauce.chocola.utils.navigateBack
-import com.sosauce.chocola.utils.navigationBouncySpec
 import com.sosauce.chocola.utils.selfAlignHorizontally
 import org.koin.androidx.compose.koinViewModel
 import kotlin.uuid.ExperimentalUuidApi
@@ -53,6 +56,8 @@ fun SettingsScreen(
     onHandlePlayerActions: (PlayerActions) -> Unit,
     onNavigate: (Screen) -> Unit,
 ) {
+    val context = LocalContext.current
+    val resources = LocalResources.current
     val scrollState = rememberScrollState()
     val backStack = rememberNavBackStack(SettingsScreens.Settings)
     val items = listOf(
@@ -91,14 +96,7 @@ fun SettingsScreen(
             name = stringResource(R.string.library),
             description = stringResource(R.string.library_desc),
             onNavigate = { backStack.add(SettingsScreens.Library) }
-        ),
-//        Item(
-//            icon = rememberVectorPainter(Icons.Outlined.MoreHoriz),
-//            name = stringResource(R.string.more),
-//            description = stringResource(R.string.more_desc),
-//            onNavigate = { backStack.add() }
-//        )
-
+        )
     )
 
     Scaffold(
@@ -122,9 +120,6 @@ fun SettingsScreen(
     ) { paddingValues ->
         NavDisplay(
             backStack = backStack,
-            modifier = Modifier
-                .verticalScroll(scrollState)
-                .padding(paddingValues),
             onBack = {
                 if (backStack.size == 1) {
                     onNavigateUp()
@@ -134,20 +129,20 @@ fun SettingsScreen(
             },
             transitionSpec = {
                 ContentTransform(
-                    targetContentEnter = slideInHorizontally(navigationBouncySpec) { it } + fadeIn(),
-                    initialContentExit = fadeOut()
-                )
-            },
-            popTransitionSpec = {
-                ContentTransform(
-                    targetContentEnter = slideInHorizontally(navigationBouncySpec) { -it } + fadeIn(),
-                    initialContentExit = fadeOut()
+                    targetContentEnter = slideInHorizontally { it } + fadeIn(),
+                    initialContentExit = slideOutHorizontally { -it / 4} + fadeOut()
                 )
             },
             predictivePopTransitionSpec = {
                 ContentTransform(
-                    fadeIn(),
-                    slideOutHorizontally(navigationBouncySpec) { it },
+                    targetContentEnter = slideInHorizontally { -it / 4 } + fadeIn(),
+                    initialContentExit = slideOutHorizontally { it } + fadeOut()
+                )
+            },
+            popTransitionSpec = {
+                ContentTransform(
+                    targetContentEnter = slideInHorizontally { -it / 4 } + fadeIn(),
+                    initialContentExit = slideOutHorizontally { it } + fadeOut()
                 )
             },
             entryDecorators = listOf(
@@ -156,7 +151,11 @@ fun SettingsScreen(
             ),
             entryProvider = entryProvider {
                 entry<SettingsScreens.Settings> {
-                    Column {
+                    Column(
+                        modifier = Modifier
+                            .verticalScroll(scrollState)
+                            .padding(paddingValues)
+                    ) {
                         AboutCard()
                         Spacer(Modifier.height(20.dp))
                         items.fastForEachIndexed { index, item ->
@@ -173,45 +172,98 @@ fun SettingsScreen(
                 }
 
                 entry<SettingsScreens.LookAndFeel> {
-                    SettingsLookAndFeel()
+                    Column(
+                        modifier = Modifier
+                            .verticalScroll(scrollState)
+                            .padding(paddingValues)
+                    ) {
+                        SettingsLookAndFeel()
+                    }
                 }
 
                 entry<SettingsScreens.Navigation> {
-                    SettingsNavigation()
+                    Column(
+                        modifier = Modifier
+                            .verticalScroll(scrollState)
+                            .padding(paddingValues)
+                    ) {
+                        SettingsNavigation()
+                    }
                 }
 
                 entry<SettingsScreens.NowPlaying> {
-                    SettingsNowPlaying()
+                    Column(
+                        modifier = Modifier
+                            .verticalScroll(scrollState)
+                            .padding(paddingValues)
+                    ) {
+                        SettingsNowPlaying()
+                    }
                 }
 
                 entry<SettingsScreens.Lyrics> {
-                    SettingsLyrics()
+                    Column(
+                        modifier = Modifier
+                            .verticalScroll(scrollState)
+                            .padding(paddingValues)
+                    ) {
+                        SettingsLyrics()
+                    }
                 }
 
                 entry<SettingsScreens.Playback> {
                     val viewModel = koinViewModel<PlaybackSettingsViewModel>()
                     val state by viewModel.state.collectAsStateWithLifecycle()
-                    SettingsPlayback(
-                        state = state,
-                        onHandlePlaybackSettingsActions = viewModel::handlePlaybackSettingsActions
-                    )
+
+                    Column(
+                        modifier = Modifier
+                            .verticalScroll(scrollState)
+                            .padding(paddingValues)
+                    ) {
+                        SettingsPlayback(
+                            state = state,
+                            onHandlePlaybackSettingsActions = viewModel::handlePlaybackSettingsActions
+                        )
+                    }
                 }
 
                 entry<SettingsScreens.Library> {
 
-                    // TODO unified viewmodel
-                    val viewModel = koinViewModel<SafViewModel>()
-                    val hiddenTracksViewModel = koinViewModel<HiddenTracksViewModel>()
+
+
+                    val viewModel = koinViewModel<SettingsLibraryViewModel>()
                     val safTracks by viewModel.safTracks.collectAsStateWithLifecycle()
-                    val hiddenTracks by hiddenTracksViewModel.hiddenTracks.collectAsStateWithLifecycle()
+                    val hiddenTracks by viewModel.hiddenTracks.collectAsStateWithLifecycle()
+                    val folders by viewModel.folders.collectAsStateWithLifecycle()
+
+                    ObserveAsEvents(viewModel.events) {
+                        when(it) {
+                            is LibraryEvents.RescanSuccessful -> {
+                                Toast.makeText(
+                                    context,
+                                    resources.getString(R.string.success),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                            is LibraryEvents.RescanError -> {
+                                Toast.makeText(
+                                    context,
+                                    it.errorMessage,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
 
                     SettingsLibrary(
                         safTracksUi = safTracks,
                         hiddenTracks = hiddenTracks,
+                        folders = folders,
                         musicState = musicState,
                         onNavigate = onNavigate,
                         onHandlePlayerActions = onHandlePlayerActions,
-                        onUnhideTrack = hiddenTracksViewModel::unhideTrack
+                        onHandleLibraryActions = viewModel::handleLibraryAction,
+                        contentPaddingValues = paddingValues
                     )
                 }
 

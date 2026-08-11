@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 
 /**
@@ -33,6 +34,9 @@ class AbstractTracksScanner(
     private val ioCoroutineScope: CoroutineScope
 ) {
 
+    /**
+     * Single source of truth to get all filtered tracks
+     */
     val latestTracks = fetchLatestTracks().stateIn(
         ioCoroutineScope,
         SharingStarted.WhileSubscribed(5000),
@@ -60,14 +64,11 @@ class AbstractTracksScanner(
 
                 isNotHidden && isWhitelisted
             }
-        }
+        }.flowOn(Dispatchers.IO)
     }
 
     private fun fetchTracks(minTrackDuration: Int): List<CuteTrack> {
         val musics = mutableListOf<CuteTrack>()
-
-
-        println("Going to hit db call")
 
         val selection = buildString {
             append("${MediaStore.Audio.Media.DURATION} >= ? AND ")
@@ -172,6 +173,22 @@ class AbstractTracksScanner(
 
         }
         return musics
+    }
+
+    fun forceScanDevice() {
+        // https://stackoverflow.com/a/77279718
+        context.contentResolver.call(
+            SCAN_CONTENT_URI,
+            SCAN_VOLUME,
+            SCAN_STORAGE,
+            null
+        )
+    }
+
+    companion object {
+        private const val SCAN_VOLUME = "scan_volume"
+        private val SCAN_CONTENT_URI = "content://media".toUri()
+        private const val SCAN_STORAGE = "external_primary"
     }
 
 }

@@ -13,6 +13,6 @@ sealed interface PlaylistActions {
     data class ImportM3uPlaylist(val uri: Uri) : PlaylistActions
     data class ExportM3uPlaylist(
         val uri: Uri,
-        val tracks: List<String>
+        val tracks: Set<String>
     ) : PlaylistActions
 }

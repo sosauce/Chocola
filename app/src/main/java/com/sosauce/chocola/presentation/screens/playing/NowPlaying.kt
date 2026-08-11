@@ -7,7 +7,6 @@ package com.sosauce.chocola.presentation.screens.playing
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -29,7 +28,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
@@ -37,9 +35,8 @@ import com.sosauce.chocola.data.datastore.rememberIsLandscape
 import com.sosauce.chocola.data.datastore.rememberSnapSpeedAndPitch
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.domain.model.Lyrics
+import com.sosauce.chocola.presentation.components.dialogs.TracksDetailsDialog
 import com.sosauce.chocola.presentation.navigation.Screen
-import com.sosauce.chocola.presentation.screens.lyrics.LyricsList
 import com.sosauce.chocola.presentation.screens.playing.components.ActionButtonsRow
 import com.sosauce.chocola.presentation.screens.playing.components.Artwork
 import com.sosauce.chocola.presentation.screens.playing.components.CuteSlider
@@ -48,7 +45,6 @@ import com.sosauce.chocola.presentation.screens.playing.components.QuickActionsR
 import com.sosauce.chocola.presentation.screens.playing.components.SpeedCard
 import com.sosauce.chocola.presentation.screens.playing.components.TitleAndArtist
 import com.sosauce.chocola.presentation.screens.playlists.components.PlaylistPicker
-import com.sosauce.chocola.presentation.shared_components.dialogs.MusicDetailsDialog
 
 @Composable
 fun NowPlaying(
@@ -139,7 +135,7 @@ private fun NowPlayingContent(
     ) { paddingValues ->
 
         if (showDetailsDialog) {
-            MusicDetailsDialog(
+            TracksDetailsDialog(
                 track = musicState.track,
                 onDismissRequest = { showDetailsDialog = false }
             )

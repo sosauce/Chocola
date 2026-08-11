@@ -26,11 +26,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.states.MusicState
+import com.sosauce.chocola.presentation.components.MoreOptions
+import com.sosauce.chocola.presentation.components.dialogs.DeletionDialog
+import com.sosauce.chocola.presentation.components.dialogs.TracksDetailsDialog
 import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.presentation.screens.playlists.components.PlaylistPicker
-import com.sosauce.chocola.presentation.shared_components.dialogs.DeletionDialog
-import com.sosauce.chocola.presentation.shared_components.MoreOptions
-import com.sosauce.chocola.presentation.shared_components.dialogs.MusicDetailsDialog
 import com.sosauce.chocola.utils.rememberInteractionSource
 
 @Composable
@@ -108,7 +108,7 @@ fun MoreOptionsButton(
     )
 
     if (showDetailsDialog) {
-        MusicDetailsDialog(
+        TracksDetailsDialog(
             track = musicState.track,
             onDismissRequest = { showDetailsDialog = false }
         )
