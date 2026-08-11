@@ -31,7 +31,7 @@
     <string name="error_deleting_song">Şarkı silinirken bir hata oluştu.</string>
     <string name="deleting_song_OK">Şarkı başarıyla silindi.</string>
     <string name="okay">Tamam</string>
-    <string name="misc">Çeşitli</string>
+    <string name="misc">Ekstralar</string>
     <string name="no_albums_found">Albüm bulunamadı!</string>
     <string name="follow_sys">Sistem ayarlarını takip et</string>
     <string name="ascending">Artan</string>
@@ -117,12 +117,12 @@
     <string name="export_playlist">Çalma listelerini dışa aktar</string>
     <string name="edit_playlist">Çalma listesini düzenle</string>
     <string name="remove_from_playlist">Çalma listesinden kaldır</string>
-    <string name="sort">Sıralama</string>
+    <string name="sort">Sırala</string>
     <string name="stop_playback">Oynatmayı durdur</string>
     <string name="screen_selection">Ekran seçimi</string>
     <string name="emoji">Emoji</string>
     <string name="remove_emoji">Emojiyi kaldır</string>
-    <string name="look_and_feel">Görünüş ve hissiyat</string>
+    <string name="look_and_feel">Görünüm ve his</string>
     <string name="look_and_feel_desc">Müzik sizin, neden tarz da sizin olmasın ki?</string>
     <string name="now_playing">Şu an çalan</string>
     <string name="now_playing_desc">Kendi tarzını yap!</string>
