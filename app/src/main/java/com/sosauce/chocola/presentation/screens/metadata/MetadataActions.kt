@@ -1,4 +1,4 @@
-package com.sosauce.chocola.domain.actions
+package com.sosauce.chocola.presentation.screens.metadata
 
 import android.net.Uri
 

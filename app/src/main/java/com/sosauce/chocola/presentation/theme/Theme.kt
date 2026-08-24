@@ -2,12 +2,14 @@
 
 package com.sosauce.chocola.presentation.theme
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MotionScheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -32,6 +34,8 @@ fun ChocolaTheme(
     content: @Composable () -> Unit,
 ) {
 
+    val activity = LocalActivity.current
+    val window = activity?.window
     val theme by rememberAppTheme()
     val useArtTheme by rememberUseArtTheme()
     val isSystemInDarkTheme = isSystemInDarkTheme()
@@ -55,6 +59,15 @@ fun ChocolaTheme(
         specVersion = ColorSpec.SpecVersion.SPEC_2025,
         style = paletteStyle.toPaletteStyle()
     )
+
+    LaunchedEffect(isDark) {
+        if (window == null) return@LaunchedEffect
+
+        SystemUiController.setSystemBarsColors(
+            window = window,
+            isLight = !isDark
+        )
+    }
 
     DynamicMaterialExpressiveTheme(
         state = state,

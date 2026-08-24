@@ -1,4 +1,4 @@
-package com.sosauce.chocola.domain.actions
+package com.sosauce.chocola.presentation.screens.playlists
 
 import android.net.Uri
 import com.sosauce.chocola.data.models.Playlist

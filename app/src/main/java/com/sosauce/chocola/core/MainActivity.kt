@@ -1,22 +1,19 @@
-package com.sosauce.chocola.presentation
+package com.sosauce.chocola.core
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
-import com.materialkolor.dynamiccolor.DynamicColor
-import com.materialkolor.dynamiccolor.MaterialDynamicColors
 import com.sosauce.chocola.data.datastore.rememberAppTheme
 import com.sosauce.chocola.data.playlist.PlaylistCleanup
 import com.sosauce.chocola.presentation.components.MusicViewModel
@@ -38,7 +35,6 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         enableEdgeToEdge()
 
-
         lifecycleScope.launch {
             playlistCleanup.startCleanup()
         }
@@ -46,23 +42,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val musicViewModel = koinViewModel<MusicViewModel>()
-            val theme by rememberAppTheme()
-            val isSystemInDarkTheme = isSystemInDarkTheme()
 
             ChocolaTheme(
                 artImageBitmap = musicViewModel.artworkImageBitmap
             ) {
-
-                WindowCompat
-                    .getInsetsController(window, window.decorView)
-                    .apply {
-
-                        val isLight =
-                            if (theme == CuteTheme.SYSTEM) !isSystemInDarkTheme else theme == CuteTheme.LIGHT
-
-                        isAppearanceLightStatusBars = isLight
-                        isAppearanceLightNavigationBars = isLight
-                    }
 
                 var canProceedToApp by remember { mutableStateOf(hasMusicPermission()) }
                 //AlwaysOnDisplay("", "") { }

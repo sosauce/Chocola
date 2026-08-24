@@ -27,17 +27,16 @@ import androidx.compose.ui.platform.LocalResources
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
-import androidx.navigation3.runtime.NavBackStack
-import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.skydoves.cloudy.rememberSky
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberInitialScreenBlocking
-import com.sosauce.chocola.domain.actions.MetadataActions
+import com.sosauce.chocola.presentation.screens.metadata.MetadataActions
 import com.sosauce.chocola.presentation.components.MusicViewModel
-import com.sosauce.chocola.presentation.components.ObserveAsEvents
+import com.sosauce.chocola.presentation.components.wrappers.ObserveAsEvents
 import com.sosauce.chocola.presentation.screens.album.AlbumDetailsScreen
 import com.sosauce.chocola.presentation.screens.album.AlbumDetailsViewModel
 import com.sosauce.chocola.presentation.screens.album.AlbumsScreen
@@ -61,8 +60,6 @@ import com.sosauce.chocola.presentation.screens.playlists.PlaylistViewModel
 import com.sosauce.chocola.presentation.screens.playlists.PlaylistsScreen
 import com.sosauce.chocola.presentation.screens.settings.SettingsScreen
 import com.sosauce.chocola.utils.LocalScreen
-import com.sosauce.chocola.utils.LocalSharedTransitionScope
-import com.sosauce.chocola.utils.navigateBack
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -82,7 +79,6 @@ fun Nav(
 
     SharedTransitionLayout {
         CompositionLocalProvider(
-            LocalSharedTransitionScope provides this,
             LocalScreen provides currentScreen
         ) {
             NavDisplay(
@@ -124,14 +120,6 @@ fun Nav(
                             textFieldState = viewModel.textFieldState,
                             onNavigate = backStack::navigate,
                             onHandlePlayerAction = musicViewModel::handlePlayerActions
-                        )
-                    }
-
-                    entry<Screen.AlwaysOnDisplay> {
-                        AlwaysOnDisplay(
-                            title = musicState.track.title,
-                            artist = musicState.track.artist,
-                            onExitAod = backStack::navigateBack
                         )
                     }
 
@@ -320,8 +308,4 @@ fun Nav(
     }
 }
 
-fun NavBackStack<NavKey>.navigate(screen: NavKey) {
-    remove(screen)
-    add(screen)
-}
 

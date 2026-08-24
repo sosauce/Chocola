@@ -124,6 +124,7 @@ fun SettingsSwitch(
                     }
                 }
             }
+            Spacer(5.dp)
             Switch(
                 checked = checked,
                 onCheckedChange = { onCheckedChange() },

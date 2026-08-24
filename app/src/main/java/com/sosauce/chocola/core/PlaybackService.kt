@@ -1,8 +1,9 @@
-package com.sosauce.chocola.domain.services
+package com.sosauce.chocola.core
 
 import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Intent
+import androidx.annotation.OptIn
 import androidx.compose.ui.util.fastFilter
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.AudioAttributes
@@ -10,6 +11,7 @@ import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
+import androidx.media3.common.util.ExperimentalApi
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.DefaultMediaNotificationProvider
@@ -27,7 +29,6 @@ import com.sosauce.chocola.data.widgets.WIDGET_TITLE
 import com.sosauce.chocola.data.widgets.WidgetsHelper
 import com.sosauce.chocola.domain.EqualizerManager
 import com.sosauce.chocola.domain.helpers.AndroidAutoHelper
-import com.sosauce.chocola.presentation.MainActivity
 import com.sosauce.chocola.utils.CUTE_MUSIC_ID
 import com.sosauce.chocola.utils.playOrPause
 import kotlinx.coroutines.launch
@@ -76,7 +77,7 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
 
             widgetsHelper.updateMusicWidgetData(
                 key = WIDGET_ART,
-                value = widgetsHelper.artUriToByteArrayString(mediaMetadata.artworkUri)
+                value = widgetsHelper.artToByteArrayString(mediaMetadata.artworkData)
             )
         }
     }
@@ -153,12 +154,15 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession? = mediaLibrarySession
 
 
+    @OptIn(ExperimentalApi::class)
     @UnstableApi
     override fun onCreate() {
         super.onCreate()
         val player: Player = ExoPlayer.Builder(applicationContext)
-            .setAudioAttributes(audioAttributes, true)
+            //.enablePerStreamMediaProgression(true)
+            .setDeviceVolumeControlEnabled(true)
             .setHandleAudioBecomingNoisy(true)
+            .setAudioAttributes(audioAttributes, true)
             .build()
         mediaLibrarySession = MediaLibrarySession
             .Builder(this, player, callback)

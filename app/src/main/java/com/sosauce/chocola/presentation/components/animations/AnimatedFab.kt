@@ -32,6 +32,8 @@ import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
@@ -50,34 +52,23 @@ private data class FabAnimation(
 
 @Composable
 private fun rememberFabAnimations(isPressed: Boolean): FabAnimation {
-    val morph = remember {
-        Morph(
-            MaterialShapes.Cookie9Sided,
-            MaterialShapes.Circle
-        )
-    }
+
 
     val animatedScale by animateFloatAsState(
         targetValue = if (isPressed) 0.8f else 1f,
-        label = "scale",
         animationSpec = bouncySpec()
     )
 
     val animatedRotation by animateFloatAsState(
         targetValue = if (isPressed) 180f else 0f,
-        label = "rotation",
         animationSpec = bouncySpec()
     )
 
-    val animatedProgress by animateFloatAsState(
-        targetValue = if (isPressed) 1f else 0f,
-        label = "progress",
-        animationSpec = bouncySpec()
+    val shape = rememberAnimatedShape(
+        condition = isPressed,
+        shapeA = MaterialShapes.Cookie9Sided,
+        shapeB = MaterialShapes.Circle
     )
-
-    val shape = remember(morph, animatedProgress) {
-        MorphPolygonShape(morph, animatedProgress)
-    }
 
     return FabAnimation(
         rotation = animatedRotation,
@@ -95,6 +86,7 @@ fun AnimatedFab(
     containerColor: Color = FloatingActionButtonDefaults.containerColor,
     enabled: Boolean = true
 ) {
+    val haptic = LocalHapticFeedback.current
     val interactionSource = rememberInteractionSource()
     val isPressed by interactionSource.collectIsPressedAsState()
     val fabAnimation = rememberFabAnimations(isPressed)
@@ -120,7 +112,10 @@ fun AnimatedFab(
                 interactionSource = interactionSource,
                 indication = null,
                 enabled = enabled,
-                onClick = onClick
+                onClick = {
+                    onClick()
+                    haptic.performHapticFeedback(HapticFeedbackType.Confirm)
+                }
             )
     ) {
         Icon(

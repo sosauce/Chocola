@@ -20,19 +20,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.sosauce.chocola.R
+import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.presentation.components.Spacer
 import com.sosauce.chocola.presentation.components.animations.AnimatedIconButton
 import com.sosauce.chocola.presentation.screens.playing.components.PlayPauseButton
+import com.sosauce.chocola.presentation.screens.playlists.PlaylistActions
 
 @Composable
 fun AlwaysOnDisplay(
     title: String,
     artist: String,
+    isPlaying: Boolean,
+    onHandlePlayerActions: (PlayerActions) -> Unit,
     onExitAod: () -> Unit
 ) {
     val view = LocalView.current
@@ -107,31 +112,46 @@ fun AlwaysOnDisplay(
         ) {
 
             Text(
-                text = "Wops",
-                //text = title,
+                text = title,
                 style = MaterialTheme.typography.displayMediumEmphasized.copy(
-                    fontWeight = FontWeight.ExtraLight
+                    fontWeight = FontWeight.ExtraLight,
+                    textAlign = TextAlign.Center
                 )
             )
             Spacer(5.dp)
             Text(
-                text = "20mop",
-                //text = artist,
+                text = artist,
                 style = MaterialTheme.typography.headlineSmallEmphasized.copy(
-                    fontWeight = FontWeight.ExtraLight
+                    fontWeight = FontWeight.ExtraLight,
+                    textAlign = TextAlign.Center
                 )
             )
 
             Spacer(15.dp)
             Row {
                 AnimatedIconButton(
-                    onClick = {},
+                    onClick = {
+                        onHandlePlayerActions(
+                            PlayerActions.SeekToPreviousMusic
+                        )
+                    },
                     icon = R.drawable.skip_previous,
                     contentDescription = null
                 )
-                PlayPauseButton(isPlaying =  false) { }
+                PlayPauseButton(
+                    isPlaying = isPlaying,
+                    onHandlePlayerActions = {
+                        onHandlePlayerActions(
+                            PlayerActions.PlayOrPause
+                        )
+                    }
+                )
                 AnimatedIconButton(
-                    onClick = {},
+                    onClick = {
+                        onHandlePlayerActions(
+                            PlayerActions.SeekToNextMusic
+                        )
+                    },
                     icon = R.drawable.skip_next,
                     contentDescription = null
                 )

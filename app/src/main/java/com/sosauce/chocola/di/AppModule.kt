@@ -29,6 +29,7 @@ import com.sosauce.chocola.presentation.screens.settings.PlaybackSettingsViewMod
 import com.sosauce.chocola.presentation.screens.transformer.TransformerViewModel
 import com.sosauce.chocola.presentation.components.dialogs.DeletionViewModel
 import com.sosauce.chocola.presentation.components.MusicViewModel
+import com.sosauce.chocola.presentation.components.dialogs.tracksDetails.TracksDetailsDialogViewModel
 import com.sosauce.chocola.presentation.screens.settings.SettingsLibraryViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -83,4 +84,5 @@ val appModule = module {
     viewModelOf(::DeletionViewModel)
     viewModelOf(::LyricsEditorViewModel)
     viewModelOf(::SettingsLibraryViewModel)
+    viewModelOf(::TracksDetailsDialogViewModel)
 }

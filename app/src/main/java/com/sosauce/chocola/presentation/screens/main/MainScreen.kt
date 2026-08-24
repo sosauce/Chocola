@@ -9,14 +9,25 @@ package com.sosauce.chocola.presentation.screens.main
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -24,23 +35,39 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.round
 import androidx.compose.ui.util.fastForEach
+import com.skydoves.cloudy.cloudy
+import com.skydoves.cloudy.sky
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberGroupByFolders
 import com.sosauce.chocola.data.datastore.rememberHiddenFolders
-import com.sosauce.chocola.data.datastore.rememberShowShuffleButton
-import com.sosauce.chocola.data.datastore.rememberSortTracksAscending
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.states.MusicState
+import com.sosauce.chocola.domain.actions.PlaySource
 import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.presentation.components.CuteSearchbar
 import com.sosauce.chocola.presentation.components.CuteSearchbarDefaults
@@ -76,6 +103,7 @@ fun SharedTransitionScope.MainScreen(
     var hiddenFolders by rememberHiddenFolders()
     var groupByFolders by rememberGroupByFolders()
     val multiSelectState = rememberSweetSelectState<CuteTrack>()
+    val activeTrackId = remember(musicState.track) { musicState.track.mediaId }
 
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,
@@ -102,10 +130,9 @@ fun SharedTransitionScope.MainScreen(
                             AnimatedFab(
                                 onClick = {
                                     onHandlePlayerAction(
-                                        PlayerActions.Play(
-                                            index = 0,
-                                            tracks = state.tracks,
-                                            random = true
+                                        PlayerActions.PlayFromSource(
+                                            mediaId = null,
+                                            source = PlaySource.All
                                         )
                                     )
                                 },
@@ -162,34 +189,35 @@ fun SharedTransitionScope.MainScreen(
                     val categories = state.tracks
                         .groupBy { it.folder }
                         .toSortedMap()
-                        .map {
+                        .map { (folder, tracks) ->
                             Category(
-                                name = it.key,
-                                tracks = it.value
+                                path = folder,
+                                name = folder.substringAfterLast('/'),
+                                tracks = tracks
                             )
                         }
                     categories.fastForEach { category ->
-                        item {
+                        item(
+                            key = "folder_header"
+                        ) {
                             FolderHeader(
                                 modifier = Modifier.animateItem(),
                                 category = category,
-                                isHidden = category.name in hiddenFolders,
+                                isHidden = category.path in hiddenFolders,
                                 onToggleVisibility = {
                                     hiddenFolders =
-                                        hiddenFolders.copyMutate { addOrRemove(category.name) }
+                                        hiddenFolders.copyMutate { addOrRemove(category.path) }
                                 },
                                 onHandlePlayerAction = onHandlePlayerAction
                             )
                         }
-                        if (category.name !in hiddenFolders) {
+                        if (category.path !in hiddenFolders) {
                             items(
                                 items = category.tracks,
                                 key = { it.mediaId }
                             ) { track ->
+                                val isSelected by multiSelectState.isSelectedAsState(track)
 
-                                val isSelected by remember {
-                                    derivedStateOf { multiSelectState.isSelected(track) }
-                                }
                                 MusicListItem(
                                     modifier = Modifier.animateItem(),
                                     onShortClick = {
@@ -197,24 +225,17 @@ fun SharedTransitionScope.MainScreen(
                                             multiSelectState.toggle(track)
                                         } else {
                                             onHandlePlayerAction(
-                                                PlayerActions.Play2(
+                                                PlayerActions.PlayFromSource(
                                                     mediaId = track.mediaId,
-                                                    playlist = MusicViewModel.PLAYLIST_TYPE_ALL,
-                                                    data = null
+                                                    source = PlaySource.All
                                                 )
                                             )
-//                                            onHandlePlayerAction(
-//                                                PlayerActions.Play(
-//                                                    index = state.tracks.indexOf(track),
-//                                                    tracks = state.tracks
-//                                                )
-//                                            )
                                         }
                                     },
                                     onLongClick = { multiSelectState.toggle(track) },
                                     track = track,
-                                    musicState = musicState,
                                     isSelected = isSelected,
+                                    isActive = track.mediaId == activeTrackId,
                                     trailingContent = {
                                         DefaultMusicListItemTrailingContent(
                                             track = track,
@@ -233,35 +254,27 @@ fun SharedTransitionScope.MainScreen(
                         key = { it.mediaId },
                     ) { track ->
 
-                        val isSelected by remember {
-                            derivedStateOf { multiSelectState.isSelected(track) }
-                        }
+                        val isSelected by multiSelectState.isSelectedAsState(track)
 
                         MusicListItem(
-                            modifier = Modifier.animateItem(),
+                            modifier = Modifier
+                                .animateItem(),
                             onShortClick = {
                                 if (multiSelectState.isInSelectionMode) {
                                     multiSelectState.toggle(track)
                                 } else {
                                     onHandlePlayerAction(
-                                        PlayerActions.Play2(
+                                        PlayerActions.PlayFromSource(
                                             mediaId = track.mediaId,
-                                            playlist = MusicViewModel.PLAYLIST_TYPE_ALL,
-                                            data = null
+                                            source = PlaySource.All
                                         )
                                     )
-//                                    onHandlePlayerAction(
-//                                        PlayerActions.Play(
-//                                            index = state.tracks.indexOf(track),
-//                                            tracks = state.tracks
-//                                        )
-//                                    )
                                 }
                             },
                             onLongClick = { multiSelectState.toggle(track) },
                             track = track,
-                            musicState = musicState,
                             isSelected = isSelected,
+                            isActive = track.mediaId == activeTrackId,
                             trailingContent = {
                                 DefaultMusicListItemTrailingContent(
                                     track = track,
@@ -273,12 +286,14 @@ fun SharedTransitionScope.MainScreen(
                     }
                 }
             }
+
         }
     }
 
 }
 
 data class Category(
+    val path: String,
     val name: String,
     val tracks: List<CuteTrack>
 )

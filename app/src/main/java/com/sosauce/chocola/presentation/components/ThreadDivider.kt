@@ -4,7 +4,9 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,11 +24,13 @@ fun ThreadDivider(
     color: Color = MaterialTheme.colorScheme.onBackground,
     curveSize: Dp = 10.dp
 ) {
+
     Canvas(
         modifier = modifier
             .width(20.dp)
             .height(50.dp)
     ) {
+
         val strokeWidth = thickness.toPx()
         val midX = strokeWidth / 2
         val midY = size.height / 2

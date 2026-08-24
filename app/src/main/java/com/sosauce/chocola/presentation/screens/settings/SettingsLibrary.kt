@@ -45,6 +45,7 @@ import com.sosauce.chocola.data.datastore.rememberWhitelistedFolders
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.models.Folder
 import com.sosauce.chocola.data.states.MusicState
+import com.sosauce.chocola.domain.actions.PlaySource
 import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.presentation.components.DefaultMusicListItemTrailingContent
 import com.sosauce.chocola.presentation.components.MusicListItem
@@ -149,9 +150,11 @@ fun SettingsLibrary(
                 ) {
                     if (hiddenTracks.isNotEmpty()) {
                         hiddenTracks.fastForEach { track ->
+
+                            val isActive = musicState.track == track
                             MusicListItem(
                                 track = track,
-                                musicState = musicState,
+                                isActive = isActive,
                                 onShortClick = {},
                                 trailingContent = {
                                     IconButton(
@@ -222,15 +225,18 @@ fun SettingsLibrary(
                     }
 
                     if (safTracksUi.isNotEmpty()) {
-                        safTracksUi.fastForEachIndexed { index, safTrack ->
+                        safTracksUi.fastForEach { safTrack ->
+
+                            val isActive = musicState.track == safTrack
+
                             MusicListItem(
                                 track = safTrack,
-                                musicState = musicState,
+                                isActive = isActive,
                                 onShortClick = {
                                     onHandlePlayerActions(
-                                        PlayerActions.Play(
-                                            index,
-                                            safTracksUi
+                                        PlayerActions.PlayFromSource(
+                                            mediaId = safTrack.mediaId,
+                                            source = PlaySource.ExplicitTracks(safTracksUi)
                                         )
                                     )
                                 },

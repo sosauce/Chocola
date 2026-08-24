@@ -67,8 +67,8 @@ fun LyricsScreen(
             onHandlePlayerActions = onHandlePlayerActions,
             emptyLyrics = {
                 DefaultEmptyLyricsScreen(
-                    musicState = musicState,
                     onNavigate = onNavigate,
+                    musicState = musicState,
                     onHandlePlayerActions = onHandlePlayerActions
                 )
             }

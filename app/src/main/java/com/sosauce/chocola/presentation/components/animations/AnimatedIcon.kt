@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sosauce.chocola.R
 import com.sosauce.chocola.presentation.components.animations.AnimatedIconStatus.Default
 import com.sosauce.chocola.presentation.components.animations.AnimatedIconStatus.Error
@@ -25,7 +26,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Animated icon status
@@ -63,9 +66,9 @@ class AnimatedIcon(
     fun setError() {
         job?.cancel()
         job = scope.launch {
-            _status.value = Error
-            delay(500)
-            _status.value = Default
+            _status.update { Error }
+            delay(500.milliseconds)
+            _status.update { Default }
         }
     }
 
@@ -77,9 +80,10 @@ class AnimatedIcon(
      */
     fun setSuccess() {
         job = scope.launch {
-            _status.value = Success
-            delay(500)
-            _status.value = Default
+            _status.update { Success }
+            delay(500.milliseconds)
+            _status.update { Default }
+
         }
     }
 }
@@ -117,7 +121,7 @@ fun AnimatedIcon.Icon(
     defaultIcon: Int,
     onClick: () -> Unit
 ) {
-    val status by this.status.collectAsState()
+    val status by this.status.collectAsStateWithLifecycle()
 
     AnimatedContent(
         targetState = status,

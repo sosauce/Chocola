@@ -12,13 +12,16 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -26,7 +29,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,6 +44,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.graphicsLayer
@@ -55,6 +61,8 @@ import com.sosauce.chocola.data.datastore.rememberLyricsAlignment
 import com.sosauce.chocola.data.datastore.rememberLyricsFontSize
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
+import com.sosauce.chocola.presentation.components.NoXFound
+import com.sosauce.chocola.presentation.components.Spacer
 import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.utils.ICON_TEXT_SPACING
 import com.sosauce.chocola.utils.toLyricsAlignment
@@ -128,8 +136,9 @@ fun LyricsList(
                 )
                 Column(
                     modifier = Modifier
+                        .animateItem()
                         .fillMaxWidth()
-                        .padding(5.dp)
+                        .padding(2.dp)
                         .clip(RoundedCornerShape(24.dp))
                         .combinedClickable(
                             onClick = {
@@ -165,7 +174,7 @@ fun LyricsList(
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(15.dp)
+                            .padding(5.dp)
                             .graphicsLayer {
                                 alpha = if (isCurrentLyric) 1f else 0.3f
                                 scaleX = animatedScale
@@ -204,68 +213,63 @@ fun DefaultEmptyLyricsScreen(
 
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(horizontal = 15.dp)
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = stringResource(R.string.no_lyrics_note),
-            style = MaterialTheme.typography.headlineSmallEmphasized.copy(
-                color = MaterialTheme.colorScheme.primary
-            )
+        NoXFound(
+            headlineText = R.string.no_lyrics_note,
+            bodyText = R.string.no_lyrics_desc,
+            icon = R.drawable.lyrics_filled
         )
-        Spacer(Modifier.height(10.dp))
-
-        Button(
-            onClick = {
-                val query =
-                    "${musicState.track.title} ${musicState.track.artist} lyrics"
-                val intent = Intent(Intent.ACTION_WEB_SEARCH).apply {
-                    putExtra(SearchManager.QUERY, query)
-                }
-                context.startActivity(intent)
-            },
-            shapes = ButtonDefaults.shapes(),
-            modifier = Modifier.fillMaxWidth()
+        Spacer(10.dp)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(5.dp)
         ) {
-            Icon(
-                painter = painterResource(R.drawable.search),
-                contentDescription = null
-            )
-            Spacer(Modifier.width(ICON_TEXT_SPACING.dp))
-            Text(
-                text = stringResource(R.string.search),
-                maxLines = 1
-            )
-        }
-        Button(
-            onClick = { onNavigate(Screen.MetadataEditor(musicState.track.path, musicState.track.uri.toString())) },
-            modifier = Modifier.fillMaxWidth(),
-            shapes = ButtonDefaults.shapes()
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.edit_rounded),
-                contentDescription = null
-            )
-            Spacer(Modifier.width(ICON_TEXT_SPACING.dp))
-            Text(
-                text = stringResource(R.string.edit),
-                maxLines = 1
-            )
-        }
-        Button(
-            onClick = { lyricFilePicker.launch(arrayOf("*/*")) },
-            modifier = Modifier.fillMaxWidth(),
-            shapes = ButtonDefaults.shapes()
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.resource_import),
-                contentDescription = null
-            )
-            Spacer(Modifier.width(ICON_TEXT_SPACING.dp))
-            Text(
-                text = stringResource(R.string.load),
-                maxLines = 1
-            )
+            FilledIconButton(
+                onClick = {
+                    val query =
+                        "${musicState.track.title} ${musicState.track.artist} lyrics"
+                    val intent = Intent(Intent.ACTION_WEB_SEARCH).apply {
+                        putExtra(SearchManager.QUERY, query)
+                    }
+                    context.startActivity(intent)
+                },
+                shapes = IconButtonDefaults.shapes(),
+                modifier = Modifier.size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.search),
+                    contentDescription = null
+                )
+            }
+            FilledIconButton(
+                onClick = {
+                    onNavigate(
+                        Screen.MetadataEditor(
+                            trackPath = musicState.track.path,
+                            trackUri = musicState.track.uri.toString()
+                        )
+                    )
+                },
+                shapes = IconButtonDefaults.shapes(),
+                modifier = Modifier.size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.edit_filled),
+                    contentDescription = null
+                )
+            }
+            FilledIconButton(
+                onClick = { lyricFilePicker.launch(arrayOf("*/*")) },
+                shapes = IconButtonDefaults.shapes(),
+                modifier = Modifier.size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.resource_import),
+                    contentDescription = null
+                )
+            }
         }
     }
 }

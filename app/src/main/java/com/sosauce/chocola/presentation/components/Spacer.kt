@@ -23,7 +23,6 @@ fun ColumnScope.Spacer() {
     Spacer(Modifier.weight(1f))
 }
 
-@Suppress("UnusedReceiverParameter")
 @Composable
 fun RowScope.Spacer(width: Dp) {
     Spacer(Modifier.width(width))

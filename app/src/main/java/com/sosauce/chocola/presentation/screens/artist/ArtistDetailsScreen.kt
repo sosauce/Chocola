@@ -56,6 +56,7 @@ import com.sosauce.chocola.data.datastore.rememberSortTracksAscending
 import com.sosauce.chocola.data.datastore.rememberTrackSort
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.states.MusicState
+import com.sosauce.chocola.domain.actions.PlaySource
 import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.presentation.components.CuteSearchbar
 import com.sosauce.chocola.presentation.components.CuteSearchbarDefaults
@@ -85,6 +86,8 @@ fun SharedTransitionScope.ArtistDetailsScreen(
 ) {
     val lazyState = rememberLazyListState()
     val multiSelectState = rememberSweetSelectState<CuteTrack>()
+    val activeTrackId = remember(musicState.track) { musicState.track.mediaId }
+
 
 
     Scaffold(
@@ -112,10 +115,9 @@ fun SharedTransitionScope.ArtistDetailsScreen(
                             AnimatedFab(
                                 onClick = {
                                     onHandlePlayerAction(
-                                        PlayerActions.Play(
-                                            index = 0,
-                                            tracks = state.tracks,
-                                            random = true
+                                        PlayerActions.PlayFromSource(
+                                            mediaId = null,
+                                            source = PlaySource.Artist(state.artist.name)
                                         )
                                     )
                                 },
@@ -244,28 +246,26 @@ fun SharedTransitionScope.ArtistDetailsScreen(
                     key = { it.mediaId }
                 ) { track ->
 
-                    val isSelected by remember {
-                        derivedStateOf { multiSelectState.isSelected(track) }
-                    }
+                    val isSelected by multiSelectState.isSelectedAsState(track)
 
                     MusicListItem(
                         modifier = Modifier.animateItem(),
                         track = track,
-                        musicState = musicState,
                         onShortClick = {
                             if (multiSelectState.isInSelectionMode) {
                                 multiSelectState.toggle(track)
                             } else {
                                 onHandlePlayerAction(
-                                    PlayerActions.Play(
-                                        index = state.tracks.indexOf(track),
-                                        tracks = state.tracks
+                                    PlayerActions.PlayFromSource(
+                                        mediaId = track.mediaId,
+                                        source = PlaySource.Artist(state.artist.name)
                                     )
                                 )
                             }
                         },
                         onLongClick = { multiSelectState.toggle(track) },
                         isSelected = isSelected,
+                        isActive = track.mediaId == activeTrackId,
                         trailingContent = {
                             DefaultMusicListItemTrailingContent(
                                 track = track,

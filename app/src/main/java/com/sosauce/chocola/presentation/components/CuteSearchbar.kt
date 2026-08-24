@@ -22,6 +22,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -45,6 +46,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.clearText
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonGroup
@@ -72,6 +74,8 @@ import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -82,12 +86,17 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedback
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -95,6 +104,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.util.lerp
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
+import com.skydoves.cloudy.Sky
+import com.skydoves.cloudy.cloudy
+import com.skydoves.cloudy.rememberSky
+import com.skydoves.cloudy.sky
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberAlbumGrids
 import com.sosauce.chocola.data.datastore.rememberAlbumSort
@@ -109,10 +122,9 @@ import com.sosauce.chocola.data.datastore.rememberSortTracksAscending
 import com.sosauce.chocola.data.datastore.rememberTrackSort
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.presentation.components.CuteSearchbarDefaults.drawMusicPosition
+import com.sosauce.chocola.presentation.components.animations.AnimatedDrawable
 import com.sosauce.chocola.presentation.components.animations.AnimatedFab
 import com.sosauce.chocola.presentation.components.animations.AnimatedIconButton
-import com.sosauce.chocola.presentation.components.animations.AnimatedPlayPauseIcon
 import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.presentation.screens.playing.NowPlaying
 import com.sosauce.chocola.presentation.screens.playing.components.PlayPauseButton
@@ -123,9 +135,8 @@ import com.sosauce.chocola.utils.rememberInteractionSource
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
-
 @Composable
-fun CuteSearchbar(
+fun SharedTransitionScope.CuteSearchbar(
     modifier: Modifier = Modifier,
     musicState: MusicState,
     textFieldState: TextFieldState,
@@ -208,7 +219,7 @@ fun CuteSearchbar(
 }
 
 @Composable
-private fun CuteSearchbarContent(
+private fun SharedTransitionScope.CuteSearchbarContent(
     modifier: Modifier = Modifier,
     musicState: MusicState,
     textFieldState: TextFieldState,
@@ -330,8 +341,9 @@ private fun CuteSearchbarContent(
                         interactionSource = null
                     )
                     .drawMusicPosition(
-                        position = musicState.position.toFloat(),
-                        trackDuration = musicState.track.durationMs
+                        position = { musicState.position.toFloat() },
+                        trackDuration = { musicState.duration },
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh
                     ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -377,6 +389,10 @@ private fun CuteSearchbarContent(
         }
         Box(
             modifier = Modifier
+                .sharedElement(
+                    sharedContentState = rememberSharedContentState(SharedTransitionKeys.SEARCHBAR),
+                    animatedVisibilityScope = LocalNavAnimatedContentScope.current
+                )
                 .fillMaxWidth()
                 .clip(
                     shape = RoundedCornerShape(
@@ -390,25 +406,32 @@ private fun CuteSearchbarContent(
                     color = MaterialTheme.colorScheme.surfaceContainer
                 )
                 .drawMusicPosition(
-                    position = musicState.position.toFloat(),
-                    trackDuration = musicState.track.durationMs
+                    position = { musicState.position.toFloat() },
+                    trackDuration = { musicState.duration },
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh
                 )
         ) {
-            AnimatedContent(
-                targetState = isInScreenSelectionMode
-            ) {
-                if (it) {
-                    ScreenSelection(
-                        onNavigate = onNavigate,
-                        dismiss = { isInScreenSelectionMode = false }
-                    )
-                } else {
-                    CuteSearchbarDefaults.CuteSearchbarTextField(
-                        state = textFieldState,
-                        onNavigate = onNavigate,
-                        onSwitchToScreenSelection = { isInScreenSelectionMode = true },
-                        sortingMenuPopupContent = sortMenu
-                    )
+            SharedTransitionLayout {
+                AnimatedContent(
+                    targetState = isInScreenSelectionMode,
+                    transitionSpec = { slideInVertically { it } + fadeIn() togetherWith
+                            slideOutVertically { it } + fadeOut() }
+                ) {
+                    CompositionLocalProvider(LocalNavAnimatedContentScope provides this) {
+                        if (it) {
+                            ScreenSelection(
+                                onNavigate = onNavigate,
+                                dismiss = { isInScreenSelectionMode = false }
+                            )
+                        } else {
+                            CuteSearchbarDefaults.CuteSearchbarTextField(
+                                state = textFieldState,
+                                onNavigate = onNavigate,
+                                onSwitchToScreenSelection = { isInScreenSelectionMode = true },
+                                sortingMenuPopupContent = sortMenu
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -416,12 +439,13 @@ private fun CuteSearchbarContent(
 }
 
 @Composable
-private fun ScreenSelection(
+private fun SharedTransitionScope.ScreenSelection(
     onNavigate: (Screen) -> Unit,
     dismiss: () -> Unit
 ) {
 
     val currentScreen = LocalScreen.current
+    val haptic = LocalHapticFeedback.current
     val screens = listOf(
         ScreenCategory(
             screen = Screen.Main,
@@ -461,6 +485,7 @@ private fun ScreenSelection(
             ShortNavigationBarItem(
                 selected = selected,
                 onClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                     dismiss()
                     screen.onClick()
                 },
@@ -468,7 +493,12 @@ private fun ScreenSelection(
                     val icon = if (selected) screen.selectedIcon else screen.unselectedIcon
                     Icon(
                         painter = painterResource(icon),
-                        contentDescription = null
+                        contentDescription = null,
+                        modifier = Modifier
+                            .sharedElement(
+                                sharedContentState = rememberSharedContentState(icon),
+                                animatedVisibilityScope = LocalNavAnimatedContentScope.current
+                            )
                     )
                 },
                 label = {
@@ -538,30 +568,28 @@ private data class ScreenCategory(
 )
 
 
-object CuteSearchbarDefaults {
-
-    @Composable
-    fun Modifier.drawMusicPosition(
-        position: Float,
-        trackDuration: Long
-    ): Modifier {
-        val surfaceContainerHigh = MaterialTheme.colorScheme.surfaceContainerHigh
-        val animatedPosition by animateFloatAsState(position, tween(500))
-
-        return drawBehind {
-            val fraction = if (trackDuration == 0L) {
-                0f
-            } else {
-                animatedPosition / trackDuration.toFloat()
-            }
-
-            val drawWidth = size.width * fraction
-            drawRect(
-                color = surfaceContainerHigh,
-                size = Size(drawWidth, size.height)
-            )
+private fun Modifier.drawMusicPosition(
+    position: () -> Float,
+    trackDuration: () -> Long,
+    color: Color
+): Modifier = this.drawWithCache {
+    onDrawBehind {
+        val duration = trackDuration()
+        val fraction = if (duration <= 0L) {
+            0f
+        } else {
+            (position() / duration.toFloat()).coerceIn(0f, 1f)
         }
+        val drawWidth = size.width * fraction
+        drawRect(
+            color = color,
+            size = Size(drawWidth, size.height)
+        )
     }
+}
+
+
+object CuteSearchbarDefaults {
 
     @Composable
     fun BackButton(
@@ -575,6 +603,7 @@ object CuteSearchbarDefaults {
     }
 
     @Composable
+    context(sharedTransitionScope: SharedTransitionScope)
     fun CuteSearchbarTextField(
         state: TextFieldState,
         onNavigate: (Screen) -> Unit,
@@ -592,106 +621,138 @@ object CuteSearchbarDefaults {
             Screen.Playlists to R.drawable.queue_music_rounded,
         )
         val currentScreen = LocalScreen.current
+        val isSearching = state.text.isNotEmpty()
 
 
 
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(24.dp))
-                .padding(6.dp)
-        ) {
-            TextField(
-                state = state,
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.search_here),
-                        maxLines = 1
-                    )
-                },
-                leadingIcon = {
-                    TooltipBox(
-                        positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
-                            TooltipAnchorPosition.Above
-                        ),
-                        tooltip = {
-                            RichTooltip(
-                                caretShape = TooltipDefaults.caretShape(),
-                                colors = TooltipDefaults.richTooltipColors(
-                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                    contentColor = contentColorFor(
-                                        MaterialTheme.colorScheme.primaryContainer
-                                    )
-                                ),
-                            ) { Text(stringResource(R.string.click_hint)) }
-                        },
-                        state = rememberTooltipState(
-                            initialIsVisible = !hasSeenTip,
-                            isPersistent = !hasSeenTip
+        with(sharedTransitionScope) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(24.dp))
+                    .padding(6.dp)
+            ) {
+                TextField(
+                    state = state,
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = TextFieldDefaults.colors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    placeholder = {
+                        Text(
+                            text = stringResource(R.string.search_here),
+                            maxLines = 1
                         )
-                    ) {
-                        IconButton(
-                            onClick = {
-                                onSwitchToScreenSelection()
-                                hasSeenTip = true
+                    },
+                    leadingIcon = {
+                        TooltipBox(
+                            positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
+                                TooltipAnchorPosition.Above
+                            ),
+                            tooltip = {
+                                RichTooltip(
+                                    caretShape = TooltipDefaults.caretShape(),
+                                    colors = TooltipDefaults.richTooltipColors(
+                                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                        contentColor = contentColorFor(
+                                            MaterialTheme.colorScheme.primaryContainer
+                                        )
+                                    ),
+                                ) { Text(stringResource(R.string.click_hint)) }
                             },
-                            shapes = IconButtonDefaults.shapes()
-                        ) {
-                            Icon(
-                                painter = painterResource(
-                                    screenToLeadingIcon[currentScreen]
-                                        ?: R.drawable.search
-                                ),
-                                contentDescription = null
+                            state = rememberTooltipState(
+                                initialIsVisible = !hasSeenTip,
+                                isPersistent = !hasSeenTip
                             )
-                        }
-                    }
-                },
-                trailingIcon = {
-                    Row {
-                        Box {
-                            IconButton(
-                                onClick = { sortMenuExpanded = !sortMenuExpanded },
-                                shapes = IconButtonDefaults.shapes()
+                        ) {
+                            AnimatedContent(
+                                targetState = isSearching
                             ) {
-                                AnimatedContent(
-                                    targetState = sortMenuExpanded
-                                ) { isExpanded ->
-                                    val icon = if (!isExpanded) R.drawable.sort else R.drawable.close
+                                if (it) {
                                     Icon(
-                                        painter = painterResource(icon),
+                                        painter = painterResource(R.drawable.search),
+                                        contentDescription = null
+                                    )
+                                } else {
+
+                                    val icon = screenToLeadingIcon[currentScreen]
+
+                                    IconButton(
+                                        onClick = {
+                                            onSwitchToScreenSelection()
+                                            hasSeenTip = true
+                                        },
+                                        shapes = IconButtonDefaults.shapes()
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(icon ?: R.drawable.search),
+                                            modifier = Modifier
+                                                .sharedElement(
+                                                    sharedContentState = rememberSharedContentState(icon ?: R.drawable.search),
+                                                    animatedVisibilityScope = LocalNavAnimatedContentScope.current
+                                                ),
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
+                            }
+
+                        }
+                    },
+                    trailingIcon = {
+                        AnimatedContent(
+                            targetState = isSearching
+                        ) {
+                            if (it) {
+                                IconButton(
+                                    onClick = state::clearText,
+                                    shapes = IconButtonDefaults.shapes()
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.cancel_filled),
                                         contentDescription = null
                                     )
                                 }
-                            }
-                            DropdownMenuPopup(
-                                expanded = sortMenuExpanded,
-                                onDismissRequest = { sortMenuExpanded = false }
-                            ) {
-                                sortingMenuPopupContent()
+                            } else {
+                                Row {
+                                    Box {
+                                        IconButton(
+                                            onClick = { sortMenuExpanded = !sortMenuExpanded },
+                                            shapes = IconButtonDefaults.shapes()
+                                        ) {
+                                            AnimatedDrawable(
+                                                drawable = R.drawable.animated_sort,
+                                                atEnd = sortMenuExpanded
+                                            )
+                                        }
+                                        DropdownMenuPopup(
+                                            expanded = sortMenuExpanded,
+                                            onDismissRequest = { sortMenuExpanded = false }
+                                        ) {
+                                            sortingMenuPopupContent()
+                                        }
+                                    }
+                                    IconButton(
+                                        onClick = { onNavigate(Screen.Settings) },
+                                        shapes = IconButtonDefaults.shapes()
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.settings_filled),
+                                            contentDescription = stringResource(R.string.settings)
+                                        )
+                                    }
+                                }
                             }
                         }
-                        IconButton(
-                            onClick = { onNavigate(Screen.Settings) },
-                            shapes = IconButtonDefaults.shapes()
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.settings_filled),
-                                contentDescription = stringResource(R.string.settings)
-                            )
-                        }
-                    }
-                },
-                lineLimits = TextFieldLineLimits.SingleLine,
-                shape = FloatingToolbarDefaults.ContainerShape
-            )
+                    },
+                    lineLimits = TextFieldLineLimits.SingleLine,
+                    shape = FloatingToolbarDefaults.ContainerShape
+                )
+            }
         }
+
     }
 
 
@@ -714,40 +775,32 @@ object CuteSearchbarDefaults {
                 trailingContent = { Text("$numberOfAlbumGrids") },
                 shape = MenuDefaults.leadingItemShape
             )
-            Spacer(Modifier.height(MenuDefaults.GroupSpacing))
-            DropdownMenuGroup(
-                shapes = MenuDefaults.groupShape(1, 2),
-                content = {
-                    repeat(2) { i ->
-                        val text = when (i) {
-                            0 -> R.string.name
-                            1 -> R.string.artist
-                            else -> throw IndexOutOfBoundsException()
-                        }
-                        DropdownMenuItem(
-                            selected = albumSort == i,
-                            onClick = { albumSort = i },
-                            shapes = MenuDefaults.itemShape(i, 2),
-                            colors = MenuDefaults.selectableItemColors(),
-                            text = { Text(stringResource(text)) },
-                            trailingContent = {
-                                if (albumSort == i) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.check),
-                                        contentDescription = null
-                                    )
-                                }
-                            }
-                        )
-                    }
-                }
-            )
-            Spacer(Modifier.height(MenuDefaults.GroupSpacing))
-            SortingButtons(
-                ascending = isSortedByASC,
-                onChangeSort = { isSortedByASC = it }
-            )
         }
+        Spacer(Modifier.height(MenuDefaults.GroupSpacing))
+        DropdownMenuGroup(
+            shapes = MenuDefaults.groupShape(1, 2),
+            content = {
+                repeat(2) { i ->
+                    val text = when (i) {
+                        0 -> R.string.name
+                        1 -> R.string.artist
+                        else -> throw IndexOutOfBoundsException()
+                    }
+                    DropdownMenuItem(
+                        selected = albumSort == i,
+                        onClick = { albumSort = i },
+                        shapes = MenuDefaults.itemShape(i, 2),
+                        colors = MenuDefaults.selectableItemColors(),
+                        text = { Text(stringResource(text)) }
+                    )
+                }
+            }
+        )
+        Spacer(Modifier.height(MenuDefaults.GroupSpacing))
+        SortingButtons(
+            ascending = isSortedByASC,
+            onChangeSort = { isSortedByASC = it }
+        )
     }
 
     @Composable
@@ -803,58 +856,35 @@ object CuteSearchbarDefaults {
     @Composable
     fun ArtistSortPopupContent() {
 
-        var numberOfAlbumGrids by rememberAlbumGrids()
         var isSortedByASC by rememberSortAlbumsAscending()
         var artistSort by rememberArtistSort()
 
         DropdownMenuGroup(
-            shapes = MenuDefaults.groupShape(0, 2)
-        ) {
-            DropdownMenuItem(
-                onClick = {
-                    numberOfAlbumGrids =
-                        if (numberOfAlbumGrids == 4) 2 else numberOfAlbumGrids + 1
-                },
-                text = { Text(stringResource(R.string.no_of_grids)) },
-                trailingContent = { Text("$numberOfAlbumGrids") },
-                shape = MenuDefaults.leadingItemShape
-            )
-            Spacer(Modifier.height(MenuDefaults.GroupSpacing))
-            DropdownMenuGroup(
-                shapes = MenuDefaults.groupShape(1, 2),
-                content = {
-                    repeat(3) { i ->
-                        val text = when (i) {
-                            0 -> R.string.name
-                            1 -> R.string.number_of_tracks
-                            2 -> R.string.number_of_albums
-                            else -> throw IndexOutOfBoundsException()
-                        }
-
-                        DropdownMenuItem(
-                            selected = artistSort == i,
-                            onClick = { artistSort = i },
-                            shapes = MenuDefaults.itemShape(i, 3),
-                            colors = MenuDefaults.selectableItemColors(),
-                            text = { Text(stringResource(text)) },
-                            trailingContent = {
-                                if (artistSort == i) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.check),
-                                        contentDescription = null
-                                    )
-                                }
-                            }
-                        )
+            shapes = MenuDefaults.groupShapes(),
+            content = {
+                repeat(3) { i ->
+                    val text = when (i) {
+                        0 -> R.string.name
+                        1 -> R.string.number_of_tracks
+                        2 -> R.string.number_of_albums
+                        else -> throw IndexOutOfBoundsException()
                     }
+
+                    DropdownMenuItem(
+                        selected = artistSort == i,
+                        onClick = { artistSort = i },
+                        shapes = MenuDefaults.itemShape(i, 3),
+                        colors = MenuDefaults.selectableItemColors(),
+                        text = { Text(stringResource(text)) }
+                    )
                 }
-            )
-            Spacer(Modifier.height(MenuDefaults.GroupSpacing))
-            SortingButtons(
-                ascending = isSortedByASC,
-                onChangeSort = { isSortedByASC = it }
-            )
-        }
+            }
+        )
+        Spacer(Modifier.height(MenuDefaults.GroupSpacing))
+        SortingButtons(
+            ascending = isSortedByASC,
+            onChangeSort = { isSortedByASC = it }
+        )
     }
 
     @Composable

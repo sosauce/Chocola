@@ -49,6 +49,7 @@ import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import com.kyant.taglib.PropertyMap
 import com.materialkolor.PaletteStyle
+import com.sosauce.chocola.data.datastore.SearchSettings
 import com.sosauce.chocola.data.datastore.TracksSettings
 import com.sosauce.chocola.data.datastore.rememberIsLandscape
 import com.sosauce.chocola.data.models.Album
@@ -249,49 +250,18 @@ fun String.regex(matchCase: Boolean): Regex {
     }
 }
 
-fun List<CuteTrack>.ordered(
-    settings: TracksSettings,
-    query: String
+fun List<CuteTrack>.search(
+    query: String,
+    searchSettings: SearchSettings,
 ): List<CuteTrack> {
-
-    val regexPattern = query.regex(settings.matchCase)
-
-    val filtered = this.fastFilter { track ->
-        if (settings.regex) {
+    val regexPattern = query.regex(searchSettings.matchCase)
+    return fastFilter { track ->
+        if (searchSettings.regex) {
             regexPattern.containsMatchIn(track.title)
         } else {
-            track.title.contains(query, !settings.matchCase)
+            track.title.contains(query, !searchSettings.matchCase)
         }
     }
-
-    return filtered
-        .sortedBy {
-            when (settings.sort) {
-                TrackSort.TITLE -> it.title
-                TrackSort.ARTIST -> it.artist
-                TrackSort.ALBUM -> it.album + it.trackNumber.toString()
-                TrackSort.YEAR -> it.year.toString()
-                TrackSort.DATE_MODIFIED -> it.dateModified.toString()
-                TrackSort.AS_ADDED -> ""
-            }
-        }
-        .thenIf(!settings.ascending) { asReversed() }
-}
-
-fun List<CuteTrack>.ordered(
-    settings: TracksSettings
-): List<CuteTrack> {
-
-    return sortedBy {
-            when (settings.sort) {
-                TrackSort.TITLE -> it.title
-                TrackSort.ARTIST -> it.artist
-                TrackSort.ALBUM -> it.album + it.trackNumber.toString()
-                TrackSort.YEAR -> it.year.toString()
-                TrackSort.DATE_MODIFIED -> it.dateModified.toString()
-                TrackSort.AS_ADDED -> ""
-            }
-        }.thenIf(!settings.ascending) { asReversed() }
 }
 
 
@@ -444,12 +414,6 @@ fun String.toLyricsAlignment(): TextAlign {
         LyricsAlignment.END -> TextAlign.End
         else -> TextAlign.Start
     }
-}
-
-fun NavBackStack<NavKey>.navigateBack() {
-    // Popping the only screen will crash so this avoids it
-    if (size == 1) return
-    removeLastOrNull()
 }
 
 fun String.toPaletteStyle(): PaletteStyle {

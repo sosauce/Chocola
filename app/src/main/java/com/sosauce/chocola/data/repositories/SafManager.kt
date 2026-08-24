@@ -35,42 +35,26 @@ class SafManager(
 
     private fun uriToTrack(uri: Uri): CuteTrack {
         return context.contentResolver.openFileDescriptor(uri, "r")?.use { fd ->
-            val metadata = loadAudioMetadata(fd)
+            val metadata = TagLib.getMetadata(fd.dup().detachFd())
 
             val title = metadata?.propertyMap?.get("TITLE")?.getOrNull(0) ?: "<unknown>"
             val artist = metadata?.propertyMap?.get("ARTIST")?.joinToString(", ") ?: "<unknown>"
             val album = metadata?.propertyMap?.get("ALBUM")?.getOrNull(0) ?: "<unknown>"
-            val duration = metadata?.propertyMap?.get("DURATION")?.getOrNull(0)
             val artUri =
-                TagLib.getFrontCover(fd.dup().detachFd())?.data?.getUriFromByteArray(context)
+                TagLib.getFrontCover(fd.dup().detachFd())?.data?.getUriFromByteArray(context) ?: Uri.EMPTY
 
             CuteTrack(
                 mediaId = uri.hashCode().toString(),
-                uri = uri,
-                artUri = artUri ?: Uri.EMPTY,
+                uriString = uri.toString(),
+                artUriString = artUri.toString(),
                 title = title,
                 artist = artist,
                 album = album,
-                albumId = 0,
-                artistId = 0,
-                durationMs = duration?.toLong() ?: 0,
-                trackNumber = 0,
-                year = 0,
-                size = fd.statSize,
-                folder = "SAF",
+                folder = "-",
                 path = uri.path ?: "Unknown path",
-                isSaf = true,
-                dateModified = 0,
-                mediaItem = MediaItem.fromUri(uri)
+                isSaf = true
             )
         } ?: throw IllegalArgumentException("Unable to open file descriptor for uri")
-    }
-
-
-    private fun loadAudioMetadata(songFd: ParcelFileDescriptor): Metadata? {
-        val fd = songFd.dup()?.detachFd() ?: throw NullPointerException()
-
-        return TagLib.getMetadata(fd)
     }
 
 }

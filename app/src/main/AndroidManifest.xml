@@ -21,7 +21,7 @@
 
 
     <application
-        android:name=".domain.App"
+        android:name=".core.App"
         android:appCategory="audio"
         android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher"
@@ -32,7 +32,7 @@
         tools:targetApi="tiramisu">
 
         <service
-            android:name=".domain.services.PlaybackService"
+            android:name=".core.PlaybackService"
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback"
@@ -46,7 +46,7 @@
 
 
         <activity
-            android:name=".presentation.MainActivity"
+            android:name=".core.MainActivity"
             android:enableOnBackInvokedCallback="true"
             android:exported="true"
             android:launchMode="singleTop"

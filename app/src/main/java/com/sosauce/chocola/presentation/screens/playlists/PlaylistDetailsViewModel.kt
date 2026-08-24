@@ -12,21 +12,16 @@ import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.models.Playlist
 import com.sosauce.chocola.data.playlist.PlaylistDao
-import com.sosauce.chocola.domain.actions.PlaylistActions
 import com.sosauce.chocola.utils.ordered
+import com.sosauce.chocola.utils.search
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -45,16 +40,16 @@ class PlaylistDetailsViewModel(
     val state = combine(
         dao.getPlaylistDetails(id),
         abstractTracksScanner.latestTracks,
-        userPreferences.tracksSettings(),
+        userPreferences.searchSettings(),
         searchQuery
     ) { playlist, tracks, settings, query ->
-        val playlistTracks = tracks
-            .fastFilter { playlist.musics.contains(it.mediaId) }
-            .ordered(settings, query.toString())
+        val searched = tracks
+            .search(query.toString(), settings)
+
 
         PlaylistDetailsState(
             isLoading = false,
-            tracks = playlistTracks,
+            tracks = searched,
             playlist = playlist
         )
     }.flowOn(Dispatchers.Default).stateIn(

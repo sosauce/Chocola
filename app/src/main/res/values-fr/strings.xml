@@ -251,4 +251,5 @@
     </plurals>
     <string name="art_lyrics">Paroles artistiques</string>
     <string name="art_lyrics_desc">Affiche les paroles directement sur la pochette, plutôt que sur une page distincte. Cliquez sur la pochette pour afficher les paroles.</string>
+    <string name="date">Date</string>
 </resources>

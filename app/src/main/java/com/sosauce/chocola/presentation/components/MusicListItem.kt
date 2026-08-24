@@ -5,7 +5,6 @@
 
 package com.sosauce.chocola.presentation.components
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -56,11 +55,11 @@ import coil3.compose.AsyncImage
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberHiddenTracks
 import com.sosauce.chocola.data.models.CuteTrack
-import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
+import com.sosauce.chocola.presentation.components.animations.AnimatedDrawable
 import com.sosauce.chocola.presentation.components.animations.AnimatedSelectedIcon
 import com.sosauce.chocola.presentation.components.dialogs.DeletionDialog
-import com.sosauce.chocola.presentation.components.dialogs.TracksDetailsDialog
+import com.sosauce.chocola.presentation.components.dialogs.tracksDetails.TracksDetailsDialog
 import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.presentation.screens.playlists.components.PlaylistPicker
 import com.sosauce.chocola.utils.LocalScreen
@@ -72,71 +71,21 @@ import sv.lib.squircleshape.SquircleShape
 fun MusicListItem(
     modifier: Modifier = Modifier,
     track: CuteTrack,
-    musicState: MusicState,
-    onShortClick: (mediaId: String) -> Unit,
+    onShortClick: () -> Unit,
     onLongClick: (() -> Unit)? = null,
     isSelected: Boolean = false,
+    isActive: Boolean,
     trailingContent: @Composable () -> Unit
 ) {
 
-    val isCurrentlyPlaying = musicState.track.uri.toString() == track.uri.toString() && musicState.isPlayerReady
-    val bgColor by animateColorAsState(
-        if (isCurrentlyPlaying) {
-            MaterialTheme.colorScheme.primaryContainer.copy(0.1f)
-        } else {
-            Color.Transparent
-        }
-    )
+
     val scale by animateFloatAsState(
         targetValue = if (isSelected) 0.95f else 1f
     )
-//    var showTrackCard by remember { mutableStateOf(false) }
-//
-//
-//    if (showTrackCard) {
-//        Popup(
-//            onDismissRequest = { showTrackCard = false },
-//            properties = PopupProperties(
-//                focusable = true,
-//                dismissOnBackPress = true,
-//                dismissOnClickOutside = true,
-//                usePlatformDefaultWidth = false
-//            )
-//        ) {
-//            Card(
-//                shape = RoundedCornerShape(24.dp),
-//                colors = CardDefaults.cardColors(
-//                    containerColor = MaterialTheme.colorScheme.surfaceContainer
-//                )
-//            ) {
-//                Row(
-//                    modifier = Modifier.padding(10.dp)
-//                ) {
-//                    AsyncImage(
-//                        model = ImageUtils.imageRequester(track.artUri, context),
-//                        contentDescription = stringResource(R.string.artwork),
-//                        modifier = Modifier
-//                            .size(100.dp)
-//                            .clip(RoundedCornerShape(10.dp)),
-//                        contentScale = ContentScale.Crop
-//                    )
-//                    Column() {
-//                        Text(
-//                            text = track.title,
-//                            maxLines = 1,
-//                            style = MaterialTheme.typography.titleMediumEmphasized
-//                        )
-//                        Text(
-//                            text = track.artist,
-//                            maxLines = 1,
-//                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-//                            style = MaterialTheme.typography.bodyLargeEmphasized
-//                        )
-//                    }
-//                }
-//            }
-//        }
-//    }
+
+    val background by animateColorAsState(
+        targetValue = if (isActive) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f) else Color.Transparent
+    )
 
     CuteListItem(
         modifier = modifier
@@ -144,9 +93,9 @@ fun MusicListItem(
                 scaleX = scale
                 scaleY = scale
             },
-        backgroundColor = bgColor,
-        onClick = { onShortClick(track.mediaId) },
+        onClick = onShortClick,
         onLongClick = onLongClick,
+        backgroundColor = background,
         leadingContent = {
             AnimatedSelectedIcon(
                 isSelected = isSelected
@@ -218,19 +167,10 @@ fun DefaultMusicListItemTrailingContent(
         onClick = { isDropDownExpanded = true },
         shapes = IconButtonDefaults.shapes()
     ) {
-        AnimatedContent(isDropDownExpanded) {
-            if (it) {
-                Icon(
-                    painter = painterResource(R.drawable.close),
-                    contentDescription = null
-                )
-            } else {
-                Icon(
-                    painter = painterResource(R.drawable.more_vert),
-                    contentDescription = null
-                )
-            }
-        }
+        AnimatedDrawable(
+            drawable = R.drawable.animated_morevert,
+            atEnd = isDropDownExpanded
+        )
     }
 
     TrackDropdownMenu(

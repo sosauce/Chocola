@@ -70,7 +70,7 @@ import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.presentation.components.LoadingBox
 import com.sosauce.chocola.presentation.components.Spacer
-import com.sosauce.chocola.presentation.components.animations.AnimatedPlayPauseIcon
+import com.sosauce.chocola.presentation.components.animations.AnimatedDrawable
 import com.sosauce.chocola.presentation.screens.playing.NowPlaying
 import com.sosauce.chocola.presentation.screens.playing.components.Artwork
 import com.sosauce.chocola.presentation.screens.playing.components.CuteSlider
@@ -164,7 +164,10 @@ class QuickPlayActivity : ComponentActivity() {
                                         contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainerHigh)
                                     )
                                 ) {
-                                    AnimatedPlayPauseIcon(isPlaying = state.isPlaying)
+                                    AnimatedDrawable(
+                                        drawable = R.drawable.play_to_pause,
+                                        atEnd = state.isPlaying
+                                    )
                                 }
                             }
                             Spacer(10.dp)

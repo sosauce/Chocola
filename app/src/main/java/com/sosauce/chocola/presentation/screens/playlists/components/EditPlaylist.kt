@@ -61,7 +61,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.models.Playlist
-import com.sosauce.chocola.domain.actions.PlaylistActions
+import com.sosauce.chocola.presentation.screens.playlists.PlaylistActions
 import com.sosauce.chocola.presentation.components.EmojiPicker
 import com.sosauce.chocola.presentation.components.Spacer
 import com.sosauce.chocola.presentation.components.animations.Icon

@@ -45,14 +45,13 @@ class WidgetsHelper(
         }
     }
 
-    fun artUriToByteArrayString(
-        uri: Uri?
+    fun artToByteArrayString(
+        art: ByteArray?
     ): String {
-        if (uri == null) return ""
+        if (art == null) return ""
 
         return try {
-            val bytes = context.contentResolver.openInputStream(uri)?.use { stream -> stream.readBytes() }
-            bytes?.takeIf { it.isNotEmpty() }?.let { Base64.encodeToString(it, Base64.DEFAULT) } ?: ""
+            art.takeIf { it.isNotEmpty() }?.let { Base64.encodeToString(it, Base64.DEFAULT) } ?: ""
         } catch (e: Exception) { "" }
 
 

@@ -36,13 +36,15 @@ import androidx.navigation3.ui.NavDisplay
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.presentation.components.ObserveAsEvents
+import com.sosauce.chocola.presentation.components.wrappers.ObserveAsEvents
 import com.sosauce.chocola.presentation.components.animations.AnimatedFab
 import com.sosauce.chocola.presentation.navigation.Screen
+import com.sosauce.chocola.presentation.navigation.navigate
+import com.sosauce.chocola.presentation.navigation.navigateBack
+import com.sosauce.chocola.presentation.screens.aod.AlwaysOnDisplay
 import com.sosauce.chocola.presentation.screens.settings.compenents.AboutCard
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsCategoryCard
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsScreens
-import com.sosauce.chocola.utils.navigateBack
 import com.sosauce.chocola.utils.selfAlignHorizontally
 import org.koin.androidx.compose.koinViewModel
 import kotlin.uuid.ExperimentalUuidApi
@@ -59,43 +61,49 @@ fun SettingsScreen(
     val context = LocalContext.current
     val resources = LocalResources.current
     val scrollState = rememberScrollState()
-    val backStack = rememberNavBackStack(SettingsScreens.Settings)
+    val backstack = rememberNavBackStack(SettingsScreens.Settings)
     val items = listOf(
         Item(
             icon = R.drawable.palette,
             name = stringResource(R.string.look_and_feel),
             description = stringResource(R.string.look_and_feel_desc),
-            onNavigate = { backStack.add(SettingsScreens.LookAndFeel) }
+            onNavigate = { backstack.navigate(SettingsScreens.LookAndFeel) }
         ),
         Item(
             icon = R.drawable.music_note,
             name = stringResource(R.string.now_playing),
             description = stringResource(R.string.now_playing_desc),
-            onNavigate = { backStack.add(SettingsScreens.NowPlaying) }
+            onNavigate = { backstack.navigate(SettingsScreens.NowPlaying) }
         ),
         Item(
             icon = R.drawable.navigation,
             name = stringResource(R.string.navigation),
             description = stringResource(R.string.navigation_desc),
-            onNavigate = { backStack.add(SettingsScreens.Navigation) }
+            onNavigate = { backstack.navigate(SettingsScreens.Navigation) }
+        ),
+        Item(
+            icon = R.drawable.brightness_medium,
+            name = stringResource(R.string.aod),
+            description = stringResource(R.string.aod_desc),
+            onNavigate = { backstack.navigate(SettingsScreens.AlwaysOnDisplay) }
         ),
         Item(
             icon = R.drawable.lyrics_rounded,
             name = stringResource(R.string.lyrics),
             description = stringResource(R.string.lyrics_settings_desc),
-            onNavigate = { backStack.add(SettingsScreens.Lyrics) }
+            onNavigate = { backstack.navigate(SettingsScreens.Lyrics) }
         ),
         Item(
             icon = R.drawable.headphones,
             name = stringResource(R.string.playback_controls),
             description = stringResource(R.string.playback_controls_desc),
-            onNavigate = { backStack.add(SettingsScreens.Playback) }
+            onNavigate = { backstack.navigate(SettingsScreens.Playback) }
         ),
         Item(
             icon = R.drawable.library,
             name = stringResource(R.string.library),
             description = stringResource(R.string.library_desc),
-            onNavigate = { backStack.add(SettingsScreens.Library) }
+            onNavigate = { backstack.navigate(SettingsScreens.Library) }
         )
     )
 
@@ -103,10 +111,10 @@ fun SettingsScreen(
         bottomBar = {
             AnimatedFab(
                 onClick = {
-                    if (backStack.size == 1) {
+                    if (backstack.size == 1) {
                         onNavigateUp()
                     } else {
-                        backStack.navigateBack()
+                        backstack.navigateBack()
                     }
                 },
                 modifier = Modifier
@@ -119,18 +127,18 @@ fun SettingsScreen(
         }
     ) { paddingValues ->
         NavDisplay(
-            backStack = backStack,
+            backStack = backstack,
             onBack = {
-                if (backStack.size == 1) {
+                if (backstack.size == 1) {
                     onNavigateUp()
                 } else {
-                    backStack.navigateBack()
+                    backstack.navigateBack()
                 }
             },
             transitionSpec = {
                 ContentTransform(
                     targetContentEnter = slideInHorizontally { it } + fadeIn(),
-                    initialContentExit = slideOutHorizontally { -it / 4} + fadeOut()
+                    initialContentExit = slideOutHorizontally { -it / 4 } + fadeOut()
                 )
             },
             predictivePopTransitionSpec = {
@@ -225,6 +233,15 @@ fun SettingsScreen(
                             onHandlePlaybackSettingsActions = viewModel::handlePlaybackSettingsActions
                         )
                     }
+                }
+                entry<SettingsScreens.AlwaysOnDisplay> {
+                    AlwaysOnDisplay(
+                        title = musicState.track.title,
+                        artist = musicState.track.artist,
+                        isPlaying = musicState.isPlaying,
+                        onHandlePlayerActions = onHandlePlayerActions,
+                        onExitAod = backstack::navigateBack
+                    )
                 }
 
                 entry<SettingsScreens.Library> {

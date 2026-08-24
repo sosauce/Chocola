@@ -16,6 +16,7 @@ import com.sosauce.chocola.data.repositories.IDRepositories
 import com.sosauce.chocola.utils.TrackSort
 import com.sosauce.chocola.utils.orderAlbumTrackNumber
 import com.sosauce.chocola.utils.ordered
+import com.sosauce.chocola.utils.search
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -40,12 +41,11 @@ class AlbumDetailsViewModel(
 
     val state = combine(
         abstractTracksScanner.latestTracks,
-        userPreferences.tracksSettings(),
+        userPreferences.searchSettings(),
         searchQuery
-    ) { tracks, settings, search ->
-        val orderedTracks = tracks
-            .fastFilter { it.album == albumName }
-            .ordered(settings, search.toString())
+    ) { tracks, settings, query ->
+        val searched = tracks
+            .search(query.toString(), settings)
             .orderAlbumTrackNumber()
 
 
@@ -56,7 +56,7 @@ class AlbumDetailsViewModel(
             id = idRepositories.getAlbumId(albumName),
             name = albumName,
             artist = artist,
-            tracks = orderedTracks
+            tracks = searched
         )
 
         AlbumDetailsState(

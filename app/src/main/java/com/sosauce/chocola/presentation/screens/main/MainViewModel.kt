@@ -4,6 +4,7 @@ package com.sosauce.chocola.presentation.screens.main
 
 import android.app.Application
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,6 +13,7 @@ import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.utils.combine
 import com.sosauce.chocola.utils.ordered
+import com.sosauce.chocola.utils.search
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,13 +39,13 @@ class MainViewModel(
 
     val state = combine(
         abstractTracksScanner.latestTracks,
-        userPreferences.tracksSettings(),
+        userPreferences.searchSettings(),
         searchQuery,
-    ) { tracks, settings, query ->
-        val ordered = tracks.ordered(settings, query.toString())
+    ) { tracks, searchSettings, query ->
+        val searched = tracks.search(query.toString(), searchSettings)
         MainState(
             isLoading = false,
-            tracks = ordered
+            tracks = searched
         )
     }.flowOn(Dispatchers.Default).stateIn(
         viewModelScope,
@@ -52,7 +54,7 @@ class MainViewModel(
     )
 }
 
-
+@Immutable
 data class MainState(
     val isLoading: Boolean = true,
     val tracks: List<CuteTrack> = emptyList()

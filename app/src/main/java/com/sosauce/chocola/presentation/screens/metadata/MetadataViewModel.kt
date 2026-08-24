@@ -20,7 +20,6 @@ import com.kyant.taglib.AudioPropertiesReadStyle
 import com.kyant.taglib.Metadata
 import com.kyant.taglib.Picture
 import com.kyant.taglib.TagLib
-import com.sosauce.chocola.domain.actions.MetadataActions
 import com.sosauce.chocola.utils.toAudioFileMetadata
 import com.sosauce.chocola.utils.toModifiableMap
 import com.sosauce.chocola.utils.toPropertyMap
@@ -44,6 +43,7 @@ class MetadataViewModel(
 
     private val _events = Channel<MetadataEvents>()
     val events = _events.receiveAsFlow()
+
 
     private val _metadata = MutableStateFlow(MetadataState())
     val metadataState = _metadata.asStateFlow()

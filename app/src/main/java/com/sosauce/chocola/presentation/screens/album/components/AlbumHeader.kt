@@ -32,6 +32,7 @@ import coil3.compose.AsyncImage
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.models.Album
 import com.sosauce.chocola.data.models.CuteTrack
+import com.sosauce.chocola.domain.actions.PlaySource
 import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.presentation.components.animations.AnimatedFab
 import com.sosauce.chocola.utils.ImageUtils
@@ -93,7 +94,13 @@ fun SharedTransitionScope.AlbumHeader(
             }
 
             AnimatedFab(
-                onClick = { onHandlePlayerActions(PlayerActions.Play(0, tracks)) },
+                onClick = {
+                    onHandlePlayerActions(
+                        PlayerActions.StartPlaylist(
+                            source = PlaySource.Album(album.name)
+                        )
+                    )
+                },
                 icon = R.drawable.widget_play,
                 minSize = 90.dp
             )

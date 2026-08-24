@@ -25,7 +25,9 @@ import com.sosauce.chocola.data.states.MusicState
 @Composable
 fun TitleAndArtist(
     titleModifier: Modifier = Modifier,
-    musicState: MusicState
+    title: String,
+    artist: String,
+    album: String
 ) {
 
     val showAlbumName by rememberShowAlbumName()
@@ -37,7 +39,7 @@ fun TitleAndArtist(
     ) {
         AnimatedContent(
             modifier = Modifier.fillMaxWidth(),
-            targetState = musicState.track.title,
+            targetState = title,
             transitionSpec = { fadeIn() togetherWith fadeOut() }
         ) {
             Text(
@@ -54,7 +56,7 @@ fun TitleAndArtist(
         }
         AnimatedContent(
             modifier = Modifier.fillMaxWidth(),
-            targetState = musicState.track.artist to musicState.track.album,
+            targetState = artist to album,
             transitionSpec = { fadeIn() togetherWith fadeOut() }
         ) { (artist, album) ->
             Text(

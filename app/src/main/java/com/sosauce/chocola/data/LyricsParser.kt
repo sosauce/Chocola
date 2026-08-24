@@ -9,6 +9,7 @@ import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
 import android.util.Log
 import androidx.compose.ui.util.fastMap
+import com.google.common.collect.ImmutableList
 import com.kyant.taglib.TagLib
 import com.mocharealm.accompanist.lyrics.core.model.ISyncedLine
 import com.mocharealm.accompanist.lyrics.core.model.karaoke.KaraokeLine

@@ -18,9 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
+import androidx.graphics.shapes.CornerRounding
+import androidx.graphics.shapes.RoundedPolygon
+import androidx.graphics.shapes.rectangle
 import com.sosauce.chocola.R
 import com.sosauce.chocola.presentation.screens.playing.components.ClassicThumb
-import com.sosauce.chocola.presentation.screens.playing.components.CuteSliderState
 import com.sosauce.chocola.presentation.screens.playing.components.MorphingThumb
 import com.sosauce.chocola.presentation.screens.playing.components.StraightThumb
 import com.sosauce.chocola.presentation.screens.playing.components.StraightTrack
@@ -52,7 +54,6 @@ object CuteTheme {
 }
 
 object ArtworkShape {
-    const val CLASSIC = "classic"
     const val ROUNDED = "rounded"
     const val CIRCLE = "circle"
     const val COOKIE_4 = "cookie4"
@@ -67,7 +68,6 @@ object ArtworkShape {
 
     @Composable
     fun toShape(shape: String): Shape = when (shape) {
-        CLASSIC -> SquircleShape(percent = 30, smoothing = CornerSmoothing.Full)
         ROUNDED -> RoundedCornerShape(10)
         CIRCLE -> MaterialShapes.Circle.toShape()
         COOKIE_4 -> MaterialShapes.Cookie4Sided.toShape()
@@ -79,7 +79,34 @@ object ArtworkShape {
         DIAMOND -> MaterialShapes.Diamond.toShape()
         BUN -> MaterialShapes.Bun.toShape()
         HEART -> MaterialShapes.Heart.toShape()
-        else -> SquircleShape(percent = 30, smoothing = CornerSmoothing.Full)
+        else -> RoundedCornerShape(10)
+    }
+
+    fun toRoundedPolygon(shape: String): RoundedPolygon {
+
+
+        val rounded = RoundedPolygon.rectangle(
+            rounding = CornerRounding(
+                radius = 0.2f
+            )
+        ).normalized()
+
+        println("artwork shape: $shape")
+
+        return when (shape) {
+            ROUNDED -> rounded
+            CIRCLE -> MaterialShapes.Circle
+            COOKIE_4 -> MaterialShapes.Cookie4Sided
+            COOKIE_9 -> MaterialShapes.Cookie9Sided
+            COOKIE_12 -> MaterialShapes.Cookie12Sided
+            CLOVER_8 -> MaterialShapes.Clover8Leaf
+            SUNNY -> MaterialShapes.Sunny
+            ARROW -> MaterialShapes.Arrow
+            DIAMOND -> MaterialShapes.Diamond
+            BUN -> MaterialShapes.Bun
+            HEART -> MaterialShapes.Heart
+            else -> rounded
+        }
     }
 }
 

@@ -21,9 +21,12 @@ import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberArtworkShape
 import com.sosauce.chocola.data.datastore.rememberCarousel
 import com.sosauce.chocola.data.datastore.rememberCenterTitle
+import com.sosauce.chocola.data.datastore.rememberDynamicDuration
+import com.sosauce.chocola.data.datastore.rememberNowPlayingShapeMorph
 import com.sosauce.chocola.data.datastore.rememberShowAlbumName
 import com.sosauce.chocola.data.datastore.rememberThumbStyle
 import com.sosauce.chocola.data.datastore.rememberTrackStyle
+import com.sosauce.chocola.data.datastore.rememberUseArtAsBackground
 import com.sosauce.chocola.presentation.components.LazyRowWithScrollButton
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsSwitch
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsWithTitle
@@ -42,9 +45,12 @@ fun SettingsNowPlaying() {
     var centerTitle by rememberCenterTitle()
     var thumbStyle by rememberThumbStyle()
     var trackStyle by rememberTrackStyle()
+    var useArtBackground by rememberUseArtAsBackground()
+    var dynamicDuration by rememberDynamicDuration()
+    var shapeMorph by rememberNowPlayingShapeMorph()
+
 
     val shapes = listOf(
-        ArtworkShape.CLASSIC,
         ArtworkShape.ROUNDED,
         ArtworkShape.CIRCLE,
         ArtworkShape.COOKIE_4,
@@ -93,13 +99,21 @@ fun SettingsNowPlaying() {
                     )
                 }
             }
-//                SettingsCards(
-//                    checked = artAsBackground,
-//                    onCheckedChange = { artAsBackground = !artAsBackground },
-//                    topDp = 4.dp,
-//                    bottomDp = 4.dp,
-//                    text = stringResource(R.string.art_as_bg)
-//                )
+            SettingsSwitch(
+                checked = useArtBackground,
+                onCheckedChange = { useArtBackground = !useArtBackground },
+                topDp = 4.dp,
+                bottomDp = 4.dp,
+                text = stringResource(R.string.art_as_bg)
+            )
+            SettingsSwitch(
+                checked = shapeMorph,
+                onCheckedChange = { shapeMorph = !shapeMorph },
+                topDp = 4.dp,
+                bottomDp = 4.dp,
+                text = stringResource(R.string.shape_morph),
+                optionalDescription = R.string.shape_morph_desc
+            )
             SettingsSwitch(
                 checked = useCarousel,
                 onCheckedChange = { useCarousel = !useCarousel },
@@ -170,8 +184,16 @@ fun SettingsNowPlaying() {
                 checked = showAlbumName,
                 onCheckedChange = { showAlbumName = !showAlbumName },
                 topDp = 4.dp,
-                bottomDp = 24.dp,
+                bottomDp = 4.dp,
                 text = stringResource(R.string.show_album_name)
+            )
+            SettingsSwitch(
+                checked = dynamicDuration,
+                onCheckedChange = { dynamicDuration = !dynamicDuration },
+                topDp = 4.dp,
+                bottomDp = 24.dp,
+                text = stringResource(R.string.dynamic_duration),
+                optionalDescription = R.string.dynamic_duration_desc
             )
         }
     }

@@ -72,12 +72,8 @@ class QuickPlayViewModel(
         override fun onEvents(player: Player, events: Player.Events) {
             super.onEvents(player, events)
 
-
-            val track = musicState.value.track.copy(
-                durationMs = player.duration
-            )
             _musicState.update {
-                it.copy(track = track)
+                it.copy(duration = player.duration)
             }
             viewModelScope.launch {
                 while (player.isPlaying) {
@@ -102,7 +98,7 @@ class QuickPlayViewModel(
             val track = CuteTrack(
                 title = title ?: "<unknown>",
                 artist = artist,
-                artUri = art
+                artUriString = art.toString()
             )
 
             _musicState.update {

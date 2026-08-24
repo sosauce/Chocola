@@ -6,33 +6,21 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.foundation.text.input.rememberTextFieldState
-import androidx.compose.material3.ContainedLoadingIndicator
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.materialkolor.DynamicMaterialExpressiveTheme
 import com.materialkolor.dynamiccolor.ColorSpec
@@ -40,12 +28,10 @@ import com.materialkolor.rememberDynamicMaterialThemeState
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberAppTheme
 import com.sosauce.chocola.data.datastore.rememberPaletteStyle
-import com.sosauce.chocola.data.datastore.rememberSortTracksAscending
-import com.sosauce.chocola.data.datastore.rememberTrackSort
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.states.MusicState
+import com.sosauce.chocola.domain.actions.PlaySource
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.domain.actions.PlaylistActions
 import com.sosauce.chocola.presentation.components.CuteSearchbar
 import com.sosauce.chocola.presentation.components.CuteSearchbarDefaults
 import com.sosauce.chocola.presentation.components.DefaultMusicListItemTrailingContent
@@ -82,6 +68,8 @@ fun SharedTransitionScope.PlaylistDetailsScreen(
     val isSystemInDarkTheme = isSystemInDarkTheme()
     val paletteStyle by rememberPaletteStyle()
     val multiSelectState = rememberSweetSelectState<CuteTrack>()
+    val activeTrackId = remember(musicState.track) { musicState.track.mediaId }
+
 
 
 
@@ -120,10 +108,9 @@ fun SharedTransitionScope.PlaylistDetailsScreen(
                                 AnimatedFab(
                                     onClick = {
                                         onHandlePlayerAction(
-                                            PlayerActions.Play(
-                                                index = 0,
-                                                tracks = state.tracks,
-                                                random = true
+                                            PlayerActions.PlayFromSource(
+                                                mediaId = null,
+                                                source = PlaySource.ExplicitTracks(state.tracks)
                                             )
                                         )
                                     },
@@ -184,9 +171,9 @@ fun SharedTransitionScope.PlaylistDetailsScreen(
                                     multiSelectState.toggle(track)
                                 } else {
                                     onHandlePlayerAction(
-                                        PlayerActions.Play(
-                                            index = state.tracks.indexOf(track),
-                                            tracks = state.tracks
+                                        PlayerActions.PlayFromSource(
+                                            mediaId = track.mediaId,
+                                            source = PlaySource.ExplicitTracks(state.tracks)
                                         )
                                     )
                                 }
@@ -194,7 +181,7 @@ fun SharedTransitionScope.PlaylistDetailsScreen(
                             isSelected = isSelected,
                             onLongClick = { multiSelectState.toggle(track) },
                             track = track,
-                            musicState = musicState,
+                            isActive = track.mediaId == activeTrackId,
                             trailingContent = {
                                 DefaultMusicListItemTrailingContent(
                                     track = track,

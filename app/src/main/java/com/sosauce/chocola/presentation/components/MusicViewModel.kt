@@ -4,9 +4,6 @@ package com.sosauce.chocola.presentation.components
 
 import android.app.Application
 import android.content.ComponentName
-import android.content.Context
-import android.database.ContentObserver
-import android.media.AudioManager
 import android.net.Uri
 import android.os.CountDownTimer
 import androidx.compose.runtime.getValue
@@ -19,15 +16,17 @@ import androidx.compose.ui.util.fastFirstOrNull
 import androidx.compose.ui.util.fastMap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
+import androidx.media3.common.Timeline
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import coil3.imageLoader
 import coil3.request.ImageRequest
-import coil3.request.allowHardware
 import coil3.toBitmap
 import com.google.common.util.concurrent.MoreExecutors
 import com.sosauce.chocola.data.AbstractTracksScanner
@@ -35,10 +34,10 @@ import com.sosauce.chocola.data.LyricsParser
 import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.mappers.toMediaItem
 import com.sosauce.chocola.data.states.MusicState
+import com.sosauce.chocola.domain.actions.PlaySource
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.domain.services.PlaybackService
+import com.sosauce.chocola.core.PlaybackService
 import com.sosauce.chocola.utils.changeRepeatMode
-import com.sosauce.chocola.utils.combine
 import com.sosauce.chocola.utils.copyMutate
 import com.sosauce.chocola.utils.ordered
 import com.sosauce.chocola.utils.pauseWithFadeOut
@@ -46,20 +45,19 @@ import com.sosauce.chocola.utils.playOrPause
 import com.sosauce.chocola.utils.playRandom
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 class MusicViewModel(
     private val application: Application,
@@ -72,17 +70,7 @@ class MusicViewModel(
     private val _musicState = MutableStateFlow(MusicState())
     val musicState = _musicState.asStateFlow()
 
-    // Keep player tracks in sync with UI
-    private val tracks = combine(
-        abstractTracksScanner.latestTracks,
-        userPreferences.tracksSettings()
-    ) { tracks, settings ->
-        tracks.ordered(settings)
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.Eagerly,
-        emptyList()
-    )
+    private val tracks = abstractTracksScanner.latestTracks
 
     var artworkImageBitmap by mutableStateOf<ImageBitmap?>(null)
         private set
@@ -92,18 +80,19 @@ class MusicViewModel(
         @UnstableApi
         object : Player.Listener {
 
+
+
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                 super.onMediaItemTransition(mediaItem, reason)
 
                 if (mediaItem == null) return
 
-                musicState.value.loadedMedias.fastFirstOrNull { track ->
+                tracks.value.fastFirstOrNull { track ->
                     track.mediaId == mediaItem.mediaId
                 }?.also { track ->
                     _musicState.update {
                         it.copy(
-                            track = track,
-                            mediaIndex = mediaController!!.currentMediaItemIndex
+                            track = track
                         )
                     }
                     loadNewArt(track.artUri)
@@ -111,6 +100,22 @@ class MusicViewModel(
 
                 }
             }
+
+            // timeline = queue/playlist, window = 1 song: that's easier to remember
+            override fun onTimelineChanged(timeline: Timeline, reason: Int) {
+                super.onTimelineChanged(timeline, reason)
+                updateLoadedMedias(timeline)
+            }
+
+            override fun onDeviceVolumeChanged(volume: Int, muted: Boolean) {
+                super.onDeviceVolumeChanged(volume, muted)
+
+                viewModelScope.launch {
+                    val shouldMuteOnPause = userPreferences.getPauseOnMute().first()
+                    if (muted && shouldMuteOnPause) mediaController!!.pause()
+                }
+            }
+
 
             override fun onAudioSessionIdChanged(audioSessionId: Int) {
                 super.onAudioSessionIdChanged(audioSessionId)
@@ -147,6 +152,7 @@ class MusicViewModel(
                         shuffle = shuffleModeEnabled
                     )
                 }
+                updateLoadedMedias(mediaController!!.currentTimeline)
             }
 
             override fun onRepeatModeChanged(repeatMode: Int) {
@@ -194,13 +200,21 @@ class MusicViewModel(
                 super.onPositionDiscontinuity(oldPosition, newPosition, reason)
                 _musicState.update {
                     it.copy(
-                        position = newPosition.positionMs.coerceIn(0, musicState.value.track.durationMs)
+                        position = newPosition.positionMs.coerceAtLeast(0)
                     )
                 }
             }
 
+
             override fun onEvents(player: Player, events: Player.Events) {
                 super.onEvents(player, events)
+                _musicState.update {
+                    it.copy(
+                        duration = player.duration
+                    )
+                }
+
+
                 viewModelScope.launch {
                     while (player.isPlaying) {
                         _musicState.update {
@@ -208,7 +222,7 @@ class MusicViewModel(
                                 position = player.currentPosition
                             )
                         }
-                        delay(500.milliseconds)
+                        delay(1.seconds)
                     }
                 }
             }
@@ -218,11 +232,43 @@ class MusicViewModel(
         viewModelScope.launch {
             val request = ImageRequest.Builder(application)
                 .data(art)
-                .allowHardware(false)
+                //.allowHardware(false)
                 .build()
             val result = application.imageLoader.execute(request)
 
             artworkImageBitmap = result.image?.toBitmap()?.asImageBitmap()
+        }
+    }
+
+    private fun updateLoadedMedias(timeline: Timeline) {
+        val allTracks = tracks.value
+        val window = Timeline.Window()
+        val newTracks = buildList(timeline.windowCount) {
+
+            var currentWindowIndex = timeline.getFirstWindowIndex(mediaController!!.shuffleModeEnabled)
+
+            while (currentWindowIndex != C.INDEX_UNSET) {
+                timeline.getWindow(currentWindowIndex, window)
+
+                val mediaId = window.mediaItem.mediaId
+                val found = allTracks.fastFirstOrNull { it.mediaId == mediaId }
+                found?.let { add(it) }
+
+                currentWindowIndex = timeline.getNextWindowIndex(
+                    currentWindowIndex,
+                    Player.REPEAT_MODE_OFF,
+                    mediaController!!.shuffleModeEnabled
+                )
+            }
+        }
+
+
+
+        _musicState.update {
+            it.copy(
+                loadedMedias = newTracks,
+                mediaIndex = newTracks.indexOf(it.track),
+            )
         }
     }
 
@@ -256,17 +302,6 @@ class MusicViewModel(
                     MoreExecutors.directExecutor()
                 )
             }
-
-        viewModelScope.launch {
-            userPreferences.getPauseOnMute().collectLatest { pauseOnMute ->
-                if (pauseOnMute) {
-                    observeIsMuted().collectLatest { isMute ->
-                        if (isMute) mediaController!!.pause()
-                    }
-                }
-            }
-
-        }
     }
 
 
@@ -281,15 +316,14 @@ class MusicViewModel(
                 shuffleModeEnabled = savedMusicState.shuffle
                 mediaController!!.playbackParameters = mediaController!!.playbackParameters.withSpeed(savedMusicState.speed)
                 mediaController!!.playbackParameters = mediaController!!.playbackParameters.withPitch(savedMusicState.pitch)
-                val mediaItems = savedMusicState.loadedMedias.fastMap {
-                    MediaItem.fromUri(it.uri).buildUpon()
-                        .setMediaId(it.mediaId)
-                        .build()
-                }
+                val mediaItems = savedMusicState.loadedMedias.fastMap { it.toMediaItem() }
+                val index = savedMusicState.loadedMedias.indexOf(savedMusicState.track)
+
+
                 if (savedMusicState.loadedMedias.isNotEmpty()) {
                     setMediaItems(
                         mediaItems,
-                        savedMusicState.mediaIndex,
+                        index,
                         savedMusicState.position
                     )
                     prepare()
@@ -300,28 +334,7 @@ class MusicViewModel(
     }
 
 
-    // https://stackoverflow.com/a/78301908/28577483
-    private fun observeIsMuted() = callbackFlow {
-        val audioManager =
-            application.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        val volumeObserver = object : ContentObserver(null) {
-            override fun onChange(selfChange: Boolean) {
-                val cv = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
-                if (cv == 0) trySend(true)
-            }
-        }
-
-        application.contentResolver.registerContentObserver(
-            android.provider.Settings.System.CONTENT_URI,
-            true,
-            volumeObserver
-        )
-        awaitClose { application.contentResolver.unregisterContentObserver(volumeObserver) }
-
-    }
-
     override fun onCleared() {
-        super.onCleared()
         runBlocking { userPreferences.saveSavedMusicState(musicState.value) }
         mediaController!!.removeListener(playerListener)
         mediaController!!.release()
@@ -338,6 +351,18 @@ class MusicViewModel(
             is PlayerActions.SeekTo -> mediaController!!.seekTo(mediaController!!.currentPosition + action.position)
             is PlayerActions.SeekToSlider -> mediaController!!.seekTo(action.position)
             is PlayerActions.RewindTo -> mediaController!!.seekTo(mediaController!!.currentPosition - action.position)
+            is PlayerActions.PlayTrack -> {
+                val targetMediaId = action.track.mediaId
+
+                val index = (0 until mediaController!!.mediaItemCount).firstOrNull { index ->
+                    mediaController!!.getMediaItemAt(index).mediaId == targetMediaId
+                }
+
+                index?.let { index ->
+                    mediaController!!.seekTo(index, 0)
+                    mediaController!!.play()
+                }
+            }
             is PlayerActions.StopPlayback -> {
                 mediaController?.run {
                     stop()
@@ -351,7 +376,6 @@ class MusicViewModel(
                     )
                 }
             }
-            is PlayerActions.SeekToMusicIndex -> mediaController!!.seekTo(action.index, 0)
             is PlayerActions.Shuffle -> mediaController!!.shuffleModeEnabled = !mediaController!!.shuffleModeEnabled
             is PlayerActions.ChangeRepeatMode -> mediaController!!.changeRepeatMode()
             is PlayerActions.SetSpeed -> mediaController!!.playbackParameters = mediaController!!.playbackParameters.withSpeed(action.speed)
@@ -365,53 +389,42 @@ class MusicViewModel(
                     )
                 }
             }
-            is PlayerActions.Play2 -> {
+            is PlayerActions.PlayFromSource -> {
 
-                // TODO: implement to all screens except main
+
                 val currentTracks = tracks.value
+                val random = action.mediaId == null
 
-                val targetTracks = when (action.playlist) {
-                    PLAYLIST_TYPE_ALL -> currentTracks
-                    PLAYLIST_TYPE_ALBUM -> currentTracks.fastFilter { it.album == action.data }
-                    PLAYLIST_TYPE_ARTIST -> currentTracks.fastFilter { it.artist == action.data }
-                    else -> return
+
+                val targetTracks = when (val source = action.source) {
+                    is PlaySource.All -> currentTracks
+                    is PlaySource.Album -> currentTracks.fastFilter { it.album == source.name }
+                    is PlaySource.Artist -> currentTracks.fastFilter { it.artist == source.name }
+                    is PlaySource.ExplicitTracks -> source.tracks
                 }
 
-                println("mediaId we're searching: ${action.mediaId}")
-                currentTracks.forEach {
-                    println("mediaId: ${it.mediaId}")
-
-                }
-                val index = targetTracks.indexOfFirst { it.mediaId == action.mediaId }
-
-                println("Index we got: $index")
-
-                val mediaItems = targetTracks.fastMap { it.toMediaItem() }
-
-                mediaController?.apply {
-                    setMediaItems(mediaItems, index, 0) // Sets items & seeks in 1 call
-                    prepare() // Needed to start buffering!
-                    play()
-                }
-            }
-            is PlayerActions.Play -> {
-                val mediaItemsToPlay = action.tracks.fastMap { it.mediaItem }
-
-                // MediaController needs to update playlist
-                if (action.tracks != musicState.value.loadedMedias) {
-                    _musicState.update {
-                        it.copy(
-                            loadedMedias = action.tracks
-                        )
+                if (random) {
+                    val mediaItems = targetTracks.fastMap { it.toMediaItem() }
+                    mediaController?.apply {
+                        setMediaItems(mediaItems)
+                        playRandom()
                     }
-                    mediaController!!.setMediaItems(mediaItemsToPlay)
-                }
-                if (action.random) {
-                    mediaController!!.playRandom()
                 } else {
-                    mediaController!!.seekTo(action.index, 0)
-                    mediaController!!.play()
+                    val index = targetTracks.indexOfFirst { it.mediaId == action.mediaId }.coerceAtLeast(0)
+
+                    if (targetTracks == musicState.value.loadedMedias) {
+                        mediaController?.seekTo(index, 0)
+                        mediaController?.play()
+                    } else {
+                        val mediaItems = targetTracks.fastMap { it.toMediaItem() }
+                        mediaController?.apply {
+                            setMediaItems(mediaItems, index, 0)
+                            play()
+                        }
+                    }
                 }
+
+
             }
 
             is PlayerActions.UpdateCurrentPosition -> {
@@ -455,6 +468,7 @@ class MusicViewModel(
                 sleepCountdownTimer?.start()
             }
 
+            // Cannot be called when shuffle is on
             is PlayerActions.ReArrangeQueue -> {
                 mediaController!!.moveMediaItem(
                     action.from,
@@ -466,6 +480,7 @@ class MusicViewModel(
                     add(action.to, itemToMove)
                 }
 
+
                 _musicState.update {
                     it.copy(
                         loadedMedias = loadedMedias
@@ -473,18 +488,16 @@ class MusicViewModel(
                 }
             }
 
+            // Cannot be called when shuffle is on
             is PlayerActions.RemoveFromQueue -> {
                 val index = musicState.value.loadedMedias.indexOf(action.track)
-                mediaController!!.removeMediaItem(index)
-
-                _musicState.update {
-                    it.copy(
-                        loadedMedias = it.loadedMedias - action.track
-                    )
+                if (index != -1) {
+                    mediaController?.removeMediaItem(index)
                 }
             }
             is PlayerActions.AddToQueue -> {
                 val newUniqueTracks = action.cuteTracks.fastFilter { it !in musicState.value.loadedMedias }
+
 
                 if (newUniqueTracks.isNotEmpty()) {
                     _musicState.update {
@@ -494,36 +507,41 @@ class MusicViewModel(
                     }
 
                     mediaController?.addMediaItems(
-                        newUniqueTracks.fastMap { it.mediaItem }
+                        newUniqueTracks.fastMap { it.toMediaItem() }
                     )
                 }
             }
 
             is PlayerActions.PlayNext -> {
-                _musicState.update {
-                    it.copy(
-                        loadedMedias = it.loadedMedias.copyMutate {
-                            add(it.mediaIndex + 1, action.cuteTrack)
-                        }
-                    )
-                }
 
-                mediaController?.addMediaItem(musicState.value.mediaIndex + 1, action.cuteTrack.mediaItem)
+                val index = mediaController!!.currentMediaItemIndex + 1
+
+                mediaController?.shuffleModeEnabled = false
+                mediaController?.addMediaItem(index, action.cuteTrack.toMediaItem())
             }
             is PlayerActions.LoadLyrics -> {
                 viewModelScope.launch {
                     val lyrics = lyricsParser.parseLyrics(action.uri.path ?: return@launch)
                     _musicState.update {
-                        it.copy(lyrics = lyrics)
+                        it.copy(
+                            lyrics = lyrics
+                        )
                     }
                 }
             }
-        }
-    }
+            is PlayerActions.StartPlaylist -> {
+                val currentTracks = tracks.value
 
-    companion object {
-        const val PLAYLIST_TYPE_ALL = 0
-        const val PLAYLIST_TYPE_ALBUM = 1
-        const val PLAYLIST_TYPE_ARTIST = 2
+
+                val targetTracks = when (val source = action.source) {
+                    is PlaySource.All -> currentTracks
+                    is PlaySource.Album -> currentTracks.fastFilter { it.album == source.name }
+                    is PlaySource.Artist -> currentTracks.fastFilter { it.artist == source.name }
+                    is PlaySource.ExplicitTracks -> source.tracks
+                }
+
+                mediaController!!.setMediaItems(targetTracks.fastMap { it.toMediaItem() }, 0, 0)
+            }
+        }
     }
 }

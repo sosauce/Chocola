@@ -29,7 +29,9 @@ fun LoadingBox(
             ) {
                 ContainedLoadingIndicator()
             }
-        } else { loadedContent() }
+        } else {
+            loadedContent()
+        }
     }
 
 }

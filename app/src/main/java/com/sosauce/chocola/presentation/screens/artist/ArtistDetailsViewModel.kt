@@ -16,7 +16,9 @@ import com.sosauce.chocola.data.models.Artist
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.repositories.ArtistsRepository
 import com.sosauce.chocola.presentation.screens.album.AlbumDetailsState
+import com.sosauce.chocola.utils.orderAlbumTrackNumber
 import com.sosauce.chocola.utils.ordered
+import com.sosauce.chocola.utils.search
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,16 +46,15 @@ class ArtistDetailsViewModel(
 
     val state = combine(
         abstractTracksScanner.latestTracks,
-        userPreferences.tracksSettings(),
+        userPreferences.searchSettings(),
         searchQuery
     ) { tracks, settings, query ->
-        val orderedTracks = tracks
-            .fastFilter { it.artist == artistName }
-            .ordered(settings, query.toString())
+        val searched = tracks
+            .search(query.toString(), settings)
 
         ArtistDetailsState(
             isLoading = false,
-            tracks = orderedTracks,
+            tracks = searched,
             albums = emptyList()
         )
     }.flowOn(Dispatchers.Default).stateIn(

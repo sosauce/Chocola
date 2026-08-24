@@ -27,6 +27,7 @@ import androidx.compose.ui.util.fastForEach
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.models.Playlist
+import com.sosauce.chocola.domain.actions.PlaySource
 import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.presentation.components.animations.AnimatedFab
 
@@ -81,7 +82,13 @@ fun PlaylistHeader(
         }
 
         AnimatedFab(
-            onClick = { onHandlePlayerActions(PlayerActions.Play(0, tracks)) },
+            onClick = {
+                onHandlePlayerActions(
+                    PlayerActions.StartPlaylist(
+                        source = PlaySource.ExplicitTracks(tracks)
+                    )
+                )
+            },
             icon = R.drawable.widget_play,
             minSize = 90.dp
         )

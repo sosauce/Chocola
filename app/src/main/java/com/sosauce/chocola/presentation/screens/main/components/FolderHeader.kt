@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
+import com.sosauce.chocola.domain.actions.PlaySource
 import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.presentation.screens.main.Category
 import com.sosauce.chocola.utils.ICON_TEXT_SPACING
@@ -61,9 +62,8 @@ fun FolderHeader(
             IconButton(
                 onClick = {
                     onHandlePlayerAction(
-                        PlayerActions.Play(
-                            index = 0,
-                            tracks = category.tracks
+                        PlayerActions.StartPlaylist(
+                            source = PlaySource.ExplicitTracks(category.tracks)
                         )
                     )
                 },
@@ -80,7 +80,7 @@ fun FolderHeader(
             )
             Spacer(Modifier.width(ICON_TEXT_SPACING.dp))
             Text(
-                text = File(category.name).name,
+                text = category.name,
                 modifier = Modifier.weight(1f)
             )
             IconButton(

@@ -1,6 +1,7 @@
 package com.sosauce.chocola.data.models
 
 import android.net.Uri
+import androidx.compose.runtime.Immutable
 import androidx.media3.common.MediaItem
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -15,37 +16,21 @@ import androidx.core.net.toUri
 @Serializable
 data class CuteTrack(
     val mediaId: String = "",
-    @Serializable(with = UriSerializer::class)
-    val uri: Uri = Uri.EMPTY,
-    @Serializable(with = UriSerializer::class)
-    val artUri: Uri = Uri.EMPTY,
+    private val uriString: String = "",
+    private val artUriString: String = "",
     val title: String = "",
     val artist: String = "",
     val album: String = "",
-    val albumId: Long = 0,
-    val artistId: Long = 0,
-    val durationMs: Long = 0,
     val trackNumber: Int = 0,
-    val year: Int = 0,
-    val size: Long = 0,
     val folder: String = "",
     val path: String = "",
-    val isSaf: Boolean = false,
-    val dateModified: Long = 0,
-    @Transient
-    val mediaItem: MediaItem = MediaItem.EMPTY
-)
+    val isSaf: Boolean = false
+) {
+    val uri
+        get() = uriString.toUri()
 
-object UriSerializer : KSerializer<Uri> {
-    override val descriptor: SerialDescriptor =
-        PrimitiveSerialDescriptor("Uri", PrimitiveKind.STRING)
-
-    override fun serialize(
-        encoder: Encoder,
-        value: Uri
-    ) = encoder.encodeString(value.toString())
-
-    override fun deserialize(decoder: Decoder): Uri = decoder.decodeString().toUri()
+    val artUri
+        get() = artUriString.toUri()
 }
 
 

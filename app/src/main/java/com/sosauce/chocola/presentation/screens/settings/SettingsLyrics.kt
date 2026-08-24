@@ -112,7 +112,7 @@ fun SettingsLyrics() {
             SettingsInput(
                 value = lyricsFontSize,
                 minValue = 20,
-                maxValue = 40,
+                maxValue = 30,
                 topDp = 4.dp,
                 bottomDp = 4.dp,
                 text = R.string.font_size,

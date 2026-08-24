@@ -133,27 +133,31 @@ class UserPreferences(
         val gainsString = context.dataStore.data.map {
             it[EQUALIZER_GAINS] ?: "0,0,0,0,0,0,0,0,0,0"
         }.first()
-        println("Gains - Get: ${gainsString.split(",").fastMap { it.toFloatOrNull() ?: 0f }}}")
         return gainsString.split(",").fastMap { it.toFloatOrNull() ?: 0f }
     }
     suspend fun saveBandGains(gains: List<Float>) {
         context.dataStore.edit {
-            println("Gains - Saved: ${gains.joinToString(",")}")
             it[EQUALIZER_GAINS] = gains.joinToString(",")
         }
     }
 
     fun tracksSettings() = combine(
         getTrackSort,
-        getRegexFilter,
-        getMatchCaseFilter,
         sortTracksAscending
-    ) { sort, regex, matchCase, asc ->
+    ) { sort, asc ->
         TracksSettings(
             sort = sort,
-            regex = regex,
-            matchCase = matchCase,
             ascending = asc
+        )
+    }
+
+    fun searchSettings() = combine(
+        getRegexFilter,
+        getMatchCaseFilter
+    ) { regex, matchCase ->
+        SearchSettings(
+            regex = regex,
+            matchCase = matchCase
         )
     }
 
@@ -162,7 +166,10 @@ class UserPreferences(
 
 data class TracksSettings(
     val sort: TrackSort,
-    val regex: Boolean,
-    val matchCase: Boolean,
     val ascending: Boolean
+)
+
+data class SearchSettings(
+    val regex: Boolean,
+    val matchCase: Boolean
 )

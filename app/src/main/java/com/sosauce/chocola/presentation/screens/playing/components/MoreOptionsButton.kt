@@ -28,7 +28,7 @@ import com.sosauce.chocola.R
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.presentation.components.MoreOptions
 import com.sosauce.chocola.presentation.components.dialogs.DeletionDialog
-import com.sosauce.chocola.presentation.components.dialogs.TracksDetailsDialog
+import com.sosauce.chocola.presentation.components.dialogs.tracksDetails.TracksDetailsDialog
 import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.presentation.screens.playlists.components.PlaylistPicker
 import com.sosauce.chocola.utils.rememberInteractionSource

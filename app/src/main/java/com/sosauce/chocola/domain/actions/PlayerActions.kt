@@ -2,6 +2,7 @@ package com.sosauce.chocola.domain.actions
 
 import android.net.Uri
 import com.sosauce.chocola.data.models.CuteTrack
+import kotlinx.serialization.Serializable
 
 sealed interface PlayerActions {
     data object PlayOrPause : PlayerActions
@@ -14,26 +15,18 @@ sealed interface PlayerActions {
     data object ChangeRepeatMode : PlayerActions
     data object CancelSleepTimer : PlayerActions
     data class SeekTo(val position: Long) : PlayerActions
+    data class PlayTrack(val track: CuteTrack) : PlayerActions
     data class SeekToSlider(val position: Long) : PlayerActions
     data class RewindTo(val position: Long) : PlayerActions
-    data class SeekToMusicIndex(val index: Int) : PlayerActions
     data class SetSpeed(val speed: Float) : PlayerActions
     data class SetPitch(val pitch: Float) : PlayerActions
 
-    data class Play(
-        val index: Int,
-        val tracks: List<CuteTrack>,
-        val random: Boolean = false
+    data class PlayFromSource(
+        val mediaId: String?,
+        val source: PlaySource
     ) : PlayerActions
 
-    /**
-     * @param data What we want to play, for example, an album's name. For a playlist, it will be it's mediaIds separated with a space, for main screen it will be null
-     */
-    data class Play2(
-        val mediaId: String,
-        val playlist: Int,
-        val data: String?
-    ) : PlayerActions
+    data class StartPlaylist(val source: PlaySource) : PlayerActions
 
     data class UpdateCurrentPosition(
         val position: Long
@@ -64,4 +57,11 @@ sealed interface PlayerActions {
     data class LoadLyrics(
         val uri: Uri
     ) : PlayerActions
+}
+
+sealed interface PlaySource {
+    data object All : PlaySource
+    data class Album(val name: String) : PlaySource
+    data class Artist(val name: String) : PlaySource
+    data class ExplicitTracks(val tracks: List<CuteTrack>) : PlaySource
 }

@@ -7,10 +7,10 @@ import com.sosauce.chocola.domain.model.Lyrics
 import kotlinx.serialization.Serializable
 
 @Serializable
-@Stable
 data class MusicState(
     val track: CuteTrack = CuteTrack(),
     val isPlaying: Boolean = false,
+    val duration: Long = 0L,
     val position: Long = 0L,
     val speed: Float = 1.0f,
     val pitch: Float = 1.0f,
@@ -21,9 +21,5 @@ data class MusicState(
     val shuffle: Boolean = false,
     val loadedMedias: List<CuteTrack> = emptyList(),
     val audioSessionAudio: Int = 0,
-    val bitrate: Int = 0,
-    val sampleRate: Int = 0,
-    val channelCount: Int = 0,
-    val segment: Pair<Long, Long>? = null,
-    val lyrics: List<Lyrics> = emptyList()
+    val lyrics: List<Lyrics> = emptyList(),
 )
