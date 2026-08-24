@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,7 +42,11 @@ fun LazyListScope.foldersView(
         item(key = "whitelist_header") {
             FolderHeader(
                 modifier = Modifier.animateItem(),
-                onClick = { onBatchEdit(whitelisted.fastMap { it.path }) },
+                onClick = {
+                    onBatchEdit(
+                        whitelisted.fastMap { it.path }
+                    )
+                },
                 text = R.string.whitelisted,
                 icon = R.drawable.remove_all_filled
             )
@@ -71,7 +76,11 @@ fun LazyListScope.foldersView(
         item(key = "blacklist_header") {
             FolderHeader(
                 modifier = Modifier.animateItem(),
-                onClick = { onBatchEdit(whitelisted.fastMap { it.path }) },
+                onClick = {
+                    onBatchEdit(
+                        blacklisted.fastMap { it.path }
+                    )
+                },
                 text = R.string.blacklisted,
                 icon = R.drawable.add_all_filled
             )
@@ -121,7 +130,8 @@ private fun FolderHeader(
             color = MaterialTheme.colorScheme.primary
         )
         IconButton(
-            onClick = onClick
+            onClick = onClick,
+            shapes = IconButtonDefaults.shapes()
         ) {
             Icon(
                 painter = painterResource(icon),
