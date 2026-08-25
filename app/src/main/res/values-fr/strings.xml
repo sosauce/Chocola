@@ -181,9 +181,9 @@
     <string name="already_in_queue">Déjà dans la file d\’attente</string>
     <string name="already_in_playlist">Ce titre est déjà dans la playlist.</string>
     <plurals name="tracks">
-        <item quantity="one">%d titre</item>
-        <item quantity="many">%d titres</item>
-        <item quantity="other">%d titres</item>
+        <item quantity="one">Titre</item>
+        <item quantity="many">Titres</item>
+        <item quantity="other">Titres</item>
     </plurals>
     <plurals name="albums_plural">
         <item quantity="one">%d album</item>
@@ -262,4 +262,20 @@
     <string name="navigation_desc">Pas besoin de carte pour ça !</string>
     <string name="play_next">Suivant</string>
     <string name="default_launch_screen">Écran de démarrage par défaut</string>
+    <string name="aod">Écran toujours allumé</string>
+    <string name="aod_desc">Pour avoir un peu plus d\'autonomie, c\'est ça ?</string>
+    <string name="enter_new_value">Saisissez une nouvelle valeur</string>
+    <string name="library_setup">Configuration de la bibliothèque</string>
+    <string name="allow_perform_changes">Veuillez autoriser l\'application à effectuer des modifications !</string>
+    <string name="library_setup_desc"><![CDATA[Sélectionnez les dossiers à analyser et définissez la durée minimale des morceaux]]></string>
+    <string name="date">Date</string>
+    <string name="unknown_error">Erreur inconnue</string>
+    <string name="no_lyrics_desc">Aucune parole intégrée ni aucun fichier .lrc n\'ont été trouvés pour ce morceau !</string>
+    <string name="shape_morph">Transformation de forme</string>
+    <string name="shape_morph_desc">L\'illustration changera de forme de manière dynamique selon que le lecteur est en train de jouer ou non.</string>
+    <string name="dynamic_duration">Durée dynamique</string>
+    <string name="dynamic_duration_desc">Ajuste la durée du morceau en fonction de la vitesse de lecture afin d\'afficher la durée réelle d\'écoute</string>
+    <string name="enter_value_between_range">Entrez une valeur comprise entre %1$d et %2$d</string>
+    <string name="widget_2_1_description">Commandes uniquement</string>
+    <string name="widget_4_1_description">Widget classique pleine largeur</string>
 </resources>
