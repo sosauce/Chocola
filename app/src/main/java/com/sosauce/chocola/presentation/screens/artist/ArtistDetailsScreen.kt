@@ -10,6 +10,7 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -80,6 +81,7 @@ import com.sosauce.sweetselect.rememberSweetSelectState
 fun SharedTransitionScope.ArtistDetailsScreen(
     state: ArtistDetailsState,
     onNavigate: (Screen) -> Unit,
+    onNavigateBack: () -> Unit,
     textFieldState: TextFieldState,
     musicState: MusicState,
     onHandlePlayerAction: (PlayerActions) -> Unit
@@ -111,6 +113,7 @@ fun SharedTransitionScope.ArtistDetailsScreen(
                         textFieldState = textFieldState,
                         onHandlePlayerActions = onHandlePlayerAction,
                         onNavigate = onNavigate,
+                        backButton = { CuteSearchbarDefaults.BackButton(onNavigateBack) },
                         fab = {
                             AnimatedFab(
                                 onClick = {
@@ -155,7 +158,7 @@ fun SharedTransitionScope.ArtistDetailsScreen(
                     item(
                         key = "Albums"
                     ) {
-                        NumberOfAlbums(state.artist.numberAlbums)
+                        NumberOfAlbums(state.albums.size)
 
                         HorizontalMultiBrowseCarousel(
                             state = rememberCarouselState { state.albums.count() },
@@ -172,7 +175,14 @@ fun SharedTransitionScope.ArtistDetailsScreen(
                                     .maskClip(MaterialTheme.shapes.extraLarge)
                                     .fillMaxWidth()
                                     .aspectRatio(1f)
-                                    .background(MaterialTheme.colorScheme.surfaceContainer),
+                                    .background(MaterialTheme.colorScheme.surfaceContainer)
+                                    .clickable {
+                                        onNavigate(
+                                            Screen.AlbumsDetails(
+                                                name = album.name
+                                            )
+                                        )
+                                    },
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(

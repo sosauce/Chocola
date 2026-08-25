@@ -9,7 +9,6 @@ import com.sosauce.chocola.data.playlist.PlaylistCleanup
 import com.sosauce.chocola.data.playlist.PlaylistDatabase
 import com.sosauce.chocola.data.widgets.WidgetsHelper
 import com.sosauce.chocola.domain.EqualizerManager
-import com.sosauce.chocola.data.repositories.ArtistsRepository
 import com.sosauce.chocola.data.repositories.FoldersRepository
 import com.sosauce.chocola.data.repositories.IDRepositories
 import com.sosauce.chocola.data.repositories.SafManager
@@ -58,7 +57,6 @@ val appModule = module {
     singleOf(::LyricsParser)
     singleOf(::FoldersRepository)
     singleOf(::SafManager)
-    singleOf(::ArtistsRepository)
     singleOf(::UserPreferences)
     singleOf(::EqualizerManager)
     singleOf(::AndroidAutoHelper)

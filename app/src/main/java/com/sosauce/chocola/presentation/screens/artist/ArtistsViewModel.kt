@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.sosauce.chocola.data.AbstractTracksScanner
 import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.models.Artist
-import com.sosauce.chocola.data.repositories.ArtistsRepository
 import com.sosauce.chocola.utils.combine
 import com.sosauce.chocola.utils.ordered
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +21,6 @@ import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
 
 class ArtistsViewModel(
-    private val artistsRepository: ArtistsRepository,
     private val userPreferences: UserPreferences,
     private val abstractTracksScanner: AbstractTracksScanner
 ) : ViewModel() {

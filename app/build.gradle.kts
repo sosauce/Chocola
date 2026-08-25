@@ -9,7 +9,9 @@ plugins {
 }
 
 androidComponents {
-    onVariants(selector().withBuildType("release")) { variant ->
+    val releaseVariant = selector().withBuildType("release")
+
+    onVariants(releaseVariant) { variant ->
         val mainOutput = variant.outputs.single { it.outputType == VariantOutputConfiguration.OutputType.SINGLE }
 
         @Suppress("UnstableApiUsage")
@@ -25,8 +27,8 @@ android {
         applicationId = "com.sosauce.cutemusic"
         minSdk = 28
         targetSdk = 37
-        versionCode = 50008
-        versionName = "4.4.0"
+        versionCode = 50009
+        versionName = "4.4.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true

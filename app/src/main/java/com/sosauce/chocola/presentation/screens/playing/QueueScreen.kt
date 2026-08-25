@@ -16,9 +16,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
@@ -40,13 +38,12 @@ import com.sosauce.chocola.utils.selfAlignHorizontally
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import kotlin.random.Random
-import kotlin.random.nextInt
 import kotlin.uuid.ExperimentalUuidApi
 
 @Composable
 fun QueueScreen(
     musicState: MusicState,
-    onNavigateUp: () -> Unit,
+    onNavigateBack: () -> Unit,
     onHandlePlayerAction: (PlayerActions) -> Unit
 ) {
 
@@ -77,7 +74,7 @@ fun QueueScreen(
     Scaffold(
         bottomBar = {
             AnimatedFab(
-                onClick = onNavigateUp,
+                onClick = onNavigateBack,
                 modifier = Modifier
                     .padding(start = 15.dp)
                     .navigationBarsPadding()

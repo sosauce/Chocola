@@ -59,6 +59,7 @@ fun SharedTransitionScope.PlaylistDetailsScreen(
     musicState: MusicState,
     textFieldState: TextFieldState,
     onNavigate: (Screen) -> Unit,
+    onNavigateBack: () -> Unit,
     onHandlePlayerAction: (PlayerActions) -> Unit,
     onHandlePlaylistAction: (PlaylistActions) -> Unit
 ) {
@@ -104,6 +105,7 @@ fun SharedTransitionScope.PlaylistDetailsScreen(
                             textFieldState = textFieldState,
                             onNavigate = onNavigate,
                             modifier = Modifier.selfAlignHorizontally(),
+                            backButton = { CuteSearchbarDefaults.BackButton(onNavigateBack) },
                             fab = {
                                 AnimatedFab(
                                     onClick = {
@@ -144,16 +146,17 @@ fun SharedTransitionScope.PlaylistDetailsScreen(
                             } else { NoResult(Modifier.animateItem()) }
 
                         }
+                    } else {
+                        item("header") {
+                            PlaylistHeader(
+                                playlist = state.playlist,
+                                tracks = state.tracks,
+                                onHandlePlayerActions = onHandlePlayerAction
+                            )
+                            NumberOfTracks(size = state.tracks.size)
+                        }
                     }
 
-                    item("header") {
-                        PlaylistHeader(
-                            playlist = state.playlist,
-                            tracks = state.tracks,
-                            onHandlePlayerActions = onHandlePlayerAction
-                        )
-                        NumberOfTracks(size = state.tracks.size)
-                    }
                     items(
                         items = state.tracks,
                         key = { it.mediaId }

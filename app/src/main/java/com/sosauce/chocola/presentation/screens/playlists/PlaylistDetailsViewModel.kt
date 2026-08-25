@@ -44,6 +44,7 @@ class PlaylistDetailsViewModel(
         searchQuery
     ) { playlist, tracks, settings, query ->
         val searched = tracks
+            .fastFilter { playlist.musics.contains(it.mediaId) }
             .search(query.toString(), settings)
 
 

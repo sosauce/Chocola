@@ -2,8 +2,6 @@
 
 package com.sosauce.chocola.presentation.screens.artist
 
-import android.provider.MediaStore
-import androidx.compose.animation.core.snap
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.util.fastFilter
@@ -14,27 +12,18 @@ import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.models.Album
 import com.sosauce.chocola.data.models.Artist
 import com.sosauce.chocola.data.models.CuteTrack
-import com.sosauce.chocola.data.repositories.ArtistsRepository
-import com.sosauce.chocola.presentation.screens.album.AlbumDetailsState
-import com.sosauce.chocola.utils.orderAlbumTrackNumber
-import com.sosauce.chocola.utils.ordered
 import com.sosauce.chocola.utils.search
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
 class ArtistDetailsViewModel(
     private val artistName: String,
-    private val artistsRepository: ArtistsRepository,
     private val userPreferences: UserPreferences,
     private val abstractTracksScanner: AbstractTracksScanner
 ) : ViewModel() {
@@ -50,12 +39,27 @@ class ArtistDetailsViewModel(
         searchQuery
     ) { tracks, settings, query ->
         val searched = tracks
+            .fastFilter { it.artist == artistName }
             .search(query.toString(), settings)
+
+        val albums = searched.groupBy { it.album }
+            .map { (albumName, tracks) ->
+                Album(
+                    name = albumName,
+                    artist = artistName,
+                    tracks = tracks
+                )
+            }
+
+
 
         ArtistDetailsState(
             isLoading = false,
+            artist = Artist(
+                name = artistName
+            ),
             tracks = searched,
-            albums = emptyList()
+            albums = albums
         )
     }.flowOn(Dispatchers.Default).stateIn(
         viewModelScope,

@@ -45,6 +45,7 @@ class AlbumDetailsViewModel(
         searchQuery
     ) { tracks, settings, query ->
         val searched = tracks
+            .fastFilter { it.album == albumName }
             .search(query.toString(), settings)
             .orderAlbumTrackNumber()
 

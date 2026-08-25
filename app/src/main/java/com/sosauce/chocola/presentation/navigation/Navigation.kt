@@ -31,7 +31,6 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.skydoves.cloudy.rememberSky
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberInitialScreenBlocking
 import com.sosauce.chocola.presentation.screens.metadata.MetadataActions
@@ -41,7 +40,6 @@ import com.sosauce.chocola.presentation.screens.album.AlbumDetailsScreen
 import com.sosauce.chocola.presentation.screens.album.AlbumDetailsViewModel
 import com.sosauce.chocola.presentation.screens.album.AlbumsScreen
 import com.sosauce.chocola.presentation.screens.album.AlbumsViewModel
-import com.sosauce.chocola.presentation.screens.aod.AlwaysOnDisplay
 import com.sosauce.chocola.presentation.screens.artist.ArtistDetailsScreen
 import com.sosauce.chocola.presentation.screens.artist.ArtistDetailsViewModel
 import com.sosauce.chocola.presentation.screens.artist.ArtistsScreen
@@ -188,6 +186,7 @@ fun Nav(
                             state = state,
                             textFieldState = viewModel.textFieldState,
                             onNavigate = backStack::navigate,
+                            onNavigateBack = backStack::navigateBack,
                             onHandlePlayerAction = musicViewModel::handlePlayerActions,
                             musicState = musicState
                         )
@@ -267,6 +266,7 @@ fun Nav(
                             state = state,
                             musicState = musicState,
                             onNavigate = backStack::navigate,
+                            onNavigateBack = backStack::navigateBack,
                             textFieldState = viewModel.textFieldState,
                             onHandlePlayerAction = musicViewModel::handlePlayerActions,
                             onHandlePlaylistAction = viewModel::handlePlaylistActions
@@ -276,7 +276,7 @@ fun Nav(
                     entry<Screen.Queue> {
                         QueueScreen(
                             musicState = musicState,
-                            onNavigateUp = backStack::navigateBack,
+                            onNavigateBack = backStack::navigateBack,
                             onHandlePlayerAction = musicViewModel::handlePlayerActions
                         )
                     }
