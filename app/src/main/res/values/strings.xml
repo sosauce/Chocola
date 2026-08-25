@@ -6,7 +6,7 @@
     <string name="settings">Settings</string>
     <string name="dark_mode">Dark</string>
     <string name="light_mode">Light</string>
-    <string name="amoled_mode">Amoled</string>
+    <string name="amoled_mode">amoled_modus</string>
     <string name="version">Version</string>
     <string name="support">Support</string>
     <string name="update">Check updates</string>
@@ -20,7 +20,7 @@
     <string name="no_artists_found">No artists found!</string>
     <string name="artwork">Artwork</string>
     <string name="artists">Artists</string>
-    <string name="albums">Albums</string>
+    <string name="albums">Album</string>
     <string name="music">Tracks</string>
     <string name="cm_by_sosauce">Chocola by sosauce</string>
     <string name="app_icon">App Icon</string>
@@ -233,26 +233,7 @@
     <string name="music_and_audio_perm"><![CDATA[Music & audio permission]]></string>
     <string name="audio_perm_desc">This permission is required in order to access your tracks.</string>
     <string name="navigation">Navigation</string>
-    <string name="navigation_desc">You won\'t need a map for this !</string>
-    <string name="widget_4_1_description">Full width classic widget</string>
-    <string name="widget_1_1_description">Controls only</string>
-    <string name="enter_new_value">Enter a new value</string>
-    <string name="enter_value_between_range">Please enter a value between %1$d and %2$d.</string>
-    <string name="tracks">Tracks</string>
-    <string name="library_setup">Library setup</string>
-    <string name="library_setup_desc">Choose folders to scan and set a minimum track duration.</string>
-    <string name="unknown_error">Unknown error</string>
-    <string name="allow_perform_changes">Please allow the app to perform changes</string>
-    <string name="date">Date</string>
-    <string name="dynamic_duration">Dynamic duration</string>
-    <string name="dynamic_duration_desc">Adjusts track duration based on playback speed to show real listening time.</string>
-    <string name="aod">Always-on display</string>
-    <string name="aod_desc">For that extra bit of battery am I right ?</string>
-    <string name="no_lyrics_desc">No embedded lyrics or .lrc file found for this track!</string>
-    <string name="shape_morph">Shape morph</string>
-    <string name="shape_morph_desc">Artwork will dynamically change shape based on if the player is paused or not</string>
-
-
+    <string name="navigation_desc">You won\'t need a map for this!</string>
     <plurals name="tracks">
         <item quantity="one">%d track</item>
         <item quantity="other">%d tracks</item>

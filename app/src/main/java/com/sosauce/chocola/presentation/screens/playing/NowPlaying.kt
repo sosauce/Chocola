@@ -153,7 +153,8 @@ private fun NowPlayingContent(
                     MoreOptionsButton(
                         modifier = Modifier.padding(end = 15.dp),
                         musicState = musicState,
-                        onNavigate = onNavigate
+                        onNavigate = onNavigate,
+                        onShrinkToSearchbar = onShrinkToSearchbar
                     )
                 }
             )

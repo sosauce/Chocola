@@ -37,7 +37,8 @@ import com.sosauce.chocola.utils.rememberInteractionSource
 fun MoreOptionsButton(
     modifier: Modifier = Modifier,
     musicState: MusicState,
-    onNavigate: (Screen) -> Unit
+    onNavigate: (Screen) -> Unit,
+    onShrinkToSearchbar: () -> Unit = {}
 ) {
 
     val context = LocalContext.current
@@ -159,7 +160,10 @@ fun MoreOptionsButton(
         customItem(
             buttonGroupContent = {
                 IconButton(
-                    onClick = { onNavigate(Screen.Queue) },
+                    onClick = {
+                        onShrinkToSearchbar()
+                        onNavigate(Screen.Queue)
+                    },
                     shape = RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp, topEnd = 50.dp, bottomEnd = 50.dp),
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainer,
