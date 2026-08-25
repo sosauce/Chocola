@@ -18,7 +18,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
@@ -29,6 +28,7 @@ import coil3.imageLoader
 import coil3.request.ImageRequest
 import coil3.toBitmap
 import com.google.common.util.concurrent.MoreExecutors
+import com.sosauce.chocola.core.PlaybackService
 import com.sosauce.chocola.data.AbstractTracksScanner
 import com.sosauce.chocola.data.LyricsParser
 import com.sosauce.chocola.data.datastore.UserPreferences
@@ -36,10 +36,8 @@ import com.sosauce.chocola.data.mappers.toMediaItem
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlaySource
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.core.PlaybackService
 import com.sosauce.chocola.utils.changeRepeatMode
 import com.sosauce.chocola.utils.copyMutate
-import com.sosauce.chocola.utils.ordered
 import com.sosauce.chocola.utils.pauseWithFadeOut
 import com.sosauce.chocola.utils.playOrPause
 import com.sosauce.chocola.utils.playRandom
@@ -47,16 +45,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class MusicViewModel(
@@ -79,7 +73,6 @@ class MusicViewModel(
     private val playerListener =
         @UnstableApi
         object : Player.Listener {
-
 
 
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
@@ -175,6 +168,7 @@ class MusicViewModel(
                             )
                         }
                     }
+
                     Player.STATE_READY -> {
                         _musicState.update {
                             it.copy(
@@ -182,6 +176,7 @@ class MusicViewModel(
                             )
                         }
                     }
+
                     else -> {
                         _musicState.update {
                             it.copy(
@@ -363,6 +358,7 @@ class MusicViewModel(
                     mediaController!!.play()
                 }
             }
+
             is PlayerActions.StopPlayback -> {
                 mediaController?.run {
                     stop()
@@ -376,6 +372,7 @@ class MusicViewModel(
                     )
                 }
             }
+
             is PlayerActions.Shuffle -> mediaController!!.shuffleModeEnabled = !mediaController!!.shuffleModeEnabled
             is PlayerActions.ChangeRepeatMode -> mediaController!!.changeRepeatMode()
             is PlayerActions.SetSpeed -> mediaController!!.playbackParameters = mediaController!!.playbackParameters.withSpeed(action.speed)
@@ -389,6 +386,7 @@ class MusicViewModel(
                     )
                 }
             }
+
             is PlayerActions.PlayFromSource -> {
 
 
@@ -495,6 +493,7 @@ class MusicViewModel(
                     mediaController?.removeMediaItem(index)
                 }
             }
+
             is PlayerActions.AddToQueue -> {
                 val newUniqueTracks = action.cuteTracks.fastFilter { it !in musicState.value.loadedMedias }
 
@@ -513,12 +512,20 @@ class MusicViewModel(
             }
 
             is PlayerActions.PlayNext -> {
+                val mediaController = mediaController!!
 
-                val index = mediaController!!.currentMediaItemIndex + 1
+                mediaController.shuffleModeEnabled = false
 
-                mediaController?.shuffleModeEnabled = false
-                mediaController?.addMediaItem(index, action.cuteTrack.toMediaItem())
+                val isCurrentlyPlayingMedia = mediaController.currentMediaItem?.mediaId == action.cuteTrack.mediaId
+                if (!isCurrentlyPlayingMedia) {
+                    // Removes the requested track from the playing list before adding it back to prevent duplicate
+                    tracks.value.indexOf(action.cuteTrack).takeIf { it != -1 }?.let { oldTrackIndex ->
+                        mediaController.removeMediaItem(oldTrackIndex)
+                    }
+                    mediaController.addMediaItem(mediaController.nextMediaItemIndex, action.cuteTrack.toMediaItem())
+                }
             }
+
             is PlayerActions.LoadLyrics -> {
                 viewModelScope.launch {
                     val lyrics = lyricsParser.parseLyrics(action.uri.path ?: return@launch)
@@ -529,6 +536,7 @@ class MusicViewModel(
                     }
                 }
             }
+
             is PlayerActions.StartPlaylist -> {
                 val currentTracks = tracks.value
 
