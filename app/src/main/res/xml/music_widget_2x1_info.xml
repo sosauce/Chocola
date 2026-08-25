@@ -1,5 +1,5 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:description="@string/widget_1_1_description"
+    android:description="@string/widget_2_1_description"
     android:minWidth="100dp"
     android:minHeight="50dp"
     android:targetCellWidth="2"

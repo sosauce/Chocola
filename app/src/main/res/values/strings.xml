@@ -234,6 +234,27 @@
     <string name="audio_perm_desc">This permission is required in order to access your tracks.</string>
     <string name="navigation">Navigation</string>
     <string name="navigation_desc">You won\'t need a map for this!</string>
+    <string name="aod">Always-on display</string>
+    <string name="aod_desc">For that little bit extra battery am I right ?</string>
+    <string name="enter_new_value">Enter a new value</string>
+    <string name="library_setup">Library setup</string>
+    <string name="allow_perform_changes">Please allow the app to perform changes!</string>
+    <string name="library_setup_desc"><![CDATA[Choose folders to scan & set minimum track duration]]></string>
+    <string name="tracks">Tracks</string>
+    <string name="date">Date</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="no_lyrics_desc">No embedded lyrics or .lrc file found for this track!</string>
+    <string name="shape_morph">Shape morph</string>
+    <string name="shape_morph_desc">Artwork will dynamically change shape based on if the player is playing or not</string>
+    <string name="dynamic_duration">Dynamic duration</string>
+    <string name="dynamic_duration_desc">Adjusts track duration based on playback speed to show real listening time</string>
+    <string name="enter_value_between_range">Enter a value between %1$d and %2$d</string>
+    <string name="widget_2_1_description">Controls only</string>
+    <string name="widget_4_1_description">Full width classic widget</string>
+
+
+
+
     <plurals name="tracks">
         <item quantity="one">%d track</item>
         <item quantity="other">%d tracks</item>
