@@ -2,39 +2,41 @@
 
 package com.sosauce.chocola.presentation.navigation
 
+import android.app.Activity
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
-import androidx.navigation3.runtime.NavBackStack
-import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.skydoves.cloudy.rememberSky
+import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberInitialScreenBlocking
+import com.sosauce.chocola.presentation.screens.metadata.MetadataActions
+import com.sosauce.chocola.presentation.components.MusicViewModel
+import com.sosauce.chocola.presentation.components.wrappers.ObserveAsEvents
 import com.sosauce.chocola.presentation.screens.album.AlbumDetailsScreen
 import com.sosauce.chocola.presentation.screens.album.AlbumDetailsViewModel
 import com.sosauce.chocola.presentation.screens.album.AlbumsScreen
@@ -48,7 +50,8 @@ import com.sosauce.chocola.presentation.screens.lyrics.LyricsEditorScreen
 import com.sosauce.chocola.presentation.screens.lyrics.LyricsScreen
 import com.sosauce.chocola.presentation.screens.main.MainScreen
 import com.sosauce.chocola.presentation.screens.main.MainViewModel
-import com.sosauce.chocola.presentation.screens.metadata.MetadataEditor
+import com.sosauce.chocola.presentation.screens.metadata.MetadataEditorScreen
+import com.sosauce.chocola.presentation.screens.metadata.MetadataEvents
 import com.sosauce.chocola.presentation.screens.metadata.MetadataViewModel
 import com.sosauce.chocola.presentation.screens.playing.QueueScreen
 import com.sosauce.chocola.presentation.screens.playlists.PlaylistDetailsScreen
@@ -56,15 +59,7 @@ import com.sosauce.chocola.presentation.screens.playlists.PlaylistDetailsViewMod
 import com.sosauce.chocola.presentation.screens.playlists.PlaylistViewModel
 import com.sosauce.chocola.presentation.screens.playlists.PlaylistsScreen
 import com.sosauce.chocola.presentation.screens.settings.SettingsScreen
-import com.sosauce.chocola.presentation.screens.setup.SetupScreen
-import com.sosauce.chocola.presentation.screens.transformer.TransformerViewModel
-import com.sosauce.chocola.presentation.shared_components.MusicViewModel
-import com.sosauce.chocola.utils.ImageUtils
 import com.sosauce.chocola.utils.LocalScreen
-import com.sosauce.chocola.utils.LocalSharedTransitionScope
-import com.sosauce.chocola.utils.hasMusicPermission
-import com.sosauce.chocola.utils.navigateBack
-import com.sosauce.chocola.utils.navigationBouncySpec
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -73,10 +68,10 @@ fun Nav(
     musicViewModel: MusicViewModel
 ) {
 
+    val resources = LocalResources.current
     val context = LocalContext.current
     val initialScreen = rememberInitialScreenBlocking()
-    val startScreen = if (context.hasMusicPermission()) initialScreen else Screen.Setup
-    val backStack = rememberNavBackStack(startScreen)
+    val backStack = rememberNavBackStack(initialScreen)
     val currentScreen by remember {
         derivedStateOf { backStack.lastOrNull() ?: Screen.Main }
     }
@@ -84,7 +79,6 @@ fun Nav(
 
     SharedTransitionLayout {
         CompositionLocalProvider(
-            LocalSharedTransitionScope provides this,
             LocalScreen provides currentScreen
         ) {
             NavDisplay(
@@ -95,26 +89,25 @@ fun Nav(
                     rememberSaveableStateHolderNavEntryDecorator(),
                     rememberViewModelStoreNavEntryDecorator()
                 ),
+                transitionSpec = {
+                    ContentTransform(
+                        targetContentEnter = slideInHorizontally { it } + fadeIn(),
+                        initialContentExit = slideOutHorizontally { -it / 4 } + fadeOut()
+                    )
+                },
                 predictivePopTransitionSpec = {
                     ContentTransform(
-                        fadeIn(),
-                        slideOutHorizontally { it }
+                        targetContentEnter = slideInHorizontally { -it / 4 } + fadeIn(),
+                        initialContentExit = slideOutHorizontally { it } + fadeOut()
+                    )
+                },
+                popTransitionSpec = {
+                    ContentTransform(
+                        targetContentEnter = slideInHorizontally { -it / 4 } + fadeIn(),
+                        initialContentExit = slideOutHorizontally { it } + fadeOut()
                     )
                 },
                 entryProvider = entryProvider {
-
-                    entry<Screen.Setup>(
-                        metadata = NavDisplay.transitionSpec {
-                            slideInVertically(navigationBouncySpec) { it } + fadeIn() togetherWith fadeOut()
-                        }
-                    ) {
-                        SetupScreen(
-                            onNavigateToApp = {
-                                backStack.clear()
-                                backStack.add(Screen.Main)
-                            }
-                        )
-                    }
 
                     entry<Screen.Main> {
 
@@ -124,16 +117,9 @@ fun Nav(
                         MainScreen(
                             state = state,
                             musicState = musicState,
+                            textFieldState = viewModel.textFieldState,
                             onNavigate = backStack::navigate,
                             onHandlePlayerAction = musicViewModel::handlePlayerActions
-                        )
-                    }
-
-                    entry<Screen.AlwaysOnDisplay> {
-                        AlwaysOnDisplay(
-                            title = musicState.track.title,
-                            artist = musicState.track.artist,
-                            onExitAod = backStack::removeLastOrNull
                         )
                     }
 
@@ -145,16 +131,13 @@ fun Nav(
                         AlbumsScreen(
                             state = state,
                             musicState = musicState,
+                            textFieldState = viewModel.textFieldState,
                             onHandlePlayerActions = musicViewModel::handlePlayerActions,
                             onNavigate = backStack::navigate
                         )
                     }
 
-                    entry<Screen.Settings>(
-                        metadata = NavDisplay.transitionSpec {
-                            slideInHorizontally(navigationBouncySpec) { -it } + fadeIn() togetherWith fadeOut()
-                        }
-                    ) {
+                    entry<Screen.Settings> {
                         SettingsScreen(
                             onNavigateUp = backStack::navigateBack,
                             musicState = musicState,
@@ -163,11 +146,7 @@ fun Nav(
                         )
                     }
 
-                    entry<Screen.AlbumsDetails>(
-                        metadata = NavDisplay.transitionSpec {
-                            slideInHorizontally(navigationBouncySpec) { it } + fadeIn() togetherWith fadeOut()
-                        }
-                    ) { key ->
+                    entry<Screen.AlbumsDetails> { key ->
 
                         val viewModel = koinViewModel<AlbumDetailsViewModel>(
                             parameters = { parametersOf(key.name) }
@@ -176,6 +155,7 @@ fun Nav(
 
                         AlbumDetailsScreen(
                             state = state,
+                            textFieldState = viewModel.textFieldState,
                             onNavigateUp = backStack::navigateBack,
                             musicState = musicState,
                             onNavigate = backStack::navigate,
@@ -191,16 +171,13 @@ fun Nav(
                         ArtistsScreen(
                             state = state,
                             musicState = musicState,
+                            textFieldState = viewModel.textFieldState,
                             onNavigate = backStack::navigate,
                             onHandlePlayerActions = musicViewModel::handlePlayerActions,
                         )
                     }
 
-                    entry<Screen.ArtistsDetails>(
-                        metadata = NavDisplay.transitionSpec {
-                            slideInHorizontally(navigationBouncySpec) { it } + fadeIn() togetherWith fadeOut()
-                        }
-                    ) { key ->
+                    entry<Screen.ArtistsDetails> { key ->
 
                         val viewModel = koinViewModel<ArtistDetailsViewModel>(
                             parameters = { parametersOf(key.name) }
@@ -209,29 +186,59 @@ fun Nav(
 
                         ArtistDetailsScreen(
                             state = state,
+                            textFieldState = viewModel.textFieldState,
                             onNavigate = backStack::navigate,
-                            onNavigateUp = backStack::navigateBack,
                             onHandlePlayerAction = musicViewModel::handlePlayerActions,
                             musicState = musicState
                         )
                     }
 
-                    entry<Screen.MetadataEditor>(
-                        metadata = NavDisplay.transitionSpec {
-                            slideInHorizontally(navigationBouncySpec) { -it } + fadeIn() togetherWith fadeOut()
-                        }
-                    ) { key ->
+                    entry<Screen.MetadataEditor> { key ->
 
                         val metadataViewModel = koinViewModel<MetadataViewModel>(
                             parameters = { parametersOf(key.trackPath) }
                         )
+                        val state by metadataViewModel.metadataState.collectAsStateWithLifecycle()
+                        val legacyPermissionLauncher = rememberLauncherForActivityResult(
+                            ActivityResultContracts.StartIntentSenderForResult()
+                        ) { result ->
+                            if (result.resultCode == Activity.RESULT_OK) {
+                                metadataViewModel.onHandleMetadataActions(MetadataActions.SaveChanges)
+                            } else {
+                                Toast.makeText(context, resources.getString(R.string.allow_perform_changes), Toast.LENGTH_SHORT).show()
+                            }
+                        }
 
-                        MetadataEditor(
+                        ObserveAsEvents(metadataViewModel.events) {
+                            when(it) {
+                                is MetadataEvents.SaveSuccessful -> backStack.navigateBack()
+                                is MetadataEvents.SaveUnsuccessful -> {
+                                    val errorMessage = it.error ?: resources.getString(R.string.unknown_error)
+
+                                    Toast.makeText(
+                                        context,
+                                        errorMessage,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                        }
+
+                        ObserveAsEvents(metadataViewModel.legacyAskPermission) {
+                            it?.let {
+                                val request = IntentSenderRequest.Builder(it.intentSender).build()
+                                legacyPermissionLauncher.launch(request)
+                            }
+                        }
+
+
+                        MetadataEditorScreen(
+                            state = state,
                             trackUri = key.trackUri.toUri(),
                             trackPath = key.trackPath,
                             onNavigateUp = backStack::navigateBack,
                             onNavigate = backStack::navigate,
-                            metadataViewModel = metadataViewModel
+                            onHandleMetadataActions = metadataViewModel::onHandleMetadataActions
                         )
                     }
 
@@ -242,6 +249,7 @@ fun Nav(
 
                         PlaylistsScreen(
                             state = state,
+                            textFieldState = playlistViewModel.textFieldState,
                             onHandlePlaylistAction = playlistViewModel::handlePlaylistActions,
                             musicState = musicState,
                             onNavigate = backStack::navigate,
@@ -249,11 +257,7 @@ fun Nav(
                         )
                     }
 
-                    entry<Screen.PlaylistDetails>(
-                        metadata = NavDisplay.transitionSpec {
-                            slideInHorizontally(navigationBouncySpec) { it } + fadeIn() togetherWith fadeOut()
-                        }
-                    ) { key ->
+                    entry<Screen.PlaylistDetails> { key ->
                         val viewModel = koinViewModel<PlaylistDetailsViewModel>(
                             parameters = { parametersOf(key.id) }
                         )
@@ -263,17 +267,13 @@ fun Nav(
                             state = state,
                             musicState = musicState,
                             onNavigate = backStack::navigate,
+                            textFieldState = viewModel.textFieldState,
                             onHandlePlayerAction = musicViewModel::handlePlayerActions,
-                            onNavigateUp = backStack::navigateBack,
                             onHandlePlaylistAction = viewModel::handlePlaylistActions
                         )
                     }
 
-                    entry<Screen.Queue>(
-                        metadata = NavDisplay.transitionSpec {
-                            slideInVertically(navigationBouncySpec) { it } + fadeIn() togetherWith fadeOut()
-                        }
-                    ) {
+                    entry<Screen.Queue> {
                         QueueScreen(
                             musicState = musicState,
                             onNavigateUp = backStack::navigateBack,
@@ -281,11 +281,7 @@ fun Nav(
                         )
                     }
 
-                    entry<Screen.Lyrics>(
-                        metadata = NavDisplay.transitionSpec {
-                            slideInVertically(navigationBouncySpec) { it } + fadeIn() togetherWith fadeOut()
-                        }
-                    ) {
+                    entry<Screen.Lyrics> {
                         LyricsScreen(
                             onNavigateBack = backStack::navigateBack,
                             onNavigate = backStack::navigate,
@@ -312,8 +308,4 @@ fun Nav(
     }
 }
 
-fun NavBackStack<NavKey>.navigate(screen: NavKey) {
-    remove(screen)
-    add(screen)
-}
 

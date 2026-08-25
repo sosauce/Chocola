@@ -3,7 +3,6 @@
 package com.sosauce.chocola.presentation.screens.playing.components
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -15,11 +14,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import com.skydoves.cloudy.cloudy
 import com.sosauce.chocola.data.datastore.rememberCenterTitle
 import com.sosauce.chocola.data.datastore.rememberShowAlbumName
 import com.sosauce.chocola.data.states.MusicState
@@ -28,7 +25,9 @@ import com.sosauce.chocola.data.states.MusicState
 @Composable
 fun TitleAndArtist(
     titleModifier: Modifier = Modifier,
-    musicState: MusicState
+    title: String,
+    artist: String,
+    album: String
 ) {
 
     val showAlbumName by rememberShowAlbumName()
@@ -40,7 +39,7 @@ fun TitleAndArtist(
     ) {
         AnimatedContent(
             modifier = Modifier.fillMaxWidth(),
-            targetState = musicState.track.title,
+            targetState = title,
             transitionSpec = { fadeIn() togetherWith fadeOut() }
         ) {
             Text(
@@ -57,7 +56,7 @@ fun TitleAndArtist(
         }
         AnimatedContent(
             modifier = Modifier.fillMaxWidth(),
-            targetState = musicState.track.artist to musicState.track.album,
+            targetState = artist to album,
             transitionSpec = { fadeIn() togetherWith fadeOut() }
         ) { (artist, album) ->
             Text(

@@ -31,17 +31,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.fastForEachIndexed
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberArtLyrics
 import com.sosauce.chocola.data.datastore.rememberLyricsAlignment
 import com.sosauce.chocola.data.datastore.rememberLyricsFontSize
-import com.sosauce.chocola.presentation.screens.settings.compenents.ClickableSettingsCard
+import com.sosauce.chocola.presentation.components.LazyRowWithScrollButton
 import com.sosauce.chocola.presentation.screens.settings.compenents.SelectorSurface
-import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsDropdownMenu
+import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsInput
+import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsSelector
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsSwitch
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsWithTitle
-import com.sosauce.chocola.presentation.shared_components.LazyRowWithScrollButton
 import com.sosauce.chocola.utils.LyricsAlignment
 
 @Composable
@@ -100,65 +99,25 @@ fun SettingsLyrics() {
                     LazyRowWithScrollButton(
                         items = alignmentItems
                     ) { alignment ->
-                        val borderColor by animateColorAsState(
-                            if (alignment.isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
+                        SettingsSelector(
+                            onClick = alignment.onClick,
+                            icon = alignment.icon,
+                            text = alignment.text,
+                            isSelected = alignment.isSelected
                         )
-
-                        SelectorSurface(
-                            onClick = alignment.onClick
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .padding(10.dp)
-                                    .size(50.dp)
-                                    .clip(MaterialShapes.Cookie9Sided.toShape())
-                                    .border(
-                                        width = 2.dp,
-                                        color = borderColor,
-                                        shape = MaterialShapes.Cookie9Sided.toShape()
-                                    )
-                                    .background(MaterialTheme.colorScheme.surfaceContainerHighest),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    painter = painterResource(alignment.icon),
-                                    contentDescription = null
-                                )
-                            }
-                            Text(stringResource(alignment.text))
-                        }
                     }
                 }
             }
-            SettingsDropdownMenu(
+
+            SettingsInput(
                 value = lyricsFontSize,
+                minValue = 20,
+                maxValue = 30,
                 topDp = 4.dp,
                 bottomDp = 4.dp,
-                text = R.string.font_size
-            ) { onClose ->
-                (20..40).forEachIndexed { index, size ->
-
-                    val selected = size == lyricsFontSize
-
-                    DropdownMenuItem(
-                        selected = selected,
-                        onClick = {
-                            onClose()
-                            lyricsFontSize = size
-                        },
-                        shapes = MenuDefaults.itemShape(index, 20),
-                        text = { Text(size.toString()) },
-                        trailingContent = {
-                            if (selected) {
-                                Icon(
-                                    painter = painterResource(R.drawable.check),
-                                    contentDescription = null
-                                )
-                            }
-                        }
-                    )
-                }
-            }
+                text = R.string.font_size,
+                onNewValue = { lyricsFontSize = it }
+            )
             SettingsSwitch(
                 checked = artLyrics,
                 onCheckedChange = { artLyrics = !artLyrics },

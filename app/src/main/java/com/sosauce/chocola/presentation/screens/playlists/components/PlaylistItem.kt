@@ -51,11 +51,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.models.Playlist
-import com.sosauce.chocola.domain.actions.PlaylistActions
-import com.sosauce.chocola.presentation.shared_components.CuteListItem
-import com.sosauce.chocola.presentation.shared_components.MoreOptions
-import com.sosauce.chocola.presentation.shared_components.dialogs.PlaylistDeletionDialog
-import com.sosauce.chocola.presentation.shared_components.SelectedItemLogo
+import com.sosauce.chocola.presentation.screens.playlists.PlaylistActions
+import com.sosauce.chocola.presentation.components.CuteListItem
+import com.sosauce.chocola.presentation.components.MoreOptions
+import com.sosauce.chocola.presentation.components.SelectedItemLogo
+import com.sosauce.chocola.presentation.components.dialogs.PlaylistDeletionDialog
 import sv.lib.squircleshape.CornerSmoothing
 import sv.lib.squircleshape.SquircleShape
 

@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -54,18 +56,21 @@ import com.sosauce.chocola.data.datastore.rememberSortTracksAscending
 import com.sosauce.chocola.data.datastore.rememberTrackSort
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.states.MusicState
+import com.sosauce.chocola.domain.actions.PlaySource
 import com.sosauce.chocola.domain.actions.PlayerActions
+import com.sosauce.chocola.presentation.components.CuteSearchbar
+import com.sosauce.chocola.presentation.components.CuteSearchbarDefaults
+import com.sosauce.chocola.presentation.components.DefaultMusicListItemTrailingContent
+import com.sosauce.chocola.presentation.components.LoadingBox
+import com.sosauce.chocola.presentation.components.MusicListItem
+import com.sosauce.chocola.presentation.components.NoResult
+import com.sosauce.chocola.presentation.components.NoXFound
+import com.sosauce.chocola.presentation.components.TracksSelectedBar
+import com.sosauce.chocola.presentation.components.animations.AnimatedFab
 import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.presentation.screens.album.components.NumberOfTracks
 import com.sosauce.chocola.presentation.screens.artist.components.ArtistHeader
 import com.sosauce.chocola.presentation.screens.artist.components.NumberOfAlbums
-import com.sosauce.chocola.presentation.shared_components.CuteSearchbar
-import com.sosauce.chocola.presentation.shared_components.DefaultMusicListItemTrailingContent
-import com.sosauce.chocola.presentation.shared_components.MusicListItem
-import com.sosauce.chocola.presentation.shared_components.NoXFound
-import com.sosauce.chocola.presentation.shared_components.SortingDropdownMenu
-import com.sosauce.chocola.presentation.shared_components.TracksSelectedBar
-import com.sosauce.chocola.presentation.shared_components.animations.AnimatedFab
 import com.sosauce.chocola.utils.ImageUtils
 import com.sosauce.chocola.utils.barsContentTransform
 import com.sosauce.chocola.utils.selfAlignHorizontally
@@ -75,67 +80,62 @@ import com.sosauce.sweetselect.rememberSweetSelectState
 fun SharedTransitionScope.ArtistDetailsScreen(
     state: ArtistDetailsState,
     onNavigate: (Screen) -> Unit,
-    onNavigateUp: () -> Unit,
+    textFieldState: TextFieldState,
     musicState: MusicState,
     onHandlePlayerAction: (PlayerActions) -> Unit
 ) {
     val lazyState = rememberLazyListState()
-    var sortTracksAscending by rememberSortTracksAscending()
-    var trackSort by rememberTrackSort()
     val multiSelectState = rememberSweetSelectState<CuteTrack>()
+    val activeTrackId = remember(musicState.track) { musicState.track.mediaId }
 
 
-    if (state.isLoading) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            ContainedLoadingIndicator()
-        }
-    } else {
 
-        Scaffold(
-            contentWindowInsets = WindowInsets.safeDrawing,
-            bottomBar = {
-                AnimatedContent(
-                    targetState = multiSelectState.isInSelectionMode,
-                    transitionSpec = { barsContentTransform }
-                ) {
-                    if (it) {
-                        TracksSelectedBar(
-                            modifier = Modifier.selfAlignHorizontally(),
-                            tracks = state.tracks,
-                            multiSelectState = multiSelectState,
-                            onHandlePlayerActions = onHandlePlayerAction
-                        )
-                    } else {
-                        CuteSearchbar(
-                            modifier = Modifier.selfAlignHorizontally(),
-                            musicState = musicState,
-                            onHandlePlayerActions = onHandlePlayerAction,
-                            showSearchField = false,
-                            onNavigate = onNavigate,
-                            onNavigateUp = onNavigateUp,
-                            fab = {
-                                AnimatedFab(
-                                    onClick = {
-                                        onHandlePlayerAction(
-                                            PlayerActions.Play(
-                                                index = 0,
-                                                tracks = state.tracks,
-                                                random = true
-                                            )
+    Scaffold(
+        contentWindowInsets = WindowInsets.safeDrawing,
+        bottomBar = {
+            AnimatedContent(
+                targetState = multiSelectState.isInSelectionMode,
+                transitionSpec = { barsContentTransform }
+            ) {
+                if (it) {
+                    TracksSelectedBar(
+                        modifier = Modifier.selfAlignHorizontally(),
+                        tracks = state.tracks,
+                        multiSelectState = multiSelectState,
+                        onHandlePlayerActions = onHandlePlayerAction
+                    )
+                } else {
+                    CuteSearchbar(
+                        modifier = Modifier.selfAlignHorizontally(),
+                        musicState = musicState,
+                        textFieldState = textFieldState,
+                        onHandlePlayerActions = onHandlePlayerAction,
+                        onNavigate = onNavigate,
+                        fab = {
+                            AnimatedFab(
+                                onClick = {
+                                    onHandlePlayerAction(
+                                        PlayerActions.PlayFromSource(
+                                            mediaId = null,
+                                            source = PlaySource.Artist(state.artist.name)
                                         )
-                                    },
-                                    icon = R.drawable.shuffle
-                                )
-                            }
-                        )
-                    }
+                                    )
+                                },
+                                icon = R.drawable.shuffle
+                            )
+                        },
+                        sortMenu = {
+                            CuteSearchbarDefaults.TrackSortPopupContent()
+                        }
+                    )
                 }
             }
-        ) { paddingValues ->
+        }
+    ) { paddingValues ->
 
+        LoadingBox(
+            isLoading = state.isLoading
+        ) {
             LazyColumn(
                 state = lazyState,
                 contentPadding = PaddingValues(bottom = paddingValues.calculateBottomPadding()),
@@ -221,109 +221,63 @@ fun SharedTransitionScope.ArtistDetailsScreen(
                                     )
                                 }
                             }
-
-//                            AlbumCard(
-//                                modifier = Modifier.maskClip(MaterialTheme.shapes.extraLarge),
-//                                album = album,
-//                                onClick = { onNavigate(Screen.AlbumsDetails(album.name)) }
-//                            )
                         }
                     }
                 }
 
-                if (state.tracks.isNotEmpty()) {
+
+
+                // Don't check "is searching" considering if we're in an artist's details it means it needs to have at least 1 track
+                if (state.tracks.isEmpty()) {
                     item(
-                        key = "NbTracks"
+                        key = "empty"
                     ) {
-                        NumberOfTracks(
-                            size = state.tracks.size,
-                            sortMenu = {
-                                SortingDropdownMenu(
-                                    isSortedAscending = sortTracksAscending,
-                                    onChangeSorting = { sortTracksAscending = it },
-                                    isMatchCaseFilter = null,
-                                    isRegexFilter = null,
-                                    onChangeMatchCaseFilter = null,
-                                    onChangeRegexFilter = null
-                                ) {
-                                    repeat(5) { i ->
-                                        val text = when (i) {
-                                            0 -> R.string.title
-                                            1 -> R.string.artist
-                                            2 -> R.string.album
-                                            3 -> R.string.year
-                                            4 -> R.string.date_modified
-                                            else -> throw IndexOutOfBoundsException()
-                                        }
-
-                                        DropdownMenuItem(
-                                            selected = trackSort == i,
-                                            onClick = { trackSort = i },
-                                            shapes = MenuDefaults.itemShape(i, 5),
-                                            colors = MenuDefaults.selectableItemColors(),
-                                            text = { Text(stringResource(text)) },
-                                            trailingContent = {
-                                                if (trackSort == i) {
-                                                    Icon(
-                                                        painter = painterResource(R.drawable.check),
-                                                        contentDescription = null
-                                                    )
-                                                }
-                                            }
-                                        )
-                                    }
-                                }
-                            }
-                        )
+                        NoResult(Modifier.animateItem())
                     }
+                }
 
-                    items(
-                        items = state.tracks,
-                        key = { it.mediaId }
-                    ) { track ->
 
-                        val isSelected by remember {
-                            derivedStateOf { multiSelectState.isSelected(track) }
-                        }
+                item(
+                    key = "NbTracks"
+                ) { NumberOfTracks(size = state.tracks.size) }
 
-                        MusicListItem(
-                            modifier = Modifier.animateItem(),
-                            track = track,
-                            musicState = musicState,
-                            onShortClick = {
-                                if (multiSelectState.isInSelectionMode) {
-                                    multiSelectState.toggle(track)
-                                } else {
-                                    onHandlePlayerAction(
-                                        PlayerActions.Play(
-                                            index = state.tracks.indexOf(track),
-                                            tracks = state.tracks
-                                        )
+                items(
+                    items = state.tracks,
+                    key = { it.mediaId }
+                ) { track ->
+
+                    val isSelected by multiSelectState.isSelectedAsState(track)
+
+                    MusicListItem(
+                        modifier = Modifier.animateItem(),
+                        track = track,
+                        onShortClick = {
+                            if (multiSelectState.isInSelectionMode) {
+                                multiSelectState.toggle(track)
+                            } else {
+                                onHandlePlayerAction(
+                                    PlayerActions.PlayFromSource(
+                                        mediaId = track.mediaId,
+                                        source = PlaySource.Artist(state.artist.name)
                                     )
-                                }
-                            },
-                            onLongClick = { multiSelectState.toggle(track) },
-                            isSelected = isSelected,
-                            trailingContent = {
-                                DefaultMusicListItemTrailingContent(
-                                    track = track,
-                                    onNavigate = onNavigate,
-                                    onHandlePlayerActions = onHandlePlayerAction
                                 )
                             }
-                        )
-                    }
-                } else {
-                    item {
-                        NoXFound(
-                            headlineText = R.string.no_music_title,
-                            bodyText = R.string.better_luck_next_time,
-                            icon = R.drawable.music_note_rounded
-                        )
-                    }
+                        },
+                        onLongClick = { multiSelectState.toggle(track) },
+                        isSelected = isSelected,
+                        isActive = track.mediaId == activeTrackId,
+                        trailingContent = {
+                            DefaultMusicListItemTrailingContent(
+                                track = track,
+                                onNavigate = onNavigate,
+                                onHandlePlayerActions = onHandlePlayerAction
+                            )
+                        }
+                    )
                 }
             }
         }
+
     }
 
 }

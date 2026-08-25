@@ -31,7 +31,7 @@ import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberSeekButtonsDuration
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.presentation.shared_components.animations.AnimatedPlayPauseIcon
+import com.sosauce.chocola.presentation.components.animations.AnimatedDrawable
 import com.sosauce.chocola.utils.rememberInteractionSource
 
 @Composable
@@ -51,11 +51,13 @@ fun PlayPauseButton(
 
     IconButton(
         onClick = { onHandlePlayerActions(PlayerActions.PlayOrPause) },
+        shapes = IconButtonDefaults.shapes(),
         modifier = buttonModifier,
         interactionSource = interactionSource
     ) {
-        AnimatedPlayPauseIcon(
-            isPlaying = isPlaying,
+        AnimatedDrawable(
+            drawable = R.drawable.play_to_pause,
+            atEnd = isPlaying,
             modifier = modifier
                 .graphicsLayer {
                     scaleX = scale
@@ -144,8 +146,9 @@ fun ActionButtonsRow(
                         .size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
                         .animateWidth(interactionSource = interactionSources[2])
                 ) {
-                    AnimatedPlayPauseIcon(
-                        isPlaying = musicState.isPlaying
+                    AnimatedDrawable(
+                        drawable = R.drawable.play_to_pause,
+                        atEnd = musicState.isPlaying
                     )
                 }
             },

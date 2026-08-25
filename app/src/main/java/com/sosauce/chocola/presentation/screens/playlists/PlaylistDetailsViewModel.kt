@@ -1,80 +1,62 @@
-@file:OptIn(ExperimentalCoroutinesApi::class)
+@file:OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 
 package com.sosauce.chocola.presentation.screens.playlists
 
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.util.fastFilter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sosauce.chocola.data.AbstractTracksScanner
 import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.models.Playlist
 import com.sosauce.chocola.data.playlist.PlaylistDao
-import com.sosauce.chocola.domain.actions.PlaylistActions
-import com.sosauce.chocola.domain.repository.PlaylistsRepository
 import com.sosauce.chocola.utils.ordered
+import com.sosauce.chocola.utils.search
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 class PlaylistDetailsViewModel(
     private val id: Int,
     private val userPreferences: UserPreferences,
-    private val playlistsRepository: PlaylistsRepository,
-    private val dao: PlaylistDao
+    private val dao: PlaylistDao,
+    private val abstractTracksScanner: AbstractTracksScanner
 ) : ViewModel() {
 
 
-    private val _state = MutableStateFlow(PlaylistDetailsState(isLoading = true))
-    val state = _state.asStateFlow()
+    val textFieldState = TextFieldState()
+    val searchQuery = snapshotFlow { textFieldState.text }.debounce(250.milliseconds)
 
 
-    init {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            dao.getPlaylistDetails(id)
-//                .flatMapLatest { playlist ->
-//                    _state.update { it.copy(playlist = playlist) }
-//                    playlistsRepository.fetchLatestPlaylistTracks(playlist.musics)
-//                }.collectLatest { tracks ->
-//                    _state.update {
-//                        it.copy(
-//                            tracks = tracks,
-//                            isLoading = false
-//                        )
-//                    }
-//                }
-//        }
-
-        viewModelScope.launch {
-            dao.getPlaylistDetails(id)
-                .flatMapLatest { playlist ->
-                    combine(
-                        playlistsRepository.fetchLatestPlaylistTracks(playlist.musics),
-                        userPreferences.getTrackSort,
-                        userPreferences.sortTracksAscending
-                    ) { tracks, sort, ascending ->
-                        playlist to tracks.ordered(sort, ascending)
-                    }
-                }
-                .flowOn(Dispatchers.Default)
-                .collectLatest { (playlist, sortedTracks) ->
-                    _state.update {
-                        it.copy(
-                            playlist = playlist,
-                            tracks = sortedTracks,
-                            isLoading = false
-                        )
-                    }
-                }
-        }
+    val state = combine(
+        dao.getPlaylistDetails(id),
+        abstractTracksScanner.latestTracks,
+        userPreferences.searchSettings(),
+        searchQuery
+    ) { playlist, tracks, settings, query ->
+        val searched = tracks
+            .search(query.toString(), settings)
 
 
-    }
+        PlaylistDetailsState(
+            isLoading = false,
+            tracks = searched,
+            playlist = playlist
+        )
+    }.flowOn(Dispatchers.Default).stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        PlaylistDetailsState()
+    )
 
     fun handlePlaylistActions(action: PlaylistActions) {
         when (action) {
@@ -91,7 +73,7 @@ class PlaylistDetailsViewModel(
 }
 
 data class PlaylistDetailsState(
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val playlist: Playlist = Playlist(),
     val tracks: List<CuteTrack> = emptyList()
 )

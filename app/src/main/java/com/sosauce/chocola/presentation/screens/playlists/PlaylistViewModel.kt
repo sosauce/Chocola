@@ -7,19 +7,16 @@ import android.provider.MediaStore
 import android.widget.Toast
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.util.fastForEach
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.models.Playlist
 import com.sosauce.chocola.data.playlist.PlaylistDao
-import com.sosauce.chocola.domain.actions.PlaylistActions
 import com.sosauce.chocola.utils.combine
 import com.sosauce.chocola.utils.ordered
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -57,9 +54,7 @@ class PlaylistViewModel(
 
                 PlaylistsState(
                     playlists = sortedPlaylists,
-                    isLoading = false,
-                    textFieldState = textFieldState,
-                    isSearching = query.isNotEmpty()
+                    isLoading = false
                 )
 
             }.collectLatest { newState -> _state.update { newState } }
@@ -89,10 +84,9 @@ class PlaylistViewModel(
 
             is PlaylistActions.ImportM3uPlaylist -> {
 
-                val tracksFromFile = mutableListOf<String>()
+                val tracksFromFile = mutableSetOf<String>()
 
                 viewModelScope.launch(Dispatchers.IO) {
-                    ensureActive()
                     application.contentResolver.openInputStream(action.uri)?.bufferedReader()
                         ?.useLines { lines ->
                             for (line in lines) {
@@ -108,7 +102,7 @@ class PlaylistViewModel(
                             ?: "Imported playlist",
                         musics = tracksFromFile,
                         color = -1,
-                        tags = emptyList()
+                        tags = emptySet()
                     )
 
                     dao.upsertPlaylist(playlist)
@@ -117,10 +111,9 @@ class PlaylistViewModel(
 
             is PlaylistActions.ExportM3uPlaylist -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    ensureActive()
                     application.contentResolver.openOutputStream(action.uri)?.bufferedWriter()
                         ?.use { writer ->
-                            action.tracks.fastForEach { track ->
+                            action.tracks.forEach { track ->
                                 writer.write("${getFilePathFromMediaId(track)}\n")
                             }
                         }
@@ -191,7 +184,5 @@ class PlaylistViewModel(
 
 data class PlaylistsState(
     val isLoading: Boolean = false,
-    val playlists: List<Playlist> = emptyList(),
-    val textFieldState: TextFieldState = TextFieldState(),
-    val isSearching: Boolean = false
+    val playlists: List<Playlist> = emptyList()
 )

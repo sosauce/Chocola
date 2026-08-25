@@ -1,58 +1,43 @@
 package com.sosauce.chocola.presentation.screens.aod
 
-import android.os.Build
-import android.view.View
 import android.view.WindowManager
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.sosauce.chocola.R
-import com.sosauce.chocola.data.states.MusicState
+import com.sosauce.chocola.domain.actions.PlayerActions
+import com.sosauce.chocola.presentation.components.Spacer
+import com.sosauce.chocola.presentation.components.animations.AnimatedIconButton
 import com.sosauce.chocola.presentation.screens.playing.components.PlayPauseButton
-import com.sosauce.chocola.presentation.shared_components.Spacer
-import com.sosauce.chocola.presentation.shared_components.animations.AnimatedIconButton
-import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.milliseconds
+import com.sosauce.chocola.presentation.screens.playlists.PlaylistActions
 
 @Composable
 fun AlwaysOnDisplay(
     title: String,
     artist: String,
+    isPlaying: Boolean,
+    onHandlePlayerActions: (PlayerActions) -> Unit,
     onExitAod: () -> Unit
 ) {
     val view = LocalView.current
@@ -127,31 +112,46 @@ fun AlwaysOnDisplay(
         ) {
 
             Text(
-                text = "Wops",
-                //text = title,
+                text = title,
                 style = MaterialTheme.typography.displayMediumEmphasized.copy(
-                    fontWeight = FontWeight.ExtraLight
+                    fontWeight = FontWeight.ExtraLight,
+                    textAlign = TextAlign.Center
                 )
             )
             Spacer(5.dp)
             Text(
-                text = "20mop",
-                //text = artist,
+                text = artist,
                 style = MaterialTheme.typography.headlineSmallEmphasized.copy(
-                    fontWeight = FontWeight.ExtraLight
+                    fontWeight = FontWeight.ExtraLight,
+                    textAlign = TextAlign.Center
                 )
             )
 
             Spacer(15.dp)
             Row {
                 AnimatedIconButton(
-                    onClick = {},
+                    onClick = {
+                        onHandlePlayerActions(
+                            PlayerActions.SeekToPreviousMusic
+                        )
+                    },
                     icon = R.drawable.skip_previous,
                     contentDescription = null
                 )
-                PlayPauseButton(isPlaying =  false) { }
+                PlayPauseButton(
+                    isPlaying = isPlaying,
+                    onHandlePlayerActions = {
+                        onHandlePlayerActions(
+                            PlayerActions.PlayOrPause
+                        )
+                    }
+                )
                 AnimatedIconButton(
-                    onClick = {},
+                    onClick = {
+                        onHandlePlayerActions(
+                            PlayerActions.SeekToNextMusic
+                        )
+                    },
                     icon = R.drawable.skip_next,
                     contentDescription = null
                 )

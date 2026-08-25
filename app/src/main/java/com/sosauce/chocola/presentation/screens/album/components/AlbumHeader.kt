@@ -5,6 +5,7 @@
 
 package com.sosauce.chocola.presentation.screens.album.components
 
+import android.net.Uri
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
@@ -16,26 +17,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import coil3.compose.AsyncImage
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.models.Album
 import com.sosauce.chocola.data.models.CuteTrack
+import com.sosauce.chocola.domain.actions.PlaySource
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.presentation.shared_components.animations.AnimatedFab
+import com.sosauce.chocola.presentation.components.animations.AnimatedFab
 import com.sosauce.chocola.utils.ImageUtils
 import dev.chrisbanes.haze.ExperimentalHazeApi
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
@@ -95,7 +94,13 @@ fun SharedTransitionScope.AlbumHeader(
             }
 
             AnimatedFab(
-                onClick = { onHandlePlayerActions(PlayerActions.Play(0, tracks)) },
+                onClick = {
+                    onHandlePlayerActions(
+                        PlayerActions.StartPlaylist(
+                            source = PlaySource.Album(album.name)
+                        )
+                    )
+                },
                 icon = R.drawable.widget_play,
                 minSize = 90.dp
             )

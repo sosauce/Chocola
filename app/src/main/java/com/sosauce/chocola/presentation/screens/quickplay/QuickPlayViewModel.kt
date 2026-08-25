@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.kyant.taglib.Metadata
@@ -28,19 +29,27 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.time.Duration.Companion.milliseconds
 
 class QuickPlayViewModel(
     private val trackUri: Uri,
     private val application: Application
 ) : AndroidViewModel(application) {
 
+    private val _musicState = MutableStateFlow(MusicState())
+    val musicState = _musicState.asStateFlow()
     private val audioAttributes = AudioAttributes
         .Builder()
         .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
         .setUsage(C.USAGE_MEDIA)
         .build()
 
+
+
+
     private val listener = object : Player.Listener {
+
+
 
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             super.onIsPlayingChanged(isPlaying)
@@ -62,102 +71,77 @@ class QuickPlayViewModel(
 
         override fun onEvents(player: Player, events: Player.Events) {
             super.onEvents(player, events)
+
+            _musicState.update {
+                it.copy(duration = player.duration)
+            }
             viewModelScope.launch {
                 while (player.isPlaying) {
                     _musicState.update {
                         it.copy(
-                            //duration = player.duration,
                             position = player.currentPosition
                         )
                     }
-                    delay(500)
+                    delay(500.milliseconds)
                 }
             }
         }
+
+
+        override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
+            super.onMediaMetadataChanged(mediaMetadata)
+
+            val title = mediaMetadata.title?.toString() ?: trackUri.path?.substringAfterLast('/')?.substringBeforeLast('.')
+            val artist = mediaMetadata.artist?.toString() ?: "<unknown>"
+            val art = mediaMetadata.artworkData?.getUriFromByteArray(application) ?: Uri.EMPTY
+
+            val track = CuteTrack(
+                title = title ?: "<unknown>",
+                artist = artist,
+                artUriString = art.toString()
+            )
+
+            _musicState.update {
+                it.copy(
+                    track = track
+                )
+            }
+        }
+
     }
 
 
-    private val player = ExoPlayer.Builder(application)
+    private val player = ExoPlayer.Builder(application.applicationContext)
         .setAudioAttributes(audioAttributes, true)
         .setHandleAudioBecomingNoisy(true)
         .build()
         .apply {
+            playWhenReady = true
+            setMediaItem(MediaItem.fromUri(trackUri))
             addListener(listener)
+            prepare()
         }
 
     var isSongLoaded by mutableStateOf(false)
 
-    private val _musicState = MutableStateFlow(MusicState())
-    val musicState = _musicState.asStateFlow()
 
-
-    init {
-
-        viewModelScope.launch(Dispatchers.IO) {
-            val mediaItem = MediaItem.fromUri(trackUri)
-            withContext(Dispatchers.Main) {
-                player.addMediaItem(mediaItem)
-                player.prepare()
-            }
-
-            _musicState.update {
-                it.copy(
-                    track = loadTrackData()
-                )
-            }
-            isSongLoaded = true
-
-            withContext(Dispatchers.Main) {
-                player.play()
-            }
-
-        }
-    }
+//    init {
+//
+//        viewModelScope.launch(Dispatchers.IO) {
+//            _musicState.update {
+//                it.copy(
+//                    track = loadTrackData()
+//                )
+//            }
+//            isSongLoaded = true
+//        }
+//    }
 
     override fun onCleared() {
-        super.onCleared()
         player.removeListener(listener)
         player.release()
     }
 
-
-    fun retrieveDuration(): Long {
-        val retriever = MediaMetadataRetriever()
-        return try {
-            retriever.setDataSource(application, trackUri)
-            retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong() ?: 0
-        } catch (e: Exception) {
-            e.printStackTrace()
-            0
-        } finally {
-            retriever.release()
-        }
-    }
-
-    private fun loadTrackData(): CuteTrack {
-        return application.contentResolver.openFileDescriptor(trackUri, "r")?.use { fd ->
-
-            val metadata = loadAudioMetadata(fd)
-            val title = metadata?.propertyMap?.get("TITLE")?.getOrNull(0) ?: "<unknown>"
-            val artist = metadata?.propertyMap?.get("ARTIST")?.joinToString(", ") ?: "<unknown>"
-
-            val artUri =
-                TagLib.getFrontCover(fd.dup().detachFd())?.data?.getUriFromByteArray(application)
-
-            CuteTrack(
-                title = title,
-                artist = artist,
-                durationMs = retrieveDuration(),
-                artUri = artUri ?: Uri.EMPTY
-            )
-        } ?: throw IllegalArgumentException("Unable to open file descriptor for uri")
-    }
-
-    private fun loadAudioMetadata(songFd: ParcelFileDescriptor): Metadata? {
-        val fd = songFd.dup()?.detachFd() ?: throw NullPointerException()
-
-        return TagLib.getMetadata(fd)
-    }
 
 
     fun handlePlayerAction(action: PlayerActions) {

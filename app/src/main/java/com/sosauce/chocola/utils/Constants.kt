@@ -18,9 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
+import androidx.graphics.shapes.CornerRounding
+import androidx.graphics.shapes.RoundedPolygon
+import androidx.graphics.shapes.rectangle
 import com.sosauce.chocola.R
 import com.sosauce.chocola.presentation.screens.playing.components.ClassicThumb
-import com.sosauce.chocola.presentation.screens.playing.components.CuteSliderState
 import com.sosauce.chocola.presentation.screens.playing.components.MorphingThumb
 import com.sosauce.chocola.presentation.screens.playing.components.StraightThumb
 import com.sosauce.chocola.presentation.screens.playing.components.StraightTrack
@@ -29,13 +31,7 @@ import sv.lib.squircleshape.CornerSmoothing
 import sv.lib.squircleshape.SquircleShape
 
 const val CUTE_MUSIC_ID = "CUTE_MUSIC_ID"
-const val PACKAGE = "com.sosauce.chocola"
-const val ROOT_ID = "cute_music_root"
 const val ICON_TEXT_SPACING = 5
-const val WIDGET_NEW_DATA = "WIDGET_NEW_DATA"
-const val WIDGET_NEW_IS_PLAYING = "WIDGET_NEW_IS_PLAYING"
-const val WIDGET_ACTION_BROADCAST = "WIDGET_NEW_DATA"
-const val EQUALIZER_ACTION_BROADCAST = "EQUALIZER_ACTION_BROADCAST"
 const val GITHUB_RELEASES = "https://github.com/sosauce/Chocola/releases"
 const val SUPPORT_PAGE = "https://sosauce.github.io/support/"
 
@@ -44,11 +40,8 @@ object SharedTransitionKeys {
     const val CURRENTLY_PLAYING = "CURRENTLY_PLAYING"
     const val ARTIST = "ARTIST"
     const val PLAY_PAUSE_BUTTON = "PLAY_PAUSE_BUTTON"
-    const val FAB = "FAB"
     const val SKIP_NEXT_BUTTON = "SKIP_NEXT_BUTTON"
     const val SKIP_PREVIOUS_BUTTON = "SKIP_PREVIOUS_BUTTON"
-    const val MUSIC_ARTWORK = "MUSIC_ARTWORK"
-    const val NOW_PLAYING_SCREEN = "NOW_PLAYING_SCREEN"
     const val SEARCHBAR = "SEARCHBAR"
 }
 
@@ -61,7 +54,6 @@ object CuteTheme {
 }
 
 object ArtworkShape {
-    const val CLASSIC = "classic"
     const val ROUNDED = "rounded"
     const val CIRCLE = "circle"
     const val COOKIE_4 = "cookie4"
@@ -76,7 +68,6 @@ object ArtworkShape {
 
     @Composable
     fun toShape(shape: String): Shape = when (shape) {
-        CLASSIC -> SquircleShape(percent = 30, smoothing = CornerSmoothing.Full)
         ROUNDED -> RoundedCornerShape(10)
         CIRCLE -> MaterialShapes.Circle.toShape()
         COOKIE_4 -> MaterialShapes.Cookie4Sided.toShape()
@@ -88,7 +79,34 @@ object ArtworkShape {
         DIAMOND -> MaterialShapes.Diamond.toShape()
         BUN -> MaterialShapes.Bun.toShape()
         HEART -> MaterialShapes.Heart.toShape()
-        else -> SquircleShape(percent = 30, smoothing = CornerSmoothing.Full)
+        else -> RoundedCornerShape(10)
+    }
+
+    fun toRoundedPolygon(shape: String): RoundedPolygon {
+
+
+        val rounded = RoundedPolygon.rectangle(
+            rounding = CornerRounding(
+                radius = 0.2f
+            )
+        ).normalized()
+
+        println("artwork shape: $shape")
+
+        return when (shape) {
+            ROUNDED -> rounded
+            CIRCLE -> MaterialShapes.Circle
+            COOKIE_4 -> MaterialShapes.Cookie4Sided
+            COOKIE_9 -> MaterialShapes.Cookie9Sided
+            COOKIE_12 -> MaterialShapes.Cookie12Sided
+            CLOVER_8 -> MaterialShapes.Clover8Leaf
+            SUNNY -> MaterialShapes.Sunny
+            ARROW -> MaterialShapes.Arrow
+            DIAMOND -> MaterialShapes.Diamond
+            BUN -> MaterialShapes.Bun
+            HEART -> MaterialShapes.Heart
+            else -> rounded
+        }
     }
 }
 

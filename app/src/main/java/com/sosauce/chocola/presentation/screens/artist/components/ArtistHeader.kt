@@ -21,15 +21,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import coil3.compose.AsyncImage
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.models.Artist
 import com.sosauce.chocola.data.models.CuteTrack
+import com.sosauce.chocola.domain.actions.PlaySource
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.presentation.shared_components.animations.AnimatedFab
+import com.sosauce.chocola.presentation.components.animations.AnimatedFab
 import com.sosauce.chocola.utils.ImageUtils
 
 @Composable
@@ -75,7 +75,11 @@ fun SharedTransitionScope.ArtistHeader(
                     .basicMarquee()
             )
             AnimatedFab(
-                onClick = { onHandlePlayerActions(PlayerActions.Play(0, tracks)) },
+                onClick = {
+                    onHandlePlayerActions(
+                        PlayerActions.StartPlaylist(PlaySource.Artist(artist.name))
+                    )
+                },
                 icon = R.drawable.widget_play,
                 minSize = 90.dp
             )

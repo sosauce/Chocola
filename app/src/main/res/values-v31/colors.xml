@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="backgroundDark">@android:color/system_neutral2_900</color>
-    <color name="iconDark">@android:color/system_accent1_100</color>
+    <color name="surface">@android:color/system_neutral1_900</color>
+    <color name="tertiaryContainer">@android:color/system_accent3_700</color>
+    <color name="onTertiaryContainer">@android:color/system_accent3_100</color>
+    <color name="secondaryContainer">@android:color/system_accent2_700</color>
+    <color name="onSecondaryContainer">@android:color/system_accent2_100</color>
+    <color name="primaryContainer">@android:color/system_accent1_700</color>
+    <color name="onPrimaryContainer">@android:color/system_accent1_100</color>
+    <color name="onSurface">@android:color/system_neutral1_100</color>
+    <color name="onSurfaceVariant">@android:color/system_neutral2_200</color>
 </resources>

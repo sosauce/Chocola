@@ -5,8 +5,6 @@ import android.app.Application
 import android.app.PendingIntent
 import android.app.RecoverableSecurityException
 import android.content.ContentUris
-import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
@@ -15,16 +13,13 @@ import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
 import android.util.Log
-import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.util.copy
 import com.kyant.taglib.AudioProperties
 import com.kyant.taglib.AudioPropertiesReadStyle
 import com.kyant.taglib.Metadata
 import com.kyant.taglib.Picture
 import com.kyant.taglib.TagLib
-import com.sosauce.chocola.domain.actions.MetadataActions
 import com.sosauce.chocola.utils.toAudioFileMetadata
 import com.sosauce.chocola.utils.toModifiableMap
 import com.sosauce.chocola.utils.toPropertyMap
@@ -37,15 +32,18 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.FileNotFoundException
-import java.io.FileOutputStream
 
 
 class MetadataViewModel(
     private val trackPath: String,
     private val application: Application
 ) : AndroidViewModel(application) {
+
+
+    private val _events = Channel<MetadataEvents>()
+    val events = _events.receiveAsFlow()
+
 
     private val _metadata = MutableStateFlow(MetadataState())
     val metadataState = _metadata.asStateFlow()
@@ -250,11 +248,18 @@ class MetadataViewModel(
         when (action) {
             is MetadataActions.SaveChanges -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        saveChangesApi30Plus()
-                    } else {
-                        saveChangesLegacy()
+
+                    try {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                            saveChangesApi30Plus()
+                        } else {
+                            saveChangesLegacy()
+                        }
+                        _events.trySend(MetadataEvents.SaveSuccessful)
+                    } catch (e: Exception) {
+                        _events.trySend(MetadataEvents.SaveUnsuccessful(e.message))
                     }
+
                 }
             }
 
@@ -270,6 +275,13 @@ class MetadataViewModel(
             }
         }
     }
+}
+
+sealed interface MetadataEvents {
+    data object SaveSuccessful : MetadataEvents
+    data class SaveUnsuccessful(
+        val error: String?
+    ) : MetadataEvents
 }
 
 

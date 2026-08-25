@@ -2,6 +2,7 @@
 
 package com.sosauce.chocola.presentation.screens.playing.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,13 +29,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
 import com.sosauce.chocola.utils.rememberFocusRequester
-import com.sosauce.chocola.utils.round
 import com.sosauce.chocola.utils.selfAlignHorizontally
 import kotlinx.coroutines.android.awaitFrame
 
@@ -51,7 +50,7 @@ fun RateAdjustmentDialog(
         focusRequest.requestFocus()
     }
 
-    val textFieldState = rememberTextFieldState(initialText = rate.toDouble().round(2).toString())
+    val textFieldState = rememberTextFieldState(initialText = "%.2f".format(rate))
     val newRate =
         remember(textFieldState.text) { textFieldState.text.toString().toFloatOrNull() ?: 1.0f }
     val isError = remember(newRate) { newRate !in 0.5f..3.0f }

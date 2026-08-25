@@ -2,6 +2,7 @@
 
 package com.sosauce.chocola.presentation.screens.playing.components
 
+import android.text.format.DateUtils
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
@@ -35,7 +36,6 @@ import androidx.media3.common.Player
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.utils.formatToReadableTime
 import com.sosauce.chocola.utils.rememberInteractionSource
 
 
@@ -190,7 +190,7 @@ fun QuickActionsRow(
             )
             AnimatedVisibility(visible = musicState.sleepTimerRemainingDuration > 0) {
                 Text(
-                    text = musicState.sleepTimerRemainingDuration.formatToReadableTime(),
+                    text = DateUtils.formatElapsedTime(musicState.sleepTimerRemainingDuration / 1000),
                     modifier = Modifier.padding(start = 5.dp)
                 )
             }

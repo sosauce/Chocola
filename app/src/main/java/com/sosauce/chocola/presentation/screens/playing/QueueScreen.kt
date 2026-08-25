@@ -16,20 +16,31 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastMap
 import com.sosauce.chocola.R
+import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.states.MusicState
+import com.sosauce.chocola.domain.actions.PlaySource
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.presentation.shared_components.MusicListItem
-import com.sosauce.chocola.presentation.shared_components.animations.AnimatedFab
+import com.sosauce.chocola.presentation.components.MusicListItem
+import com.sosauce.chocola.presentation.components.animations.AnimatedFab
 import com.sosauce.chocola.utils.selfAlignHorizontally
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
+import kotlin.random.Random
+import kotlin.random.nextInt
 import kotlin.uuid.ExperimentalUuidApi
 
 @Composable
@@ -39,11 +50,28 @@ fun QueueScreen(
     onHandlePlayerAction: (PlayerActions) -> Unit
 ) {
 
+    val hapticFeedback = LocalHapticFeedback.current
     val lazyListState = rememberLazyListState()
+    val activeTrackId = remember(musicState.track) { musicState.track.mediaId }
+    val queueItems = remember {
+        musicState.loadedMedias.fastMap {
+            QueueItem(
+                id = Random.nextInt(),
+                track = it
+            )
+        }.toMutableStateList()
+    }
+
     val reorderableLazyListState = rememberReorderableLazyListState(lazyListState) { from, to ->
         onHandlePlayerAction(
             PlayerActions.ReArrangeQueue(from.index, to.index)
         )
+        val itemToMove = queueItems[from.index]
+        queueItems.removeAt(from.index)
+        queueItems.add(to.index, itemToMove)
+
+        hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
+
     }
 
     Scaffold(
@@ -66,12 +94,12 @@ fun QueueScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             items(
-                items = musicState.loadedMedias,
-                key = { it.mediaItem.mediaId }
-            ) { track ->
+                items = queueItems,
+                key = { it.id }
+            ) { item ->
                 ReorderableItem(
                     state = reorderableLazyListState,
-                    key = track.uri
+                    key = item.id
                 ) { isDragging ->
                     val scale by animateFloatAsState(
                         targetValue = if (isDragging) 1.01f else 1f
@@ -82,35 +110,40 @@ fun QueueScreen(
                                 scaleX = scale
                                 scaleY = scale
                             },
-                        track = track,
-                        musicState = musicState,
+                        track = item.track,
                         onShortClick = {
                             onHandlePlayerAction(
-                                PlayerActions.Play(
-                                    index = musicState.loadedMedias.indexOf(track),
-                                    tracks = musicState.loadedMedias
+                                PlayerActions.PlayFromSource(
+                                    mediaId = item.track.mediaId,
+                                    source = PlaySource.ExplicitTracks(musicState.loadedMedias)
                                 )
                             )
                         },
+                        isActive = item.track.mediaId == activeTrackId,
                         trailingContent = {
-                            IconButton(
-                                onClick = { onHandlePlayerAction(PlayerActions.RemoveFromQueue(track)) },
-                                shapes = IconButtonDefaults.shapes()
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.close),
-                                    contentDescription = null
-                                )
-                            }
-                            IconButton(
-                                onClick = {},
-                                shapes = IconButtonDefaults.shapes(),
-                                modifier = Modifier.draggableHandle()
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.drag_handle),
-                                    contentDescription = null
-                                )
+                            if (!musicState.shuffle) {
+                                IconButton(
+                                    onClick = {
+                                        onHandlePlayerAction(PlayerActions.RemoveFromQueue(item.track))
+                                        queueItems.remove(item)
+                                              },
+                                    shapes = IconButtonDefaults.shapes()
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.close),
+                                        contentDescription = null
+                                    )
+                                }
+                                IconButton(
+                                    onClick = {},
+                                    shapes = IconButtonDefaults.shapes(),
+                                    modifier = Modifier.draggableHandle()
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.drag_handle),
+                                        contentDescription = null
+                                    )
+                                }
                             }
                         }
                     )
@@ -119,3 +152,9 @@ fun QueueScreen(
         }
     }
 }
+
+
+data class QueueItem(
+    val id: Int,
+    val track: CuteTrack
+)

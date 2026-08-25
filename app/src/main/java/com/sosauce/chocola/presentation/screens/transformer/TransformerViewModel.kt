@@ -2,14 +2,12 @@ package com.sosauce.chocola.presentation.screens.transformer
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.media.audiofx.Visualizer
 import android.os.Environment
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MimeTypes
-import androidx.media3.exoplayer.audio.WaveformAudioBufferSink
 import androidx.media3.transformer.Composition
 import androidx.media3.transformer.EditedMediaItem
 import androidx.media3.transformer.ExportException

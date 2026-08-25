@@ -3,8 +3,6 @@
 package com.sosauce.chocola.presentation.screens.playing.components
 
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -26,47 +24,11 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.data.datastore.rememberThumbStyle
 import com.sosauce.chocola.data.datastore.rememberTrackStyle
-import com.sosauce.chocola.presentation.shared_components.animations.AnimatedSlider
 import com.sosauce.chocola.utils.ThumbStyle
 import com.sosauce.chocola.utils.TrackStyle
 import com.sosauce.chocola.utils.rememberInteractionSource
 
 
-@Composable
-fun NowPlayingSlider(
-    state: CuteSliderState,
-    isPlaying: Boolean = true
-) {
-    val thumbStyle by rememberThumbStyle()
-    val trackStyle by rememberTrackStyle()
-
-
-    Slider(
-        value = state.value,
-        onValueChange = state.onValueChange,
-        onValueChangeFinished = state.onValueChangeFinished,
-        valueRange = state.valueRange,
-        enabled = state.enabled,
-        thumb = {
-            when(thumbStyle) {
-                ThumbStyle.STRAIGHT -> StraightThumb(it.isDragging)
-                ThumbStyle.BALL -> ClassicThumb(it.isDragging)
-                ThumbStyle.MORPHING -> MorphingThumb()
-            }
-        },
-        track = { trackSliderState ->
-            when(trackStyle) {
-                TrackStyle.WAVY -> {
-                    WavyTrack(
-                        isPlaying = isPlaying,
-                        sliderState = trackSliderState
-                    )
-                }
-                TrackStyle.STRAIGHT -> StraightTrack(trackSliderState)
-            }
-        }
-    )
-}
 
 @Composable
 fun StraightThumb(isDragging: Boolean) {
@@ -152,33 +114,4 @@ fun StraightTrack(sliderState: SliderState) {
         thumbTrackGapSize = 0.dp,
         modifier = Modifier.height(4.dp)
     )
-}
-
-
-
-data class CuteSliderState(
-    val value: Float,
-    val onValueChange: (Float) -> Unit,
-    val onValueChangeFinished: (() -> Unit)?,
-    val valueRange: ClosedFloatingPointRange<Float>,
-    val enabled: Boolean
-)
-
-@Composable
-fun rememberCuteSliderState(
-    value: Float = 1f,
-    onValueChange: (Float) -> Unit = {},
-    onValueChangeFinished: (() -> Unit)? = null,
-    valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
-    enabled: Boolean = true
-): CuteSliderState {
-    return remember(value) {
-        CuteSliderState(
-            value = value,
-            onValueChange = onValueChange,
-            onValueChangeFinished = onValueChangeFinished,
-            valueRange = valueRange,
-            enabled = enabled
-        )
-    }
 }

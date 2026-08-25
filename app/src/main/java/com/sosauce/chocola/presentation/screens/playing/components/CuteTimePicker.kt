@@ -4,6 +4,7 @@
 
 package com.sosauce.chocola.presentation.screens.playing.components
 
+import android.text.format.DateUtils
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.AlertDialog
@@ -22,12 +23,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.sosauce.chocola.R
-import com.sosauce.chocola.utils.formatToReadableTime
-import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
-import kotlin.time.toDuration
 
 @Composable
 fun CuteTimePicker(
@@ -62,7 +59,7 @@ fun CuteTimePicker(
                 ) {
                     Text(stringResource(R.string.ongoing_sleep_timer))
                     Text(
-                        text = stringResource(R.string.timer_will_end_in) + " " + currentTimerTime.formatToReadableTime(),
+                        text = stringResource(R.string.timer_will_end_in) + " " + DateUtils.formatElapsedTime(currentTimerTime / 1000),
                         style = MaterialTheme.typography.labelSmallEmphasized
                     )
                     Button(

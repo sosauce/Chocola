@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/surface"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/widget_primary_container_circle"
+        android:contentDescription="@string/play_pause_button"
+        android:scaleType="center"
+        android:src="@drawable/widget_play"
+        android:tint="@color/onPrimaryContainer"
+        tools:ignore="UseAppTint" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/widget_secondary_container_rounded"
+            android:contentDescription="@string/previous_song"
+            android:scaleType="center"
+            android:src="@drawable/skip_previous"
+            android:tint="@color/onSecondaryContainer"
+            tools:ignore="UseAppTint" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/widget_secondary_container_rounded"
+            android:contentDescription="@string/next_button"
+            android:scaleType="center"
+            android:src="@drawable/skip_next"
+            android:tint="@color/onSecondaryContainer"
+            tools:ignore="UseAppTint" />
+
+    </LinearLayout>
+
+</LinearLayout>

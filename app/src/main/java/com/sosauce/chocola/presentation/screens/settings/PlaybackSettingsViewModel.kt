@@ -1,7 +1,6 @@
 package com.sosauce.chocola.presentation.screens.settings
 
 import androidx.collection.FloatList
-import androidx.compose.ui.util.fastMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sosauce.chocola.data.datastore.UserPreferences

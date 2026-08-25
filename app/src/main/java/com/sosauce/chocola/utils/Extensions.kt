@@ -13,6 +13,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.text.format.DateUtils
 import android.util.Log
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.SizeTransform
@@ -48,6 +49,8 @@ import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import com.kyant.taglib.PropertyMap
 import com.materialkolor.PaletteStyle
+import com.sosauce.chocola.data.datastore.SearchSettings
+import com.sosauce.chocola.data.datastore.TracksSettings
 import com.sosauce.chocola.data.datastore.rememberIsLandscape
 import com.sosauce.chocola.data.models.Album
 import com.sosauce.chocola.data.models.Artist
@@ -65,9 +68,8 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-fun NavKey.showBackButton(): Boolean {
-    return this is Screen.AlbumsDetails || this is Screen.ArtistsDetails || this is Screen.PlaylistDetails
-}
+val Context.appVersion
+    get() = packageManager.getPackageInfo(packageName, 0).versionName
 
 fun Context.hasMusicPermission(): Boolean {
     val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -125,52 +127,29 @@ fun Player.pauseWithFadeOut(durationMs: Long = 1000, steps: Int = 10) {
     handler.post(fadeRunnable)
 }
 
-fun Player.changeRepeatMode(
-    initialRepeatMode: Int? = null
-) {
+fun Player.changeRepeatMode() {
 
-    if (initialRepeatMode != null) {
-        repeatMode = initialRepeatMode
-    } else {
-
-        val repeatMode = when (repeatMode) {
-            Player.REPEAT_MODE_OFF -> Player.REPEAT_MODE_ALL
-            Player.REPEAT_MODE_ALL -> Player.REPEAT_MODE_ONE
-            else -> Player.REPEAT_MODE_OFF
-        }
-        this.repeatMode = repeatMode
+    val repeatMode = when (repeatMode) {
+        Player.REPEAT_MODE_OFF -> Player.REPEAT_MODE_ALL
+        Player.REPEAT_MODE_ALL -> Player.REPEAT_MODE_ONE
+        else -> Player.REPEAT_MODE_OFF
     }
+    this.repeatMode = repeatMode
 }
-
-fun Player.applyShuffle(
-    initialShuffle: Boolean? = null
-) {
-
-    shuffleModeEnabled = initialShuffle ?: !shuffleModeEnabled
-}
-
-fun Player.applyPlaybackSpeed(speed: Float = 1f) {
-    playbackParameters = playbackParameters.withSpeed(speed)
-}
-
-@SuppressLint("UnsafeOptInUsageError")
-fun Player.applyPlaybackPitch(pitch: Float = 1f) {
-    playbackParameters = playbackParameters.withPitch(pitch)
-}
-
 
 fun ByteArray.getUriFromByteArray(context: Context): Uri {
     val albumArtFile = File(context.cacheDir, "albumArt_${Uuid.random()}.jpg")
+
     return try {
         FileOutputStream(albumArtFile).use { os ->
             os.write(this)
         }
         Uri.fromFile(albumArtFile)
     } catch (e: Exception) {
+        e.printStackTrace()
         Uri.EMPTY
     }
 }
-
 
 /**
  * @param metadata FOR EXAMPLE [MediaMetadataRetriever.METADATA_KEY_BITRATE]
@@ -191,16 +170,6 @@ fun Uri.getTrackMetadata(
     }
 }
 
-fun Long.formatToReadableTime(): String {
-    val duration = this.milliseconds
-    return duration.toComponents { hours, minutes, seconds, _ ->
-        if (hours > 0) {
-            String.format(Locale.getDefault(), "%d:%02d:%02d", hours, minutes, seconds)
-        } else {
-            String.format(Locale.getDefault(), "%d:%02d", minutes, seconds)
-        }
-    }
-}
 
 fun PropertyMap.toModifiableMap(separator: String = ", "): MutableMap<String, String?> {
     return mutableMapOf(
@@ -273,72 +242,29 @@ inline fun <T> List<T>.thenIf(
 ): List<T> = if (condition) block() else this
 
 
-fun String.regexOrNull(matchCase: Boolean): Regex? = try {
-    if (matchCase) {
-        this.toRegex()
+fun String.regex(matchCase: Boolean): Regex {
+    return if (matchCase) {
+        toRegex()
     } else {
-        this.toRegex(RegexOption.IGNORE_CASE)
+        toRegex(RegexOption.IGNORE_CASE)
     }
-} catch (e: Exception) {
-    Log.e("RegexPattern", "Failed to parse regex pattern", e)
-    null
 }
 
-fun List<CuteTrack>.ordered(
-    sort: TrackSort,
-    regex: Boolean,
-    matchCase: Boolean,
-    ascending: Boolean,
-    query: String
+fun List<CuteTrack>.search(
+    query: String,
+    searchSettings: SearchSettings,
 ): List<CuteTrack> {
-
-    val regexPattern = query.regexOrNull(matchCase)
-
-    val filtered = this.fastFilter { track ->
-        if (regex) {
-            regexPattern?.containsMatchIn(track.title) ?: false
+    val regexPattern = query.regex(searchSettings.matchCase)
+    return fastFilter { track ->
+        if (searchSettings.regex) {
+            regexPattern.containsMatchIn(track.title)
         } else {
-            track.title.contains(query, !matchCase)
+            track.title.contains(query, !searchSettings.matchCase)
         }
     }
-
-    return filtered
-        .sortedWith(
-            compareBy(String.CASE_INSENSITIVE_ORDER) {
-                when (sort) {
-                    TrackSort.TITLE -> it.title
-                    TrackSort.ARTIST -> it.artist
-                    TrackSort.ALBUM -> it.album
-                    TrackSort.YEAR -> it.year.toString()
-                    TrackSort.DATE_MODIFIED -> it.dateModified.toString()
-                    TrackSort.AS_ADDED -> ""
-                }
-            }
-        ).thenIf(!ascending) { asReversed() }
 }
 
 
-// Having a version with no search (album/artist details for example) is actually faster than passing an empty query
-fun List<CuteTrack>.ordered(
-    sort: TrackSort,
-    ascending: Boolean
-): List<CuteTrack> {
-
-    return this
-        .sortedWith(
-            compareBy(String.CASE_INSENSITIVE_ORDER) {
-                when (sort) {
-                    TrackSort.TITLE -> it.title
-                    TrackSort.ARTIST -> it.artist
-                    TrackSort.ALBUM -> it.album
-                    TrackSort.YEAR -> it.year.toString()
-                    TrackSort.DATE_MODIFIED -> it.dateModified.toString()
-                    TrackSort.AS_ADDED -> ""
-                }
-            }
-        ).thenIf(!ascending) { asReversed() }
-
-}
 
 fun List<Album>.ordered(
     sort: AlbumSort,
@@ -347,25 +273,23 @@ fun List<Album>.ordered(
     ascending: Boolean,
     query: String
 ): List<Album> {
-    val regexPattern = query.regexOrNull(matchCase)
+    val regexPattern = query.regex(matchCase)
 
     val filtered = this.fastFilter { track ->
         if (regex) {
-            regexPattern?.containsMatchIn(track.name) ?: false
+            regexPattern.containsMatchIn(track.name)
         } else {
             track.name.contains(query, !matchCase)
         }
     }
 
     return filtered
-        .sortedWith(
-            compareBy(String.CASE_INSENSITIVE_ORDER) {
-                when (sort) {
-                    AlbumSort.NAME -> it.name
-                    AlbumSort.ARTIST -> it.artist
-                }
+        .sortedBy {
+            when (sort) {
+                AlbumSort.NAME -> it.name
+                AlbumSort.ARTIST -> it.artist
             }
-        ).thenIf(!ascending) { asReversed() }
+        }.thenIf(!ascending) { asReversed() }
 }
 
 fun List<Artist>.ordered(
@@ -375,26 +299,24 @@ fun List<Artist>.ordered(
     ascending: Boolean,
     query: String
 ): List<Artist> {
-    val regexPattern = query.regexOrNull(matchCase)
+    val regexPattern = query.regex(matchCase)
 
     val filtered = this.fastFilter { track ->
         if (regex) {
-            regexPattern?.containsMatchIn(track.name) ?: false
+            regexPattern.containsMatchIn(track.name)
         } else {
             track.name.contains(query, !matchCase)
         }
     }
 
     return filtered
-        .sortedWith(
-            compareBy(String.CASE_INSENSITIVE_ORDER) {
-                when (sort) {
-                    ArtistSort.NAME -> it.name
-                    ArtistSort.NB_ALBUMS -> it.numberAlbums.toString()
-                    ArtistSort.NB_TRACKS -> it.numberTracks.toString()
-                }
+        .sortedBy {
+            when (sort) {
+                ArtistSort.NAME -> it.name
+                ArtistSort.NB_ALBUMS -> it.numberAlbums.toString()
+                ArtistSort.NB_TRACKS -> it.tracks.size.toString()
             }
-        ).thenIf(!ascending) { asReversed() }
+        }.thenIf(!ascending) { asReversed() }
 }
 
 fun List<Playlist>.ordered(
@@ -404,11 +326,11 @@ fun List<Playlist>.ordered(
     ascending: Boolean,
     query: String
 ): List<Playlist> {
-    val regexPattern = query.regexOrNull(matchCase)
+    val regexPattern = query.regex(matchCase)
 
     val filtered = this.fastFilter { track ->
         if (regex) {
-            regexPattern?.containsMatchIn(track.name) ?: false
+            regexPattern.containsMatchIn(track.name)
         } else {
             track.name.contains(query, !matchCase)
         }
@@ -428,9 +350,9 @@ fun List<Playlist>.ordered(
 }
 
 fun <E> MutableSet<E>.addOrRemove(element: E) {
-    if (contains(element)) {
+    if (!add(element)) {
         remove(element)
-    } else add(element)
+    }
 }
 
 
@@ -449,10 +371,6 @@ fun ContentResolver.observe(uri: Uri) = callbackFlow {
 }
 
 
-val Context.appVersion
-    get() = packageManager.getPackageInfo(packageName, 0).versionName
-
-
 @Composable
 fun rememberInteractionSource(): MutableInteractionSource {
     return remember { MutableInteractionSource() }
@@ -464,81 +382,12 @@ fun rememberFocusRequester(): FocusRequester {
 }
 
 
-@Composable
-fun rememberSearchbarAlignment(
-): Alignment {
-
-    val isLandscape = rememberIsLandscape()
-
-    return remember(isLandscape) {
-        if (isLandscape) {
-            Alignment.BottomEnd
-        } else {
-            Alignment.BottomCenter
-        }
-    }
-}
-
-@Composable
-fun rememberSearchbarMaxFloatValue(
-): Float {
-
-    val isLandscape = rememberIsLandscape()
-
-    return remember(isLandscape) {
-        if (isLandscape) {
-            0.4f
-        } else {
-            0.85f
-        }
-    }
-}
-
-@Composable
-fun rememberSearchbarRightPadding(
-): Dp {
-
-    val isLandscape = rememberIsLandscape()
-
-    return remember(isLandscape) {
-        if (isLandscape) {
-            10.dp
-        } else {
-            0.dp
-        }
-    }
-}
-
-
-@Composable
-fun anyLightColorScheme(): ColorScheme {
-    val context = LocalContext.current
-
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        dynamicLightColorScheme(context)
-    } else {
-        lightColorScheme()
-    }
-}
-
-@Composable
-fun anyDarkColorScheme(): ColorScheme {
-    val context = LocalContext.current
-
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        dynamicDarkColorScheme(context)
-    } else {
-        darkColorScheme()
-    }
-}
-
 fun <T> bouncySpec() = spring<T>(
     dampingRatio = Spring.DampingRatioMediumBouncy,
     stiffness = Spring.StiffnessLow
 )
 
 
-val navigationBouncySpec = spring<IntOffset>(Spring.DampingRatioLowBouncy, Spring.StiffnessLow)
 
 
 val barsContentTransform = ContentTransform(
@@ -567,19 +416,6 @@ fun String.toLyricsAlignment(): TextAlign {
     }
 }
 
-
-fun Double.round(decimals: Int): Double {
-    var multiplier = 1.0
-    repeat(decimals) { multiplier *= 10 }
-    return round(this * multiplier) / multiplier
-}
-
-fun NavBackStack<NavKey>.navigateBack() {
-    // Popping the only screen will crash so this avoids it
-    if (size == 1) return
-    removeLastOrNull()
-}
-
 fun String.toPaletteStyle(): PaletteStyle {
     return when (this) {
         CutePaletteStyle.EXPRESSIVE -> PaletteStyle.Expressive
@@ -593,15 +429,6 @@ fun String.toPaletteStyle(): PaletteStyle {
     }
 }
 
-fun Long.formatDate(): String {
-    return if (this > 0) {
-        val date = java.util.Date(this)
-        val formatter = java.text.SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
-        formatter.format(date)
-    } else {
-        "Unknown"
-    }
-}
 
 fun Int.toLyricDuration(): String {
     val duration = this.milliseconds
@@ -609,4 +436,14 @@ fun Int.toLyricDuration(): String {
         val millis = nanoseconds / 1_000_000
         String.format(Locale.getDefault(), "%d:%02d.%03d", minutes, seconds, millis)
     }
+}
+
+
+fun List<CuteTrack>.orderAlbumTrackNumber(): List<CuteTrack> {
+    return sortedWith(
+        compareBy(
+            { it.trackNumber == 0 },
+            { it.trackNumber }
+        )
+    )
 }

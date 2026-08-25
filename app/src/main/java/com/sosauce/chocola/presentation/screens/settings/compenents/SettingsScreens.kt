@@ -1,6 +1,7 @@
 package com.sosauce.chocola.presentation.screens.settings.compenents
 
 import androidx.navigation3.runtime.NavKey
+import com.sosauce.chocola.presentation.navigation.Screen
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -26,4 +27,7 @@ sealed class SettingsScreens : NavKey {
 
     @Serializable
     data object Navigation : SettingsScreens()
+
+    @Serializable
+    data object AlwaysOnDisplay : SettingsScreens()
 }

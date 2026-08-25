@@ -1,7 +1,6 @@
 package com.sosauce.chocola.presentation.screens.transformer
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 
 @Composable
 fun TransformerScreen() {

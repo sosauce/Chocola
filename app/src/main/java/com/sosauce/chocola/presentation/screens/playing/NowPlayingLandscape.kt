@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.data.datastore.rememberSnapSpeedAndPitch
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
+import com.sosauce.chocola.presentation.components.dialogs.tracksDetails.TracksDetailsDialog
 import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.presentation.screens.playing.components.ActionButtonsRow
 import com.sosauce.chocola.presentation.screens.playing.components.Artwork
@@ -37,7 +38,6 @@ import com.sosauce.chocola.presentation.screens.playing.components.QuickActionsR
 import com.sosauce.chocola.presentation.screens.playing.components.SpeedCard
 import com.sosauce.chocola.presentation.screens.playing.components.TitleAndArtist
 import com.sosauce.chocola.presentation.screens.playlists.components.PlaylistPicker
-import com.sosauce.chocola.presentation.shared_components.dialogs.MusicDetailsDialog
 
 @Composable
 fun NowPlayingLandscape(
@@ -55,7 +55,7 @@ fun NowPlayingLandscape(
     Scaffold { paddingValues ->
 
         if (showDetailsDialog) {
-            MusicDetailsDialog(
+            TracksDetailsDialog(
                 track = musicState.track,
                 onDismissRequest = { showDetailsDialog = false }
             )
@@ -107,7 +107,9 @@ fun NowPlayingLandscape(
                     onShrinkToSearchbar = onShrinkToSearchbar
                 )
                 TitleAndArtist(
-                    musicState = musicState
+                    title = musicState.track.title,
+                    artist = musicState.track.artist,
+                    album = musicState.track.album
                 )
                 Spacer(Modifier.height(24.dp))
                 CuteSlider(

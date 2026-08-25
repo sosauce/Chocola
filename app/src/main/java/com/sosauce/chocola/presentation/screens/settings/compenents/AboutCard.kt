@@ -59,7 +59,7 @@ fun AboutCard() {
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.music_note_rounded),
+                    painter = painterResource(R.drawable.music_note),
                     contentDescription = stringResource(id = R.string.app_icon),
                     modifier = Modifier.size(50.dp),
                     tint = Color(0xFFfdd9dc)
@@ -71,8 +71,10 @@ fun AboutCard() {
 
                     )
                 Text(
-                    text = "${stringResource(id = R.string.version)} ${context.appVersion}",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    text = "v${context.appVersion}",
+                    style = MaterialTheme.typography.bodyMediumEmphasized.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 )
             }
             Spacer(Modifier.weight(1f))

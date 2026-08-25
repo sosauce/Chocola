@@ -22,6 +22,7 @@ import com.sosauce.chocola.data.datastore.PreferencesKeys.ART_AS_BACKGROUND
 import com.sosauce.chocola.data.datastore.PreferencesKeys.ART_LYRICS
 import com.sosauce.chocola.data.datastore.PreferencesKeys.CAROUSEL
 import com.sosauce.chocola.data.datastore.PreferencesKeys.CENTER_TITLE
+import com.sosauce.chocola.data.datastore.PreferencesKeys.DYNAMIC_DURATION
 import com.sosauce.chocola.data.datastore.PreferencesKeys.EQUALIZER_ENABLED
 import com.sosauce.chocola.data.datastore.PreferencesKeys.GROUP_BY_FOLDERS
 import com.sosauce.chocola.data.datastore.PreferencesKeys.HAS_BEEN_THROUGH_SETUP
@@ -33,6 +34,7 @@ import com.sosauce.chocola.data.datastore.PreferencesKeys.LYRICS_ALIGNMENT
 import com.sosauce.chocola.data.datastore.PreferencesKeys.LYRICS_FONT_SIZE
 import com.sosauce.chocola.data.datastore.PreferencesKeys.MATCH_CASE_FILTER
 import com.sosauce.chocola.data.datastore.PreferencesKeys.MIN_TRACK_DURATION
+import com.sosauce.chocola.data.datastore.PreferencesKeys.NOW_PLAYING_SHAPE_MORPH
 import com.sosauce.chocola.data.datastore.PreferencesKeys.NUMBER_OF_ALBUM_GRIDS
 import com.sosauce.chocola.data.datastore.PreferencesKeys.PALETTE_STYLE
 import com.sosauce.chocola.data.datastore.PreferencesKeys.PAUSE_ON_MUTE
@@ -127,6 +129,10 @@ data object PreferencesKeys {
     val INITIAL_SCREEN = stringPreferencesKey("INITIAL_SCREEN")
     val EQUALIZER_GAINS = stringPreferencesKey("EQUALIZER_GAINS")
 
+    val DYNAMIC_DURATION = booleanPreferencesKey("DYNAMIC_DURATION")
+
+    val NOW_PLAYING_SHAPE_MORPH = booleanPreferencesKey("NOW_PLAYING_SHAPE_MORPH")
+
 }
 
 
@@ -168,7 +174,7 @@ fun rememberAlbumGrids() =
 
 @Composable
 fun rememberArtworkShape() =
-    rememberPreference(key = ARTWORK_SHAPE, defaultValue = ArtworkShape.CLASSIC)
+    rememberPreference(key = ARTWORK_SHAPE, defaultValue = ArtworkShape.ROUNDED)
 
 @Composable
 fun rememberHiddenFolders() =
@@ -282,6 +288,14 @@ fun rememberEnableEqualizer() =
 @Composable
 fun rememberArtLyrics() =
     rememberPreference(key = ART_LYRICS, defaultValue = false)
+
+@Composable
+fun rememberDynamicDuration() =
+    rememberPreference(key = DYNAMIC_DURATION, defaultValue = false)
+
+@Composable
+fun rememberNowPlayingShapeMorph() =
+    rememberPreference(key = NOW_PLAYING_SHAPE_MORPH, defaultValue = true)
 
 
 @Composable

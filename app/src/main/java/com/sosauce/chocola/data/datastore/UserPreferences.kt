@@ -31,6 +31,7 @@ import com.sosauce.chocola.utils.PlaylistSort
 import com.sosauce.chocola.utils.TrackSort
 import com.sosauce.chocola.utils.copyMutate
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.StringFormat
@@ -132,15 +133,43 @@ class UserPreferences(
         val gainsString = context.dataStore.data.map {
             it[EQUALIZER_GAINS] ?: "0,0,0,0,0,0,0,0,0,0"
         }.first()
-        println("Gains - Get: ${gainsString.split(",").fastMap { it.toFloatOrNull() ?: 0f }}}")
         return gainsString.split(",").fastMap { it.toFloatOrNull() ?: 0f }
     }
     suspend fun saveBandGains(gains: List<Float>) {
         context.dataStore.edit {
-            println("Gains - Saved: ${gains.joinToString(",")}")
             it[EQUALIZER_GAINS] = gains.joinToString(",")
         }
     }
 
+    fun tracksSettings() = combine(
+        getTrackSort,
+        sortTracksAscending
+    ) { sort, asc ->
+        TracksSettings(
+            sort = sort,
+            ascending = asc
+        )
+    }
+
+    fun searchSettings() = combine(
+        getRegexFilter,
+        getMatchCaseFilter
+    ) { regex, matchCase ->
+        SearchSettings(
+            regex = regex,
+            matchCase = matchCase
+        )
+    }
+
 
 }
+
+data class TracksSettings(
+    val sort: TrackSort,
+    val ascending: Boolean
+)
+
+data class SearchSettings(
+    val regex: Boolean,
+    val matchCase: Boolean
+)

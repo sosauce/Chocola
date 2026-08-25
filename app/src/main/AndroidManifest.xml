@@ -21,7 +21,7 @@
 
 
     <application
-        android:name=".domain.App"
+        android:name=".core.App"
         android:appCategory="audio"
         android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher"
@@ -32,7 +32,7 @@
         tools:targetApi="tiramisu">
 
         <service
-            android:name=".domain.PlaybackService"
+            android:name=".core.PlaybackService"
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback"
@@ -46,10 +46,10 @@
 
 
         <activity
-            android:name=".presentation.MainActivity"
+            android:name=".core.MainActivity"
             android:enableOnBackInvokedCallback="true"
             android:exported="true"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:theme="@style/Theme.CuteSplash"
             android:windowSoftInputMode="adjustResize"
             tools:targetApi="tiramisu">
@@ -71,7 +71,7 @@
         <activity
             android:name=".presentation.screens.quickplay.QuickPlayActivity"
             android:exported="true"
-            android:theme="@style/Theme.CuteSplash">
+            android:theme="@style/Theme.QuickPlay">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -112,7 +112,7 @@
 
 
         <receiver
-            android:name=".presentation.widgets.MusicWidgetReceiver"
+            android:name=".presentation.widgets.MusicWidget4x1Receiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -120,7 +120,18 @@
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/music_widget_info" />
+                android:resource="@xml/music_widget_4x1_info" />
+        </receiver>
+        <receiver
+            android:name=".presentation.widgets.MusicWidget1x1Receiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/music_widget_2x1_info" />
         </receiver>
 
 
