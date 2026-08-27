@@ -5,7 +5,6 @@
 
 package com.sosauce.chocola.presentation.screens.album.components
 
-import android.net.Uri
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
@@ -34,8 +33,8 @@ import com.sosauce.chocola.data.models.Album
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.domain.actions.PlaySource
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.presentation.components.animations.AnimatedFab
 import com.sosauce.chocola.utils.ImageUtils
+import com.sosauce.nekobites.animations.AnimatedFab
 import dev.chrisbanes.haze.ExperimentalHazeApi
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 

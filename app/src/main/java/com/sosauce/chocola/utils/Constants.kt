@@ -2,33 +2,21 @@
 
 package com.sosauce.chocola.utils
 
-import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.style.Style
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.LinearWavyProgressIndicator
-import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialShapes
-import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.SliderState
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.unit.dp
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.RoundedPolygon
 import androidx.graphics.shapes.rectangle
-import com.sosauce.chocola.R
 import com.sosauce.chocola.presentation.screens.playing.components.ClassicThumb
 import com.sosauce.chocola.presentation.screens.playing.components.MorphingThumb
 import com.sosauce.chocola.presentation.screens.playing.components.StraightThumb
 import com.sosauce.chocola.presentation.screens.playing.components.StraightTrack
 import com.sosauce.chocola.presentation.screens.playing.components.WavyTrack
-import sv.lib.squircleshape.CornerSmoothing
-import sv.lib.squircleshape.SquircleShape
 
 const val CUTE_MUSIC_ID = "CUTE_MUSIC_ID"
 const val ICON_TEXT_SPACING = 5
@@ -137,7 +125,7 @@ object ThumbStyle {
         style: String,
         isDragging: Boolean
     ) {
-        when(style) {
+        when (style) {
             STRAIGHT -> StraightThumb(isDragging)
             BALL -> ClassicThumb(isDragging)
             MORPHING -> MorphingThumb()
@@ -156,7 +144,7 @@ object TrackStyle {
         isPlaying: Boolean,
         sliderState: SliderState
     ) {
-        when(style) {
+        when (style) {
             WAVY -> WavyTrack(isPlaying, sliderState)
             STRAIGHT -> StraightTrack(sliderState)
         }

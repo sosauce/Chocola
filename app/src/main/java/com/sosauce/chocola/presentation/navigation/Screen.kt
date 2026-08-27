@@ -33,6 +33,7 @@ sealed class Screen : NavKey {
     data class LyricsEditor(
         val trackPath: String
     ) : Screen()
+
     @Serializable
     data class AlbumsDetails(
         val name: String
@@ -60,8 +61,8 @@ sealed class Screen : NavKey {
     ) : Screen()
 
     companion object {
-        fun toScreen(screen: String) : Screen {
-            return when(screen) {
+        fun toScreen(screen: String): Screen {
+            return when (screen) {
                 Main.toString() -> Main
                 Albums.toString() -> Albums
                 Artists.toString() -> Artists

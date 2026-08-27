@@ -217,6 +217,5 @@ private fun NowPlayingContent(
     }
 
 
-
 }
 

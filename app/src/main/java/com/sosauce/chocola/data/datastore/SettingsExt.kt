@@ -14,7 +14,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 
@@ -48,6 +47,7 @@ fun <T> rememberPreference(
         }
     }
 }
+
 @Composable
 fun rememberIsLandscape(): Boolean {
     val config = LocalConfiguration.current

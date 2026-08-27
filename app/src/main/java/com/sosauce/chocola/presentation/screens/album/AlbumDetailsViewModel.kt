@@ -2,20 +2,16 @@
 
 package com.sosauce.chocola.presentation.screens.album
 
-import android.net.Uri
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.util.fastFilter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sosauce.chocola.data.AbstractTracksScanner
-import com.sosauce.chocola.data.datastore.TracksSettings
 import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.models.Album
 import com.sosauce.chocola.data.repositories.IDRepositories
-import com.sosauce.chocola.utils.TrackSort
 import com.sosauce.chocola.utils.orderAlbumTrackNumber
-import com.sosauce.chocola.utils.ordered
 import com.sosauce.chocola.utils.search
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

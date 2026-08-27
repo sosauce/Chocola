@@ -12,23 +12,18 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
@@ -44,7 +39,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.graphicsLayer
@@ -53,7 +47,6 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sosauce.chocola.R
@@ -61,11 +54,10 @@ import com.sosauce.chocola.data.datastore.rememberLyricsAlignment
 import com.sosauce.chocola.data.datastore.rememberLyricsFontSize
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.presentation.components.NoXFound
-import com.sosauce.chocola.presentation.components.Spacer
 import com.sosauce.chocola.presentation.navigation.Screen
-import com.sosauce.chocola.utils.ICON_TEXT_SPACING
 import com.sosauce.chocola.utils.toLyricsAlignment
+import com.sosauce.nekobites.components.NoXFound
+import com.sosauce.nekobites.components.Spacer
 import kotlinx.coroutines.launch
 
 @Composable
@@ -88,7 +80,7 @@ fun LyricsList(
         }
     }
     val lazyListState = rememberLazyListState(
-        initialFirstVisibleItemIndex = if (currentLyricIndex!= -1) currentLyricIndex else 0
+        initialFirstVisibleItemIndex = if (currentLyricIndex != -1) currentLyricIndex else 0
     )
 
     LaunchedEffect(currentLyricIndex) {
@@ -169,7 +161,9 @@ fun LyricsList(
                             fontSize = lyricsFontSize.sp,
                             textAlign = lyricsAlignment.toLyricsAlignment(),
                             shadow = if (textShadow) Shadow(
-                                color = MaterialTheme.colorScheme.surfaceContainerHigh, offset = Offset(10f, 5f), blurRadius = 10f
+                                color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                offset = Offset(10f, 5f),
+                                blurRadius = 10f
                             ) else null
                         ),
                         modifier = Modifier
@@ -196,20 +190,21 @@ fun DefaultEmptyLyricsScreen(
     val context = LocalContext.current
     val resources = LocalResources.current
 
-    val lyricFilePicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+    val lyricFilePicker =
+        rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
 
-        if (uri == null) return@rememberLauncherForActivityResult
+            if (uri == null) return@rememberLauncherForActivityResult
 
-        if (!uri.toString().endsWith(".lrc")) {
-            Toast.makeText(
-                context,
-                resources.getString(R.string.not_a_lyric_file),
-                Toast.LENGTH_LONG
-            ).show()
-        } else {
-            onHandlePlayerActions(PlayerActions.LoadLyrics(uri))
+            if (!uri.toString().endsWith(".lrc")) {
+                Toast.makeText(
+                    context,
+                    resources.getString(R.string.not_a_lyric_file),
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
+                onHandlePlayerActions(PlayerActions.LoadLyrics(uri))
+            }
         }
-    }
 
 
     Column(

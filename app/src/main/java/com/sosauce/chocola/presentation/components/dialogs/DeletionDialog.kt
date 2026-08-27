@@ -77,7 +77,9 @@ fun DeletionDialog(
                     resources.getString(R.string.error_deleting_song),
                     Toast.LENGTH_SHORT
                 ).show()
-            } else { onDismissRequest() }
+            } else {
+                onDismissRequest()
+            }
         }
     val legacyDeleteSongLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartIntentSenderForResult()
@@ -86,7 +88,11 @@ fun DeletionDialog(
             deletionViewModel.deleteTrackBelowAndroid10(tracks.fastMap { it.uri })
             onDismissRequest()
         } else {
-            Toast.makeText(context, resources.getString(R.string.error_deleting_song), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                resources.getString(R.string.error_deleting_song),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -105,7 +111,12 @@ fun DeletionDialog(
         title = { Text(pluralStringResource(R.plurals.delete_tracks, tracks.size, tracks.size)) },
         confirmButton = {
             TextButton(
-                onClick = { deletionViewModel.deleteTrack(tracks.fastMap { it.uri }, deleteSongLauncher) },
+                onClick = {
+                    deletionViewModel.deleteTrack(
+                        tracks.fastMap { it.uri },
+                        deleteSongLauncher
+                    )
+                },
                 shapes = ButtonDefaults.shapes()
             ) {
                 Text(stringResource(R.string.delete))
@@ -130,7 +141,11 @@ fun DeletionDialog(
                 modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
                 Text(
-                    text = pluralStringResource(R.plurals.delete_tracks_u_sure, tracks.size, tracks.size),
+                    text = pluralStringResource(
+                        R.plurals.delete_tracks_u_sure,
+                        tracks.size,
+                        tracks.size
+                    ),
                     textAlign = TextAlign.Center
                 )
                 Spacer(Modifier.height(5.dp))
@@ -201,7 +216,15 @@ fun PlaylistDeletionDialog(
 
     AlertDialog(
         onDismissRequest = onDismissRequest,
-        title = { Text(pluralStringResource(R.plurals.delete_playlists, playlists.size, playlists.size)) },
+        title = {
+            Text(
+                pluralStringResource(
+                    R.plurals.delete_playlists,
+                    playlists.size,
+                    playlists.size
+                )
+            )
+        },
         confirmButton = {
             TextButton(
                 onClick = {
@@ -232,7 +255,11 @@ fun PlaylistDeletionDialog(
                 modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
                 Text(
-                    text = pluralStringResource(R.plurals.delete_playlists_u_sure, playlists.size, playlists.size),
+                    text = pluralStringResource(
+                        R.plurals.delete_playlists_u_sure,
+                        playlists.size,
+                        playlists.size
+                    ),
                     textAlign = TextAlign.Center
                 )
                 Spacer(Modifier.height(5.dp))
@@ -277,7 +304,11 @@ fun PlaylistDeletionDialog(
                                         .basicMarquee()
                                 )
                                 Text(
-                                    text = pluralStringResource(R.plurals.tracks, playlist.musics.size, playlist.musics.size),
+                                    text = pluralStringResource(
+                                        R.plurals.tracks,
+                                        playlist.musics.size,
+                                        playlist.musics.size
+                                    ),
                                     modifier = Modifier.basicMarquee()
                                 )
                             }

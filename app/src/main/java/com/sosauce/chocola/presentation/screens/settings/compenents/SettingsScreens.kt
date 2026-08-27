@@ -1,7 +1,6 @@
 package com.sosauce.chocola.presentation.screens.settings.compenents
 
 import androidx.navigation3.runtime.NavKey
-import com.sosauce.chocola.presentation.navigation.Screen
 import kotlinx.serialization.Serializable
 
 @Serializable

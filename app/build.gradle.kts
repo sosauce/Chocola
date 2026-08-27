@@ -135,5 +135,6 @@ dependencies {
     implementation(libs.sweetselect.compose)
     implementation(libs.squircle.shape)
     implementation(libs.cloudy)
+    implementation(libs.nekobites)
 }
 

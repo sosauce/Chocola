@@ -1,8 +1,6 @@
 package com.sosauce.chocola.data.playlist
 
-import android.content.ContentValues
 import androidx.room.Database
-import androidx.room.OnConflictStrategy
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration

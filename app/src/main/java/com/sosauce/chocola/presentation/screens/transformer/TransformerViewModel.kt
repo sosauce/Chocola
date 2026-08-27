@@ -19,7 +19,7 @@ import java.io.File
 class TransformerViewModel(
     private val application: Application,
     private val trackUri: String
-): AndroidViewModel(application) {
+) : AndroidViewModel(application) {
 
     private val inputMediaItem = MediaItem.Builder()
         .setUri(trackUri.toUri())
@@ -33,9 +33,10 @@ class TransformerViewModel(
 
     private val editedMediaItem = EditedMediaItem.Builder(inputMediaItem).build()
 
-    private val musicDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
+    private val musicDir =
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
     private val outputFile = File(musicDir, "MyOGGAudio.m4a")
-    private val transformerListener = object: Transformer.Listener {
+    private val transformerListener = object : Transformer.Listener {
         override fun onCompleted(composition: Composition, exportResult: ExportResult) {
             super.onCompleted(composition, exportResult)
             Toast.makeText(application, "Success!", Toast.LENGTH_SHORT).show()

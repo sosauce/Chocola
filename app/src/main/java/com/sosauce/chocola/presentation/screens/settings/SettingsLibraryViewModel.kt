@@ -1,7 +1,6 @@
 package com.sosauce.chocola.presentation.screens.settings
 
 import androidx.compose.ui.util.fastFilter
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sosauce.chocola.data.AbstractTracksScanner
@@ -12,9 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -56,12 +53,13 @@ class SettingsLibraryViewModel(
     )
 
     fun handleLibraryAction(action: LibraryActions) {
-        when(action) {
+        when (action) {
             is LibraryActions.UnhideTrack -> {
                 viewModelScope.launch {
                     userPreferences.unhideTrack(action.mediaId)
                 }
             }
+
             is LibraryActions.ForceRescan -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     try {

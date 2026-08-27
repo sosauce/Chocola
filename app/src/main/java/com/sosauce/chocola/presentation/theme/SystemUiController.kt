@@ -2,7 +2,6 @@ package com.sosauce.chocola.presentation.theme
 
 import android.view.Window
 import androidx.core.view.WindowCompat
-import com.sosauce.chocola.utils.CuteTheme
 
 object SystemUiController {
     fun setSystemBarsColors(

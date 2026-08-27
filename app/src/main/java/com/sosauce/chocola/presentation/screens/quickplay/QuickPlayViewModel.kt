@@ -1,9 +1,7 @@
 package com.sosauce.chocola.presentation.screens.quickplay
 
 import android.app.Application
-import android.media.MediaMetadataRetriever
 import android.net.Uri
-import android.os.ParcelFileDescriptor
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -15,20 +13,16 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import com.kyant.taglib.Metadata
-import com.kyant.taglib.TagLib
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.utils.changeRepeatMode
 import com.sosauce.chocola.utils.getUriFromByteArray
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.milliseconds
 
 class QuickPlayViewModel(
@@ -45,10 +39,7 @@ class QuickPlayViewModel(
         .build()
 
 
-
-
     private val listener = object : Player.Listener {
-
 
 
         override fun onIsPlayingChanged(isPlaying: Boolean) {
@@ -91,7 +82,8 @@ class QuickPlayViewModel(
         override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
             super.onMediaMetadataChanged(mediaMetadata)
 
-            val title = mediaMetadata.title?.toString() ?: trackUri.path?.substringAfterLast('/')?.substringBeforeLast('.')
+            val title = mediaMetadata.title?.toString() ?: trackUri.path?.substringAfterLast('/')
+                ?.substringBeforeLast('.')
             val artist = mediaMetadata.artist?.toString() ?: "<unknown>"
             val art = mediaMetadata.artworkData?.getUriFromByteArray(application) ?: Uri.EMPTY
 
@@ -141,7 +133,6 @@ class QuickPlayViewModel(
         player.removeListener(listener)
         player.release()
     }
-
 
 
     fun handlePlayerAction(action: PlayerActions) {

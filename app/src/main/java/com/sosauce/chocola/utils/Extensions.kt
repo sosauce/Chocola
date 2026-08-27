@@ -3,18 +3,14 @@
 package com.sosauce.chocola.utils
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.PackageManager
 import android.database.ContentObserver
-import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.text.format.DateUtils
-import android.util.Log
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.Spring
@@ -26,43 +22,28 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFilter
 import androidx.media3.common.Player
-import androidx.navigation3.runtime.NavBackStack
-import androidx.navigation3.runtime.NavKey
 import com.kyant.taglib.PropertyMap
 import com.materialkolor.PaletteStyle
 import com.sosauce.chocola.data.datastore.SearchSettings
-import com.sosauce.chocola.data.datastore.TracksSettings
-import com.sosauce.chocola.data.datastore.rememberIsLandscape
 import com.sosauce.chocola.data.models.Album
 import com.sosauce.chocola.data.models.Artist
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.models.Playlist
-import com.sosauce.chocola.presentation.navigation.Screen
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import java.io.File
 import java.io.FileOutputStream
 import java.util.Locale
-import kotlin.math.round
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.ExperimentalUuidApi
@@ -150,26 +131,6 @@ fun ByteArray.getUriFromByteArray(context: Context): Uri {
         Uri.EMPTY
     }
 }
-
-/**
- * @param metadata FOR EXAMPLE [MediaMetadataRetriever.METADATA_KEY_BITRATE]
- */
-fun Uri.getTrackMetadata(
-    context: Context,
-    metadata: Int
-): String? {
-    val retriever = MediaMetadataRetriever()
-    return try {
-        retriever.setDataSource(context, this)
-        retriever.extractMetadata(metadata)
-    } catch (e: Exception) {
-        e.stackTrace
-        null
-    } finally {
-        retriever.release()
-    }
-}
-
 
 fun PropertyMap.toModifiableMap(separator: String = ", "): MutableMap<String, String?> {
     return mutableMapOf(
@@ -263,7 +224,6 @@ fun List<CuteTrack>.search(
         }
     }
 }
-
 
 
 fun List<Album>.ordered(
@@ -386,8 +346,6 @@ fun <T> bouncySpec() = spring<T>(
     dampingRatio = Spring.DampingRatioMediumBouncy,
     stiffness = Spring.StiffnessLow
 )
-
-
 
 
 val barsContentTransform = ContentTransform(

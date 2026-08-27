@@ -9,25 +9,13 @@ package com.sosauce.chocola.presentation.screens.main
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.animateIntAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -35,33 +23,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.layout.positionInRoot
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.round
 import androidx.compose.ui.util.fastForEach
-import com.skydoves.cloudy.cloudy
-import com.skydoves.cloudy.sky
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberGroupByFolders
 import com.sosauce.chocola.data.datastore.rememberHiddenFolders
@@ -72,20 +42,19 @@ import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.presentation.components.CuteSearchbar
 import com.sosauce.chocola.presentation.components.CuteSearchbarDefaults
 import com.sosauce.chocola.presentation.components.DefaultMusicListItemTrailingContent
-import com.sosauce.chocola.presentation.components.LoadingBox
 import com.sosauce.chocola.presentation.components.MusicListItem
-import com.sosauce.chocola.presentation.components.MusicViewModel
 import com.sosauce.chocola.presentation.components.NoResult
-import com.sosauce.chocola.presentation.components.NoXFound
-import com.sosauce.chocola.presentation.components.Spacer
 import com.sosauce.chocola.presentation.components.TracksSelectedBar
-import com.sosauce.chocola.presentation.components.animations.AnimatedFab
 import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.presentation.screens.main.components.FolderHeader
 import com.sosauce.chocola.utils.addOrRemove
 import com.sosauce.chocola.utils.barsContentTransform
 import com.sosauce.chocola.utils.copyMutate
 import com.sosauce.chocola.utils.selfAlignHorizontally
+import com.sosauce.nekobites.animations.AnimatedFab
+import com.sosauce.nekobites.components.LoadingBox
+import com.sosauce.nekobites.components.NoXFound
+import com.sosauce.nekobites.components.Spacer
 import com.sosauce.sweetselect.rememberSweetSelectState
 import kotlinx.coroutines.FlowPreview
 
@@ -179,7 +148,9 @@ fun SharedTransitionScope.MainScreen(
                                     )
                                 )
                             }
-                        } else { NoResult(modifier = Modifier.animateItem()) }
+                        } else {
+                            NoResult(modifier = Modifier.animateItem())
+                        }
 
                     }
                 }

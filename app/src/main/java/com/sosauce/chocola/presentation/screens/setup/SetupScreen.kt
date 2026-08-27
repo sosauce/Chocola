@@ -28,7 +28,7 @@ fun SetupScreen(
                 .padding(horizontal = 10.dp),
             targetState = setupProgress
         ) { progress ->
-            when(progress) {
+            when (progress) {
                 0 -> SetupPermissions { setupProgress = 1 }
                 1 -> SetupFolders(onNavigateToApp)
             }

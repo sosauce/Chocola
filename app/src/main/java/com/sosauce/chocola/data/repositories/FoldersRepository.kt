@@ -3,17 +3,13 @@
 package com.sosauce.chocola.data.repositories
 
 import android.content.Context
-import android.os.Build
 import android.provider.MediaStore
 import com.sosauce.chocola.data.models.Folder
 import com.sosauce.chocola.utils.observe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.withContext
 
 
 class FoldersRepository(
@@ -21,9 +17,10 @@ class FoldersRepository(
 ) {
 
 
-    fun fetchLatestMusicFolders() = context.contentResolver.observe(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI).mapLatest {
-        fetchMusicFolders()
-    }.flowOn(Dispatchers.IO)
+    fun fetchLatestMusicFolders() =
+        context.contentResolver.observe(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI).mapLatest {
+            fetchMusicFolders()
+        }.flowOn(Dispatchers.IO)
 
 
     // Only gets folder with musics in them

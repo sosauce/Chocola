@@ -4,7 +4,6 @@ import android.media.audiofx.DynamicsProcessing
 import androidx.collection.FloatList
 import androidx.collection.floatListOf
 import androidx.compose.ui.util.fastMap
-import androidx.lifecycle.viewModelScope
 import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.models.EqualizerBand
 import com.sosauce.chocola.data.models.EqualizerPreset
@@ -12,7 +11,6 @@ import com.sosauce.chocola.utils.copyMutate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 class EqualizerManager(
@@ -34,7 +32,6 @@ class EqualizerManager(
             )
         }
     }
-
 
 
     suspend fun initDynamicsProcessing(audioSessionId: Int) {
@@ -117,8 +114,6 @@ class EqualizerManager(
         }
 
     }
-
-
 
 
     fun toggleEqualizer(enable: Boolean) {

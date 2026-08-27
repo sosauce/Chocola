@@ -180,7 +180,7 @@ private fun RateSliderCard(
                 Text(text = "%.2f".format(animatedValue))
             }
             WavySlider(state = sliderState)
-            Row (
+            Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {

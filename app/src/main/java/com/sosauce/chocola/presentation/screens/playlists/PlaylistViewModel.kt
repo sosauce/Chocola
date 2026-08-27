@@ -50,7 +50,8 @@ class PlaylistViewModel(
                 userQuery
             ) { playlists, sort, regex, matchCase, ascending, query ->
 
-                val sortedPlaylists = playlists.ordered(sort, regex, matchCase, ascending, query.toString())
+                val sortedPlaylists =
+                    playlists.ordered(sort, regex, matchCase, ascending, query.toString())
 
                 PlaylistsState(
                     playlists = sortedPlaylists,

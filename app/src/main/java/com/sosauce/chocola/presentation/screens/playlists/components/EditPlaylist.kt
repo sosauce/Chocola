@@ -61,15 +61,16 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.models.Playlist
-import com.sosauce.chocola.presentation.screens.playlists.PlaylistActions
 import com.sosauce.chocola.presentation.components.EmojiPicker
-import com.sosauce.chocola.presentation.components.Spacer
-import com.sosauce.chocola.presentation.components.animations.Icon
-import com.sosauce.chocola.presentation.components.animations.rememberClipboardIconController
+import com.sosauce.chocola.presentation.screens.playlists.PlaylistActions
 import com.sosauce.chocola.presentation.screens.playlists.PlaylistViewModel
-import com.sosauce.chocola.utils.ColorUtils
 import com.sosauce.chocola.utils.copyMutate
 import com.sosauce.chocola.utils.rememberInteractionSource
+import com.sosauce.nekobites.animations.Icon
+import com.sosauce.nekobites.animations.rememberClipboardIconController
+import com.sosauce.nekobites.components.ColorPickerDialog
+import com.sosauce.nekobites.components.Spacer
+import com.sosauce.nekobites.utils.ColorUtils
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 import kotlin.time.Duration.Companion.milliseconds
@@ -96,7 +97,7 @@ fun EditPlaylist(
 
     /**
      *  Handles a name change:
-     *  - if the initial playlist is null (means the dialog is in create more), it uses the default name `"Playlist {playlistNumber}"`
+     *  - if the initial playlist is null (means the dialog is in create mode), it uses the default name `"Playlist {playlistNumber}"`
      *  - else: it defaults to the playlist name
      */
     LaunchedEffect(name.text) {
@@ -122,13 +123,34 @@ fun EditPlaylist(
 
     if (showColorPicker) {
         ColorPickerDialog(
+            initialColor = Color(newPlaylist.color),
             onDismissRequest = { showColorPicker = false },
-            onAddNewColor = { newColor ->
-                newPlaylist = newPlaylist.copy(
-                    color = newColor
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.colorize_filled),
+                    contentDescription = null
                 )
             },
-            initialColor = Color(newPlaylist.color)
+            title = { Text(stringResource(R.string.color_picker)) },
+            dismissButton = {
+                TextButton(
+                    onClick = onDismissRequest
+                ) {
+                    Text(stringResource(R.string.cancel))
+                }
+            },
+            confirmButton = { newColor ->
+                TextButton(
+                    onClick = {
+                        newPlaylist = newPlaylist.copy(
+                            color = newColor.toArgb()
+                        )
+                        onDismissRequest()
+                    }
+                ) {
+                    Text(stringResource(R.string.save))
+                }
+            }
         )
     }
 
@@ -137,7 +159,11 @@ fun EditPlaylist(
     if (showEmojiPicker) {
         Dialog(
             onDismissRequest = { showEmojiPicker = false },
-            properties = DialogProperties(dismissOnBackPress = true, usePlatformDefaultWidth = false, decorFitsSystemWindows = false),
+            properties = DialogProperties(
+                dismissOnBackPress = true,
+                usePlatformDefaultWidth = false,
+                decorFitsSystemWindows = false
+            ),
         ) {
             EmojiPicker(
                 onEmojiPicked = { newPlaylist = newPlaylist.copy(emoji = it) },
@@ -153,7 +179,11 @@ fun EditPlaylist(
             TextButton(
                 onClick = {
                     if (isCreatingPlaylist) {
-                        playlistViewModel.handlePlaylistActions(PlaylistActions.CreatePlaylist(newPlaylist))
+                        playlistViewModel.handlePlaylistActions(
+                            PlaylistActions.CreatePlaylist(
+                                newPlaylist
+                            )
+                        )
                     } else {
                         onHandlePlaylistActions?.invoke(
                             PlaylistActions.UpsertPlaylist(newPlaylist)
@@ -239,7 +269,8 @@ fun EditPlaylist(
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(horizontal = 15.dp, vertical = 4.dp)
                 )
-                val colorCard = if (newPlaylist.color != -1) Color(newPlaylist.color) else MaterialTheme.colorScheme.surfaceContainerHighest
+                val colorCard =
+                    if (newPlaylist.color != -1) Color(newPlaylist.color) else MaterialTheme.colorScheme.surfaceContainerHighest
 
                 Row(
                     Modifier.fillMaxSize(),
@@ -255,7 +286,8 @@ fun EditPlaylist(
                             contentColor = if (colorCard.luminance() > 0.5f) Color.Black else Color.White
                         )
                     ) {
-                        val icon = if (newPlaylist.color != -1) R.drawable.edit_filled else R.drawable.add
+                        val icon =
+                            if (newPlaylist.color != -1) R.drawable.edit_filled else R.drawable.add
                         Icon(
                             painter = painterResource(icon),
                             contentDescription = null,

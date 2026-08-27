@@ -2,8 +2,6 @@ package com.sosauce.chocola.data.repositories
 
 import android.content.Context
 import android.provider.MediaStore
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlin.random.Random
 
 // Helper class to get Ids from MediaStore

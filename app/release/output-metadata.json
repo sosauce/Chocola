@@ -11,9 +11,9 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 50008,
-      "versionName": "4.4.0",
-      "outputFile": "Chocola_4.4.0.apk"
+      "versionCode": 50009,
+      "versionName": "4.4.1",
+      "outputFile": "Chocola_4.4.1.apk"
     }
   ],
   "elementType": "File",
@@ -22,14 +22,14 @@
       "minApi": 28,
       "maxApi": 30,
       "baselineProfiles": [
-        "baselineProfiles/1/Chocola_4.4.0.dm"
+        "baselineProfiles/1/Chocola_4.4.1.dm"
       ]
     },
     {
       "minApi": 31,
       "maxApi": 2147483647,
       "baselineProfiles": [
-        "baselineProfiles/0/Chocola_4.4.0.dm"
+        "baselineProfiles/0/Chocola_4.4.1.dm"
       ]
     }
   ],

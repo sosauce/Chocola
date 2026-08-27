@@ -60,10 +60,10 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.kyant.taglib.Picture
 import com.sosauce.chocola.R
-import com.sosauce.chocola.presentation.components.ThreadDivider
-import com.sosauce.chocola.presentation.components.animations.AnimatedFab
 import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.utils.selfAlignHorizontally
+import com.sosauce.nekobites.animations.AnimatedFab
+import com.sosauce.nekobites.components.ThreadDivider
 
 @Composable
 fun MetadataEditorScreen(
@@ -118,7 +118,9 @@ fun MetadataEditorScreen(
                                 context.contentResolver,
                                 listOf(trackUri)
                             ).intentSender
-                            editSongLauncher.launch(IntentSenderRequest.Builder(intentSender).build())
+                            editSongLauncher.launch(
+                                IntentSenderRequest.Builder(intentSender).build()
+                            )
                         } else {
                             onHandleMetadataActions(MetadataActions.SaveChanges)
                         }
@@ -168,7 +170,11 @@ fun MetadataEditorScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "${stringResource(R.string.file_name)}: ${trackPath.substringAfterLast('/').substringBeforeLast(".")}",
+                        text = "${stringResource(R.string.file_name)}: ${
+                            trackPath.substringAfterLast(
+                                '/'
+                            ).substringBeforeLast(".")
+                        }",
                         style = MaterialTheme.typography.labelMediumEmphasized.copy(
                             MaterialTheme.colorScheme.onSurfaceVariant
                         ),

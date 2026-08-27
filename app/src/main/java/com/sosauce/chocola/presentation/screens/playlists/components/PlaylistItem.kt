@@ -51,11 +51,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.models.Playlist
-import com.sosauce.chocola.presentation.screens.playlists.PlaylistActions
 import com.sosauce.chocola.presentation.components.CuteListItem
 import com.sosauce.chocola.presentation.components.MoreOptions
-import com.sosauce.chocola.presentation.components.SelectedItemLogo
 import com.sosauce.chocola.presentation.components.dialogs.PlaylistDeletionDialog
+import com.sosauce.chocola.presentation.screens.playlists.PlaylistActions
+import com.sosauce.nekobites.components.AnimatedSelectedIcon
 import sv.lib.squircleshape.CornerSmoothing
 import sv.lib.squircleshape.SquircleShape
 
@@ -147,33 +147,27 @@ fun PlaylistItem(
             onClick = onClickPlaylist,
             onLongClick = onLongClick,
             leadingContent = {
-                AnimatedContent(
-                    targetState = isSelected,
-                    transitionSpec = { scaleIn() togetherWith scaleOut() },
-                    modifier = Modifier.padding(start = 10.dp)
+                AnimatedSelectedIcon(
+                    isSelected = isSelected
                 ) {
-                    if (it) {
-                        SelectedItemLogo()
-                    } else {
-                        Box(
-                            modifier = Modifier
-                                .size(50.dp)
-                                .clip(SquircleShape(smoothing = CornerSmoothing.Full))
-                                .background(MaterialTheme.colorScheme.surfaceContainer),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            if (playlist.emoji.isNotBlank()) {
-                                Text(
-                                    text = playlist.emoji,
-                                    fontSize = 25.sp
-                                )
-                            } else {
-                                Icon(
-                                    painter = painterResource(R.drawable.queue_music_rounded),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(25.dp)
-                                )
-                            }
+                    Box(
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clip(SquircleShape(smoothing = CornerSmoothing.Full))
+                            .background(MaterialTheme.colorScheme.surfaceContainer),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (playlist.emoji.isNotBlank()) {
+                            Text(
+                                text = playlist.emoji,
+                                fontSize = 25.sp
+                            )
+                        } else {
+                            Icon(
+                                painter = painterResource(R.drawable.queue_music_rounded),
+                                contentDescription = null,
+                                modifier = Modifier.size(25.dp)
+                            )
                         }
                     }
                 }

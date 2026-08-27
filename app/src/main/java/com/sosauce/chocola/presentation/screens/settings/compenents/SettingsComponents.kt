@@ -4,7 +4,6 @@ package com.sosauce.chocola.presentation.screens.settings.compenents
 
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.background
@@ -21,29 +20,22 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.rememberTextFieldState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenuGroup
-import androidx.compose.material3.DropdownMenuPopup
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.rememberSliderState
 import androidx.compose.material3.toShape
@@ -70,15 +62,13 @@ import com.materialkolor.rememberDynamicMaterialThemeState
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberAppTheme
 import com.sosauce.chocola.data.models.EqualizerPreset
-import com.sosauce.chocola.presentation.components.Spacer
 import com.sosauce.chocola.presentation.screens.playing.components.WavySlider
 import com.sosauce.chocola.utils.ArtworkShape
 import com.sosauce.chocola.utils.CuteTheme
 import com.sosauce.chocola.utils.NumbersOnlyTransformation
 import com.sosauce.chocola.utils.rememberFocusRequester
 import com.sosauce.chocola.utils.toPaletteStyle
-import kotlinx.coroutines.android.awaitFrame
-import kotlin.math.max
+import com.sosauce.nekobites.components.Spacer
 
 
 @Composable
@@ -201,7 +191,8 @@ fun SettingsInput(
 
         val focusRequester = rememberFocusRequester()
         val textFieldState = rememberTextFieldState(value.toString())
-        val typedValue = remember(textFieldState.text) { textFieldState.text.toString().toIntOrNull() ?: 0 }
+        val typedValue =
+            remember(textFieldState.text) { textFieldState.text.toString().toIntOrNull() ?: 0 }
         val isError = remember(typedValue) { typedValue !in minValue..maxValue }
 
         LaunchedEffect(Unit) {
@@ -446,7 +437,7 @@ fun PaletteSelector(
 ) {
     val isSystemInDarkTheme = isSystemInDarkTheme()
     val theme by rememberAppTheme()
-    val isDark = when(theme) {
+    val isDark = when (theme) {
         CuteTheme.DARK, CuteTheme.AMOLED -> true
         CuteTheme.SYSTEM -> isSystemInDarkTheme
         else -> false

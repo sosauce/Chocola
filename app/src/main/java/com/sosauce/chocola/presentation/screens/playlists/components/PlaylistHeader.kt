@@ -23,13 +23,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.fastForEach
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.models.Playlist
 import com.sosauce.chocola.domain.actions.PlaySource
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.presentation.components.animations.AnimatedFab
+import com.sosauce.nekobites.animations.AnimatedFab
 
 @Composable
 fun PlaylistHeader(

@@ -37,12 +37,12 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.sosauce.chocola.R
+import com.sosauce.chocola.core.MainActivity
+import com.sosauce.chocola.core.PlaybackService
 import com.sosauce.chocola.data.widgets.WIDGET_ART
 import com.sosauce.chocola.data.widgets.WIDGET_ARTIST
 import com.sosauce.chocola.data.widgets.WIDGET_IS_PLAYING
 import com.sosauce.chocola.data.widgets.WIDGET_TITLE
-import com.sosauce.chocola.core.PlaybackService
-import com.sosauce.chocola.core.MainActivity
 
 
 object MusicWidget4x1 : GlanceAppWidget() {

@@ -113,13 +113,18 @@ class MetadataViewModel(
 
     private fun saveChangesApi30Plus() {
         try {
-            (getFileDescriptorFromPath("w") ?: throw Exception("No file descriptor found!")).use { fd ->
+            (getFileDescriptorFromPath("w")
+                ?: throw Exception("No file descriptor found!")).use { fd ->
                 fd.dup().detachFd().let {
-                    TagLib.savePropertyMap(it, metadataState.value.mutablePropertiesMap.toAudioFileMetadata().toPropertyMap())
+                    TagLib.savePropertyMap(it,
+                        metadataState.value.mutablePropertiesMap.toAudioFileMetadata()
+                            .toPropertyMap()
+                    )
                 }
 
                 fd.dup().detachFd().let {
-                    val newPic = metadataState.value.art?.let { art -> arrayOf(art) } ?: emptyArray()
+                    val newPic =
+                        metadataState.value.art?.let { art -> arrayOf(art) } ?: emptyArray()
                     TagLib.savePictures(it, newPic)
                 }
 
@@ -129,16 +134,21 @@ class MetadataViewModel(
             e.printStackTrace()
         }
     }
+
     private fun saveChangesLegacy() {
         try {
             val sourceFileUri = getFileUri() ?: throw FileNotFoundException()
 
             application.contentResolver.openFileDescriptor(sourceFileUri, "rw", null)?.use { fd ->
                 fd.dup().detachFd().let {
-                    TagLib.savePropertyMap(it, metadataState.value.mutablePropertiesMap.toAudioFileMetadata().toPropertyMap())
+                    TagLib.savePropertyMap(it,
+                        metadataState.value.mutablePropertiesMap.toAudioFileMetadata()
+                            .toPropertyMap()
+                    )
                 }
                 fd.dup().detachFd().let {
-                    val newPic = metadataState.value.art?.let { art -> arrayOf(art) } ?: emptyArray()
+                    val newPic =
+                        metadataState.value.art?.let { art -> arrayOf(art) } ?: emptyArray()
                     TagLib.savePictures(it, newPic)
                 }
             }
@@ -234,14 +244,15 @@ class MetadataViewModel(
         val selection = "${MediaStore.Audio.Media.DATA} = ?"
         val selectionArgs = arrayOf(trackPath)
 
-        return application.contentResolver.query(uri, projection, selection, selectionArgs, null)?.use { cursor ->
-            if (cursor.moveToFirst()) {
-                val id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID))
-                ContentUris.withAppendedId(uri, id)
-            } else null
-        }
+        return application.contentResolver.query(uri, projection, selection, selectionArgs, null)
+            ?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    val id =
+                        cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID))
+                    ContentUris.withAppendedId(uri, id)
+                } else null
+            }
     }
-
 
 
     fun onHandleMetadataActions(action: MetadataActions) {

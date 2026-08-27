@@ -76,14 +76,14 @@ class LyricsEditorViewModel(
             } catch (e: Exception) {
                 e.printStackTrace()
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(application, application.resources.getString(R.string.error_saving),
-                        Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        application, application.resources.getString(R.string.error_saving),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
     }
-
-
 
 
 }

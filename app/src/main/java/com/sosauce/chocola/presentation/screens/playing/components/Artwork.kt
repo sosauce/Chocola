@@ -31,7 +31,6 @@ import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,10 +57,9 @@ import com.sosauce.chocola.data.datastore.rememberIsLandscape
 import com.sosauce.chocola.data.datastore.rememberNowPlayingShapeMorph
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.presentation.components.animations.rememberAnimatedShape
 import com.sosauce.chocola.presentation.screens.lyrics.LyricsList
 import com.sosauce.chocola.utils.ArtworkShape
-import com.sosauce.chocola.utils.bouncySpec
+import com.sosauce.nekobites.animations.rememberAnimatedShape
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -191,7 +189,9 @@ fun Artwork(
                                     text = stringResource(R.string.no_lyrics_note),
                                     style = MaterialTheme.typography.titleLargeEmphasized.copy(
                                         shadow = Shadow(
-                                            color = MaterialTheme.colorScheme.surfaceContainerHigh, offset = Offset(10f, 5f), blurRadius = 10f
+                                            color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                            offset = Offset(10f, 5f),
+                                            blurRadius = 10f
                                         )
                                     )
                                 )
@@ -247,7 +247,9 @@ fun Artwork(
                                 text = stringResource(R.string.no_lyrics_note),
                                 style = MaterialTheme.typography.titleLargeEmphasized.copy(
                                     shadow = Shadow(
-                                        color = MaterialTheme.colorScheme.surfaceContainerHigh, offset = Offset(10f, 5f), blurRadius = 10f
+                                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                        offset = Offset(10f, 5f),
+                                        blurRadius = 10f
                                     )
                                 )
                             )

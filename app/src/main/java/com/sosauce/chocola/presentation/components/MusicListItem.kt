@@ -56,14 +56,15 @@ import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberHiddenTracks
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.presentation.components.animations.AnimatedDrawable
-import com.sosauce.chocola.presentation.components.animations.AnimatedSelectedIcon
 import com.sosauce.chocola.presentation.components.dialogs.DeletionDialog
 import com.sosauce.chocola.presentation.components.dialogs.tracksDetails.TracksDetailsDialog
 import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.presentation.screens.playlists.components.PlaylistPicker
 import com.sosauce.chocola.utils.LocalScreen
 import com.sosauce.chocola.utils.copyMutate
+import com.sosauce.nekobites.animations.AnimatedDrawable
+import com.sosauce.nekobites.animations.AnimatedDrawableFile
+import com.sosauce.nekobites.components.AnimatedSelectedIcon
 import sv.lib.squircleshape.CornerSmoothing
 import sv.lib.squircleshape.SquircleShape
 
@@ -168,7 +169,7 @@ fun DefaultMusicListItemTrailingContent(
         shapes = IconButtonDefaults.shapes()
     ) {
         AnimatedDrawable(
-            drawable = R.drawable.animated_morevert,
+            drawable = AnimatedDrawableFile.MORE_VERT,
             atEnd = isDropDownExpanded
         )
     }

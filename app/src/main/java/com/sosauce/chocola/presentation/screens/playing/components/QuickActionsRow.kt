@@ -89,7 +89,12 @@ fun QuickActionsRow(
                             contentColor = contentColorFor(shuffleColor)
                         ),
                         interactionSource = interactionSources[0],
-                        shape = RoundedCornerShape(topStart = 50.dp, topEnd = shuffleEnd, bottomStart = 50.dp, bottomEnd = shuffleEnd),
+                        shape = RoundedCornerShape(
+                            topStart = 50.dp,
+                            topEnd = shuffleEnd,
+                            bottomStart = 50.dp,
+                            bottomEnd = shuffleEnd
+                        ),
                         modifier = Modifier
                             .size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
                             .animateWidth(interactionSources[0])
@@ -126,7 +131,8 @@ fun QuickActionsRow(
                             .size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
                             .animateWidth(interactionSources[1])
                     ) {
-                        val icon = if (musicState.repeatMode == Player.REPEAT_MODE_ONE) R.drawable.repeat_one else R.drawable.repeat
+                        val icon =
+                            if (musicState.repeatMode == Player.REPEAT_MODE_ONE) R.drawable.repeat_one else R.drawable.repeat
 
                         Icon(
                             painter = painterResource(icon),
@@ -155,7 +161,12 @@ fun QuickActionsRow(
                             contentColor = contentColorFor(rateColor)
                         ),
                         interactionSource = interactionSources[2],
-                        shape = RoundedCornerShape(topStart = rateStart, topEnd = 50.dp, bottomStart = rateStart, bottomEnd = 50.dp),
+                        shape = RoundedCornerShape(
+                            topStart = rateStart,
+                            topEnd = 50.dp,
+                            bottomStart = rateStart,
+                            bottomEnd = 50.dp
+                        ),
                         modifier = Modifier
                             .size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
                             .animateWidth(interactionSources[2])
@@ -183,7 +194,8 @@ fun QuickActionsRow(
             ),
             shapes = ButtonDefaults.shapes()
         ) {
-            val icon = if (musicState.sleepTimerRemainingDuration > 0) R.drawable.sleep_timer_active_filled else R.drawable.sleep_timer_filled
+            val icon =
+                if (musicState.sleepTimerRemainingDuration > 0) R.drawable.sleep_timer_active_filled else R.drawable.sleep_timer_filled
             Icon(
                 painter = painterResource(icon),
                 contentDescription = null

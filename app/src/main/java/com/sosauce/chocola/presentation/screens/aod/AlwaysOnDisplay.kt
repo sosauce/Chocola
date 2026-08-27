@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -27,10 +31,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.sosauce.chocola.R
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.presentation.components.Spacer
-import com.sosauce.chocola.presentation.components.animations.AnimatedIconButton
 import com.sosauce.chocola.presentation.screens.playing.components.PlayPauseButton
-import com.sosauce.chocola.presentation.screens.playlists.PlaylistActions
+import com.sosauce.nekobites.components.Spacer
 
 @Composable
 fun AlwaysOnDisplay(
@@ -129,32 +131,28 @@ fun AlwaysOnDisplay(
 
             Spacer(15.dp)
             Row {
-                AnimatedIconButton(
-                    onClick = {
-                        onHandlePlayerActions(
-                            PlayerActions.SeekToPreviousMusic
-                        )
-                    },
-                    icon = R.drawable.skip_previous,
-                    contentDescription = null
-                )
+                IconButton(
+                    onClick = { onHandlePlayerActions(PlayerActions.SeekToPreviousMusic) },
+                    shapes = IconButtonDefaults.shapes()
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.skip_previous),
+                        contentDescription = null
+                    )
+                }
                 PlayPauseButton(
                     isPlaying = isPlaying,
-                    onHandlePlayerActions = {
-                        onHandlePlayerActions(
-                            PlayerActions.PlayOrPause
-                        )
-                    }
+                    onHandlePlayerActions = onHandlePlayerActions
                 )
-                AnimatedIconButton(
-                    onClick = {
-                        onHandlePlayerActions(
-                            PlayerActions.SeekToNextMusic
-                        )
-                    },
-                    icon = R.drawable.skip_next,
-                    contentDescription = null
-                )
+                IconButton(
+                    onClick = { onHandlePlayerActions(PlayerActions.SeekToNextMusic) },
+                    shapes = IconButtonDefaults.shapes()
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.skip_next),
+                        contentDescription = null
+                    )
+                }
             }
         }
     }

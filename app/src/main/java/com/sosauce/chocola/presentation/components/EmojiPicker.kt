@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.emoji2.emojipicker.EmojiPickerView
 import com.sosauce.chocola.R
-import com.sosauce.chocola.presentation.components.animations.AnimatedFab
+import com.sosauce.nekobites.animations.AnimatedFab
 
 @Composable
 fun EmojiPicker(

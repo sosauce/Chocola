@@ -138,7 +138,12 @@ fun MoreOptionsButton(
             buttonGroupContent = {
                 IconButton(
                     onClick = { onNavigate(Screen.Lyrics) },
-                    shape = RoundedCornerShape(topStart = 50.dp, bottomStart = 50.dp, topEnd = 4.dp, bottomEnd = 4.dp),
+                    shape = RoundedCornerShape(
+                        topStart = 50.dp,
+                        bottomStart = 50.dp,
+                        topEnd = 4.dp,
+                        bottomEnd = 4.dp
+                    ),
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainer,
                         contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
@@ -164,7 +169,12 @@ fun MoreOptionsButton(
                         onShrinkToSearchbar()
                         onNavigate(Screen.Queue)
                     },
-                    shape = RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp, topEnd = 50.dp, bottomEnd = 50.dp),
+                    shape = RoundedCornerShape(
+                        topStart = 4.dp,
+                        bottomStart = 4.dp,
+                        topEnd = 50.dp,
+                        bottomEnd = 50.dp
+                    ),
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainer,
                         contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)

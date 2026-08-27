@@ -11,7 +11,6 @@ import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -41,7 +40,7 @@ fun ChocolaTheme(
     val isSystemInDarkTheme = isSystemInDarkTheme()
     val useSystemFont by rememberUseSystemFont()
     val paletteStyle by rememberPaletteStyle()
-    val isDark = when(theme) {
+    val isDark = when (theme) {
         CuteTheme.DARK, CuteTheme.AMOLED -> true
         CuteTheme.SYSTEM -> isSystemInDarkTheme
         else -> false

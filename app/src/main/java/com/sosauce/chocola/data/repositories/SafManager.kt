@@ -4,10 +4,7 @@ package com.sosauce.chocola.data.repositories
 
 import android.content.Context
 import android.net.Uri
-import android.os.ParcelFileDescriptor
 import androidx.core.net.toUri
-import androidx.media3.common.MediaItem
-import com.kyant.taglib.Metadata
 import com.kyant.taglib.TagLib
 import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.models.CuteTrack
@@ -41,7 +38,8 @@ class SafManager(
             val artist = metadata?.propertyMap?.get("ARTIST")?.joinToString(", ") ?: "<unknown>"
             val album = metadata?.propertyMap?.get("ALBUM")?.getOrNull(0) ?: "<unknown>"
             val artUri =
-                TagLib.getFrontCover(fd.dup().detachFd())?.data?.getUriFromByteArray(context) ?: Uri.EMPTY
+                TagLib.getFrontCover(fd.dup().detachFd())?.data?.getUriFromByteArray(context)
+                    ?: Uri.EMPTY
 
             CuteTrack(
                 mediaId = uri.hashCode().toString(),

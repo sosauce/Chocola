@@ -1,13 +1,10 @@
 package com.sosauce.chocola.presentation.components.dialogs.tracksDetails
 
 import android.app.Application
-import android.net.Uri
-import android.os.FileUtils
 import android.provider.MediaStore
 import android.text.format.DateUtils
 import android.text.format.Formatter
 import android.webkit.MimeTypeMap
-import androidx.core.net.toFile
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.kyant.taglib.TagLib
@@ -18,8 +15,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.File
-import java.io.FileOutputStream
 
 class TracksDetailsDialogViewModel(
     private val track: CuteTrack,
@@ -64,7 +59,8 @@ class TracksDetailsDialogViewModel(
                         TrackDetails(
                             icon = R.drawable.duration,
                             text = R.string.duration,
-                            data = properties?.length?.let { DateUtils.formatElapsedTime(it / 1000L) } ?: "-"
+                            data = properties?.length?.let { DateUtils.formatElapsedTime(it / 1000L) }
+                                ?: "-"
                         )
                     )
                     add(
@@ -133,14 +129,20 @@ class TracksDetailsDialogViewModel(
                         TrackDetails(
                             icon = R.drawable.saf,
                             text = R.string.saf,
-                            data = if (track.isSaf) application.getString(R.string.yes) else application.getString(R.string.no)
+                            data = if (track.isSaf) application.getString(R.string.yes) else application.getString(
+                                R.string.no
+                            )
                         )
                     )
                     add(
                         TrackDetails(
                             icon = R.drawable.edit_rounded,
                             text = R.string.date_modified,
-                            data = DateUtils.formatDateTime(application, lastModified, DateUtils.FORMAT_ABBREV_MONTH)
+                            data = DateUtils.formatDateTime(
+                                application,
+                                lastModified,
+                                DateUtils.FORMAT_ABBREV_MONTH
+                            )
                         )
                     )
                 }

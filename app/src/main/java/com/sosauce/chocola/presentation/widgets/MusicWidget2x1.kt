@@ -32,9 +32,9 @@ import androidx.glance.layout.padding
 import androidx.glance.layout.width
 import androidx.glance.unit.ColorProvider
 import com.sosauce.chocola.R
-import com.sosauce.chocola.data.widgets.WIDGET_IS_PLAYING
-import com.sosauce.chocola.core.PlaybackService
 import com.sosauce.chocola.core.MainActivity
+import com.sosauce.chocola.core.PlaybackService
+import com.sosauce.chocola.data.widgets.WIDGET_IS_PLAYING
 
 
 object MusicWidget2x1 : GlanceAppWidget() {
@@ -94,8 +94,7 @@ fun MusicWidget2x1(isPlaying: Boolean) {
                 },
                 icon = if (isPlaying) R.drawable.widget_pause else R.drawable.widget_play,
                 backgroundColor = GlanceTheme.colors.primaryContainer,
-                contentColor = GlanceTheme.colors.onPrimaryContainer
-                ,
+                contentColor = GlanceTheme.colors.onPrimaryContainer,
                 cornerRadius = 50.dp,
                 modifier = GlanceModifier.fillMaxWidth()
             )

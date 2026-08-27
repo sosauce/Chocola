@@ -33,8 +33,8 @@ import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlaySource
 import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.presentation.components.MusicListItem
-import com.sosauce.chocola.presentation.components.animations.AnimatedFab
 import com.sosauce.chocola.utils.selfAlignHorizontally
+import com.sosauce.nekobites.animations.AnimatedFab
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import kotlin.random.Random
@@ -123,7 +123,7 @@ fun QueueScreen(
                                     onClick = {
                                         onHandlePlayerAction(PlayerActions.RemoveFromQueue(item.track))
                                         queueItems.remove(item)
-                                              },
+                                    },
                                     shapes = IconButtonDefaults.shapes()
                                 ) {
                                     Icon(

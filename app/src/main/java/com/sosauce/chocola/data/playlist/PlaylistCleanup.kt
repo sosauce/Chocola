@@ -2,7 +2,6 @@ package com.sosauce.chocola.data.playlist
 
 import android.content.Context
 import android.provider.MediaStore
-import com.sosauce.chocola.utils.combine
 import com.sosauce.chocola.utils.observe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -14,7 +13,8 @@ class PlaylistCleanup(
     private val playlistDao: PlaylistDao
 ) {
 
-    private val mediaStoreObserver = context.contentResolver.observe(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI)
+    private val mediaStoreObserver =
+        context.contentResolver.observe(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI)
 
     /**
      * Removes deleted mediaIds from playlists

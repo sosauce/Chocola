@@ -74,11 +74,13 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
     name = PREFERENCES_NAME,
     produceMigrations = { listOf(CleanupEqualizerSettingsMigration) }
 )
+
 // keys that are no longer in use
 data object LegacyPreferencesKeys {
     val EQUALIZER_PRESETS = stringPreferencesKey("EQUALIZER_PRESETS")
     val EQUALIZER_BANDS = stringPreferencesKey("EQUALIZER_BANDS")
 }
+
 data object PreferencesKeys {
     val THEME = stringPreferencesKey("theme")
     val USE_SYSTEM_FONT = booleanPreferencesKey("use_sys_font")
@@ -318,9 +320,6 @@ fun rememberInitialScreenBlocking(): Screen {
 //    getPreference(key = PAUSE_ON_MUTE, defaultValue = false, context = context)
 
 
-
-
-
 //suspend fun saveMediaIndexToMediaIdMap(pair: LastPlayed, context: Context) =
 //    saveCustomPreference(value = pair, key = MEDIA_INDEX_TO_MEDIA_ID, context = context)
 
@@ -336,14 +335,15 @@ private object CleanupEqualizerSettingsMigration : DataMigration<Preferences> {
     override suspend fun cleanUp() = Unit
 
     override suspend fun migrate(currentData: Preferences): Preferences {
-       return currentData.toMutablePreferences().apply {
-           remove(EQUALIZER_PRESETS)
-           remove(EQUALIZER_BANDS)
-           println("Keys were removed!")
-       }
+        return currentData.toMutablePreferences().apply {
+            remove(EQUALIZER_PRESETS)
+            remove(EQUALIZER_BANDS)
+            println("Keys were removed!")
+        }
     }
 
-    override suspend fun shouldMigrate(currentData: Preferences): Boolean = currentData.contains(EQUALIZER_PRESETS) && currentData.contains(EQUALIZER_BANDS)
+    override suspend fun shouldMigrate(currentData: Preferences): Boolean =
+        currentData.contains(EQUALIZER_PRESETS) && currentData.contains(EQUALIZER_BANDS)
 }
 
 

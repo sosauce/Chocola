@@ -1,8 +1,6 @@
 package com.sosauce.chocola.data.datastore
 
 import android.content.Context
-import androidx.collection.ArraySet
-import androidx.collection.FloatList
 import androidx.compose.ui.util.fastMap
 import androidx.datastore.preferences.core.edit
 import com.sosauce.chocola.data.datastore.PreferencesKeys.ALBUM_SORT
@@ -23,18 +21,15 @@ import com.sosauce.chocola.data.datastore.PreferencesKeys.SORT_PLAYLISTS_ASCENDI
 import com.sosauce.chocola.data.datastore.PreferencesKeys.SORT_TRACKS_ASCENDING
 import com.sosauce.chocola.data.datastore.PreferencesKeys.TRACK_SORT
 import com.sosauce.chocola.data.datastore.PreferencesKeys.WHITELISTED_FOLDERS
-import com.sosauce.chocola.data.models.EqualizerPreset
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.utils.AlbumSort
 import com.sosauce.chocola.utils.ArtistSort
 import com.sosauce.chocola.utils.PlaylistSort
 import com.sosauce.chocola.utils.TrackSort
 import com.sosauce.chocola.utils.copyMutate
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.serialization.StringFormat
 import kotlinx.serialization.json.Json
 
 class UserPreferences(
@@ -62,7 +57,7 @@ class UserPreferences(
     }
 
     val getRegexFilter = context.dataStore.data.map {
-       it[REGEX_FILTER] ?: false
+        it[REGEX_FILTER] ?: false
     }
 
     val getMatchCaseFilter = context.dataStore.data.map {
@@ -135,6 +130,7 @@ class UserPreferences(
         }.first()
         return gainsString.split(",").fastMap { it.toFloatOrNull() ?: 0f }
     }
+
     suspend fun saveBandGains(gains: List<Float>) {
         context.dataStore.edit {
             it[EQUALIZER_GAINS] = gains.joinToString(",")

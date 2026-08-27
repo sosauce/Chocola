@@ -36,8 +36,6 @@ import androidx.navigation3.ui.NavDisplay
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.presentation.components.wrappers.ObserveAsEvents
-import com.sosauce.chocola.presentation.components.animations.AnimatedFab
 import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.presentation.navigation.navigate
 import com.sosauce.chocola.presentation.navigation.navigateBack
@@ -46,6 +44,8 @@ import com.sosauce.chocola.presentation.screens.settings.compenents.AboutCard
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsCategoryCard
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsScreens
 import com.sosauce.chocola.utils.selfAlignHorizontally
+import com.sosauce.nekobites.animations.AnimatedFab
+import com.sosauce.nekobites.helpers.ObserveAsEvents
 import org.koin.androidx.compose.koinViewModel
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -247,14 +247,13 @@ fun SettingsScreen(
                 entry<SettingsScreens.Library> {
 
 
-
                     val viewModel = koinViewModel<SettingsLibraryViewModel>()
                     val safTracks by viewModel.safTracks.collectAsStateWithLifecycle()
                     val hiddenTracks by viewModel.hiddenTracks.collectAsStateWithLifecycle()
                     val folders by viewModel.folders.collectAsStateWithLifecycle()
 
                     ObserveAsEvents(viewModel.events) {
-                        when(it) {
+                        when (it) {
                             is LibraryEvents.RescanSuccessful -> {
                                 Toast.makeText(
                                     context,
@@ -262,6 +261,7 @@ fun SettingsScreen(
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
+
                             is LibraryEvents.RescanError -> {
                                 Toast.makeText(
                                     context,

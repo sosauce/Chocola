@@ -31,8 +31,9 @@ import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberSeekButtonsDuration
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.presentation.components.animations.AnimatedDrawable
 import com.sosauce.chocola.utils.rememberInteractionSource
+import com.sosauce.nekobites.animations.AnimatedDrawable
+import com.sosauce.nekobites.animations.AnimatedDrawableFile
 
 @Composable
 fun PlayPauseButton(
@@ -56,7 +57,7 @@ fun PlayPauseButton(
         interactionSource = interactionSource
     ) {
         AnimatedDrawable(
-            drawable = R.drawable.play_to_pause,
+            drawable = AnimatedDrawableFile.PLAY,
             atEnd = isPlaying,
             modifier = modifier
                 .graphicsLayer {
@@ -147,7 +148,7 @@ fun ActionButtonsRow(
                         .animateWidth(interactionSource = interactionSources[2])
                 ) {
                     AnimatedDrawable(
-                        drawable = R.drawable.play_to_pause,
+                        drawable = AnimatedDrawableFile.PLAY,
                         atEnd = musicState.isPlaying
                     )
                 }

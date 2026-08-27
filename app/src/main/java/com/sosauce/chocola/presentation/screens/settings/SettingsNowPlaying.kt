@@ -27,7 +27,6 @@ import com.sosauce.chocola.data.datastore.rememberShowAlbumName
 import com.sosauce.chocola.data.datastore.rememberThumbStyle
 import com.sosauce.chocola.data.datastore.rememberTrackStyle
 import com.sosauce.chocola.data.datastore.rememberUseArtAsBackground
-import com.sosauce.chocola.presentation.components.LazyRowWithScrollButton
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsSwitch
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsWithTitle
 import com.sosauce.chocola.presentation.screens.settings.compenents.ShapeSelector
@@ -35,6 +34,7 @@ import com.sosauce.chocola.presentation.screens.settings.compenents.SquareSelect
 import com.sosauce.chocola.utils.ArtworkShape
 import com.sosauce.chocola.utils.ThumbStyle
 import com.sosauce.chocola.utils.TrackStyle
+import com.sosauce.nekobites.components.LazyRowWithScrollButton
 
 @Composable
 fun SettingsNowPlaying() {

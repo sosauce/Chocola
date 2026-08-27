@@ -1,14 +1,12 @@
 package com.sosauce.chocola.presentation.screens.settings
 
 import android.content.Intent
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,20 +22,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
-import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.util.fastMap
-import androidx.core.net.toUri
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberAllSafTracks
 import com.sosauce.chocola.data.datastore.rememberMinTrackDuration
@@ -56,10 +49,6 @@ import com.sosauce.chocola.presentation.screens.settings.compenents.SliderSettin
 import com.sosauce.chocola.presentation.screens.settings.compenents.foldersView
 import com.sosauce.chocola.utils.copyMutate
 import com.sosauce.chocola.utils.selfAlignHorizontally
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SettingsLibrary(
@@ -158,7 +147,13 @@ fun SettingsLibrary(
                                 onShortClick = {},
                                 trailingContent = {
                                     IconButton(
-                                        onClick = { onHandleLibraryActions(LibraryActions.UnhideTrack(track.mediaId)) },
+                                        onClick = {
+                                            onHandleLibraryActions(
+                                                LibraryActions.UnhideTrack(
+                                                    track.mediaId
+                                                )
+                                            )
+                                        },
                                         shapes = IconButtonDefaults.shapes()
                                     ) {
                                         Icon(
@@ -242,7 +237,10 @@ fun SettingsLibrary(
                                 },
                                 trailingContent = {
                                     IconButton(
-                                        onClick = { safTracks = safTracks.copyMutate { remove(safTrack.uri.toString()) } },
+                                        onClick = {
+                                            safTracks =
+                                                safTracks.copyMutate { remove(safTrack.uri.toString()) }
+                                        },
                                         shapes = IconButtonDefaults.shapes()
                                     ) {
                                         Icon(

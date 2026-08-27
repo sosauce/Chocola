@@ -6,17 +6,14 @@
 package com.sosauce.chocola.presentation.components
 
 import androidx.activity.compose.BackHandler
-import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
@@ -36,7 +33,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -47,8 +43,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.DropdownMenuGroup
 import androidx.compose.material3.DropdownMenuItem
@@ -62,6 +56,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.RichTooltip
+import androidx.compose.material3.SelectableDropdownMenuItem
 import androidx.compose.material3.ShortNavigationBar
 import androidx.compose.material3.ShortNavigationBarItem
 import androidx.compose.material3.Text
@@ -75,7 +70,6 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -86,28 +80,19 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.util.lerp
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
-import com.skydoves.cloudy.Sky
-import com.skydoves.cloudy.cloudy
-import com.skydoves.cloudy.rememberSky
-import com.skydoves.cloudy.sky
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberAlbumGrids
 import com.sosauce.chocola.data.datastore.rememberAlbumSort
@@ -122,9 +107,6 @@ import com.sosauce.chocola.data.datastore.rememberSortTracksAscending
 import com.sosauce.chocola.data.datastore.rememberTrackSort
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
-import com.sosauce.chocola.presentation.components.animations.AnimatedDrawable
-import com.sosauce.chocola.presentation.components.animations.AnimatedFab
-import com.sosauce.chocola.presentation.components.animations.AnimatedIconButton
 import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.presentation.screens.playing.NowPlaying
 import com.sosauce.chocola.presentation.screens.playing.components.PlayPauseButton
@@ -132,6 +114,10 @@ import com.sosauce.chocola.utils.LocalScreen
 import com.sosauce.chocola.utils.SharedTransitionKeys
 import com.sosauce.chocola.utils.bouncySpec
 import com.sosauce.chocola.utils.rememberInteractionSource
+import com.sosauce.nekobites.animations.AnimatedDrawable
+import com.sosauce.nekobites.animations.AnimatedDrawableFile
+import com.sosauce.nekobites.animations.AnimatedFab
+import com.sosauce.nekobites.components.Spacer
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
@@ -168,7 +154,8 @@ fun SharedTransitionScope.CuteSearchbar(
 
             val playingDragState = rememberDraggableState { dragAmount ->
 
-                val value = (yTranslationPlaying.value + dragAmount).coerceAtLeast(0f) // always keep the value positive or else it's a shithole to manage
+                val value =
+                    (yTranslationPlaying.value + dragAmount).coerceAtLeast(0f) // always keep the value positive or else it's a shithole to manage
 
                 scope.launch {
                     yTranslationPlaying.snapTo(value)
@@ -360,20 +347,28 @@ private fun SharedTransitionScope.CuteSearchbarContent(
                     )
                 }
                 Row {
-                    AnimatedIconButton(
+                    IconButton(
                         onClick = { onHandlePlayerActions(PlayerActions.SeekToPreviousMusic) },
-                        icon = R.drawable.skip_previous,
-                        contentDescription = null
-                    )
+                        shapes = IconButtonDefaults.shapes()
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.skip_previous),
+                            contentDescription = null
+                        )
+                    }
                     PlayPauseButton(
                         isPlaying = musicState.isPlaying,
                         onHandlePlayerActions = onHandlePlayerActions
                     )
-                    AnimatedIconButton(
+                    IconButton(
                         onClick = { onHandlePlayerActions(PlayerActions.SeekToNextMusic) },
-                        icon = R.drawable.skip_next,
-                        contentDescription = null
-                    )
+                        shapes = IconButtonDefaults.shapes()
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.skip_next),
+                            contentDescription = null
+                        )
+                    }
                 }
             }
         }
@@ -414,8 +409,10 @@ private fun SharedTransitionScope.CuteSearchbarContent(
             SharedTransitionLayout {
                 AnimatedContent(
                     targetState = isInScreenSelectionMode,
-                    transitionSpec = { slideInVertically { it } + fadeIn() togetherWith
-                            slideOutVertically { it } + fadeOut() }
+                    transitionSpec = {
+                        slideInVertically { it } + fadeIn() togetherWith
+                                slideOutVertically { it } + fadeOut()
+                    }
                 ) {
                     CompositionLocalProvider(LocalNavAnimatedContentScope provides this) {
                         if (it) {
@@ -690,7 +687,9 @@ object CuteSearchbarDefaults {
                                             painter = painterResource(icon ?: R.drawable.search),
                                             modifier = Modifier
                                                 .sharedElement(
-                                                    sharedContentState = rememberSharedContentState(icon ?: R.drawable.search),
+                                                    sharedContentState = rememberSharedContentState(
+                                                        icon ?: R.drawable.search
+                                                    ),
                                                     animatedVisibilityScope = LocalNavAnimatedContentScope.current
                                                 ),
                                             contentDescription = null
@@ -723,7 +722,7 @@ object CuteSearchbarDefaults {
                                             shapes = IconButtonDefaults.shapes()
                                         ) {
                                             AnimatedDrawable(
-                                                drawable = R.drawable.animated_sort,
+                                                drawable = AnimatedDrawableFile.SORT,
                                                 atEnd = sortMenuExpanded
                                             )
                                         }
@@ -786,7 +785,7 @@ object CuteSearchbarDefaults {
                         1 -> R.string.artist
                         else -> throw IndexOutOfBoundsException()
                     }
-                    DropdownMenuItem(
+                    SelectableDropdownMenuItem(
                         selected = albumSort == i,
                         onClick = { albumSort = i },
                         shapes = MenuDefaults.itemShape(i, 2),
@@ -814,7 +813,7 @@ object CuteSearchbarDefaults {
         DropdownMenuGroup(
             shapes = MenuDefaults.groupShape(0, 2)
         ) {
-            DropdownMenuItem(
+            SelectableDropdownMenuItem(
                 selected = groupByFolders,
                 onClick = { groupByFolders = !groupByFolders },
                 shapes = MenuDefaults.itemShape(0, 2),
@@ -836,7 +835,7 @@ object CuteSearchbarDefaults {
                         else -> throw IndexOutOfBoundsException()
                     }
 
-                    DropdownMenuItem(
+                    SelectableDropdownMenuItem(
                         selected = trackSort == i,
                         onClick = { trackSort = i },
                         shapes = MenuDefaults.itemShape(i, 5),
@@ -870,7 +869,7 @@ object CuteSearchbarDefaults {
                         else -> throw IndexOutOfBoundsException()
                     }
 
-                    DropdownMenuItem(
+                    SelectableDropdownMenuItem(
                         selected = artistSort == i,
                         onClick = { artistSort = i },
                         shapes = MenuDefaults.itemShape(i, 3),
@@ -1001,7 +1000,7 @@ object CuteSearchbarDefaults {
             )
         }
     }
-    
+
 
 }
 

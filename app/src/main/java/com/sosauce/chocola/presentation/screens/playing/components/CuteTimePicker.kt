@@ -1,4 +1,5 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class,
+@file:OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalTime::class,
     ExperimentalMaterial3ExpressiveApi::class
 )
 
@@ -59,7 +60,9 @@ fun CuteTimePicker(
                 ) {
                     Text(stringResource(R.string.ongoing_sleep_timer))
                     Text(
-                        text = stringResource(R.string.timer_will_end_in) + " " + DateUtils.formatElapsedTime(currentTimerTime / 1000),
+                        text = stringResource(R.string.timer_will_end_in) + " " + DateUtils.formatElapsedTime(
+                            currentTimerTime / 1000
+                        ),
                         style = MaterialTheme.typography.labelSmallEmphasized
                     )
                     Button(

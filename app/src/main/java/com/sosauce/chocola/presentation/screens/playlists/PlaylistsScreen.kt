@@ -44,17 +44,17 @@ import com.sosauce.chocola.data.models.Playlist
 import com.sosauce.chocola.data.states.MusicState
 import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.presentation.components.CuteSearchbar
-import com.sosauce.chocola.presentation.components.LoadingBox
 import com.sosauce.chocola.presentation.components.NoResult
-import com.sosauce.chocola.presentation.components.NoXFound
 import com.sosauce.chocola.presentation.components.SelectedBarSurface
-import com.sosauce.chocola.presentation.components.animations.ToggleAnimatedFab
 import com.sosauce.chocola.presentation.components.dialogs.PlaylistDeletionDialog
 import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.presentation.screens.playlists.components.CreatePlaylistDialog
 import com.sosauce.chocola.presentation.screens.playlists.components.PlaylistItem
 import com.sosauce.chocola.utils.barsContentTransform
 import com.sosauce.chocola.utils.selfAlignHorizontally
+import com.sosauce.nekobites.animations.ToggleAnimatedFab
+import com.sosauce.nekobites.components.LoadingBox
+import com.sosauce.nekobites.components.NoXFound
 import com.sosauce.sweetselect.rememberSweetSelectState
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -214,7 +214,9 @@ fun SharedTransitionScope.PlaylistsScreen(
                                 bodyText = R.string.no_playlist_desc,
                                 icon = R.drawable.playlist
                             )
-                        } else { NoResult(modifier = Modifier.animateItem()) }
+                        } else {
+                            NoResult(modifier = Modifier.animateItem())
+                        }
 
                     }
                 }

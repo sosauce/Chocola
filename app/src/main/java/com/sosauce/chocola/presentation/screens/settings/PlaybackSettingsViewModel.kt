@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 class PlaybackSettingsViewModel(
     private val equalizerManager: EqualizerManager,
     private val userPreferences: UserPreferences
-): ViewModel() {
+) : ViewModel() {
 
     private val _state = MutableStateFlow(PlaybackSettingsState())
     val state = _state.asStateFlow()
@@ -35,13 +35,17 @@ class PlaybackSettingsViewModel(
     }
 
     fun handlePlaybackSettingsActions(action: PlaybackSettingsActions) {
-        when(action) {
-            is PlaybackSettingsActions.ToggleEqualizer -> { equalizerManager.toggleEqualizer(action.enable) }
+        when (action) {
+            is PlaybackSettingsActions.ToggleEqualizer -> {
+                equalizerManager.toggleEqualizer(action.enable)
+            }
+
             is PlaybackSettingsActions.SetBandGain -> {
                 viewModelScope.launch {
                     equalizerManager.setBandGain(action.frequency, action.gain)
                 }
             }
+
             is PlaybackSettingsActions.UsePreset -> {
                 viewModelScope.launch {
                     equalizerManager.usePreset(action.preset)
@@ -59,12 +63,12 @@ data class PlaybackSettingsState(
 )
 
 sealed interface PlaybackSettingsActions {
-    data class ToggleEqualizer(val enable: Boolean): PlaybackSettingsActions
-    data class UsePreset(val preset: FloatList): PlaybackSettingsActions
+    data class ToggleEqualizer(val enable: Boolean) : PlaybackSettingsActions
+    data class UsePreset(val preset: FloatList) : PlaybackSettingsActions
     data class SetBandGain(
         val frequency: Float,
         val gain: Float
-    ): PlaybackSettingsActions
+    ) : PlaybackSettingsActions
 }
 
 

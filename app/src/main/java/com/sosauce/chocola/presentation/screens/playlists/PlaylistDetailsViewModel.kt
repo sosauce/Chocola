@@ -12,7 +12,6 @@ import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.data.models.Playlist
 import com.sosauce.chocola.data.playlist.PlaylistDao
-import com.sosauce.chocola.utils.ordered
 import com.sosauce.chocola.utils.search
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

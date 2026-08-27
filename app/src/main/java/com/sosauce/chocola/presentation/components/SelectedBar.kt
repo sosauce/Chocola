@@ -49,10 +49,6 @@ fun <T> SelectedBarSurface(
         modifier = modifier
             .navigationBarsPadding()
             .fillMaxWidth(0.85f)
-//            .background(
-//                color = MaterialTheme.colorScheme.surfaceContainer,
-//                shape = RoundedCornerShape(24.dp)
-//            )
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -72,7 +68,9 @@ fun <T> SelectedBarSurface(
                     contentDescription = null
                 )
                 Spacer(Modifier.width(5.dp))
-                Text("${multiSelectState.selectedItems.size}")
+                Text(
+                    text = "${multiSelectState.selectedItems.size}"
+                )
             }
             Button(
                 onClick = {
@@ -158,7 +156,12 @@ fun TracksSelectedBar(
                     Button(
                         onClick = { showPlaylistDialog = true },
                         interactionSource = interactionSources[0],
-                        shape = RoundedCornerShape(topStart = 50.dp, bottomStart = 50.dp, topEnd = 4.dp, bottomEnd = 4.dp),
+                        shape = RoundedCornerShape(
+                            topStart = 50.dp,
+                            bottomStart = 50.dp,
+                            topEnd = 4.dp,
+                            bottomEnd = 4.dp
+                        ),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.surfaceContainer,
                             contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
@@ -207,7 +210,12 @@ fun TracksSelectedBar(
                     Button(
                         onClick = { showDeletionDialog = true },
                         interactionSource = interactionSources[2],
-                        shape = RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp, topEnd = 50.dp, bottomEnd = 50.dp),
+                        shape = RoundedCornerShape(
+                            topStart = 4.dp,
+                            bottomStart = 4.dp,
+                            topEnd = 50.dp,
+                            bottomEnd = 50.dp
+                        ),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.surfaceContainer,
                             contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)

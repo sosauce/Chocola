@@ -38,7 +38,6 @@ import org.koin.core.component.inject
 class PlaybackService : MediaLibraryService(), KoinComponent {
 
 
-
     private var mediaLibrarySession: MediaLibrarySession? = null
     private val equalizerManager by inject<EqualizerManager>()
     private val androidAutoHelper by inject<AndroidAutoHelper>()
@@ -50,7 +49,7 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
         .build()
 
 
-    val listener = object: Player.Listener {
+    val listener = object : Player.Listener {
 
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             super.onIsPlayingChanged(isPlaying)
@@ -82,7 +81,7 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
         }
     }
 
-    val callback = object: MediaLibrarySession.Callback {
+    val callback = object : MediaLibrarySession.Callback {
 
         @UnstableApi
         override fun onGetLibraryRoot(
@@ -151,7 +150,8 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
     }
 
 
-    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession? = mediaLibrarySession
+    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession? =
+        mediaLibrarySession
 
 
     @OptIn(ExperimentalApi::class)
@@ -203,7 +203,6 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
     }
 
 
-
     @UnstableApi
     override fun onTaskRemoved(rootIntent: Intent?) {
         equalizerManager.releaseDynamicsProcessing()
@@ -219,7 +218,7 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
-        when(intent?.action) {
+        when (intent?.action) {
             WIDGET_ACTION_PLAY_PAUSE -> mediaLibrarySession?.player?.playOrPause()
             WIDGET_ACTION_SKIP_NEXT -> mediaLibrarySession?.player?.seekToNext()
             WIDGET_ACTION_SKIP_PREVIOUS -> mediaLibrarySession?.player?.seekToPrevious()
@@ -227,9 +226,6 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
 
         return super.onStartCommand(intent, flags, startId)
     }
-
-
-
 
 
     companion object {

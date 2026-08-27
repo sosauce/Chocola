@@ -19,7 +19,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.sosauce.chocola.data.datastore.rememberCenterTitle
 import com.sosauce.chocola.data.datastore.rememberShowAlbumName
-import com.sosauce.chocola.data.states.MusicState
 
 
 @Composable

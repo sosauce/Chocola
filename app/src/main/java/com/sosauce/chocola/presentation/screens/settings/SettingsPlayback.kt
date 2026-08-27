@@ -36,12 +36,12 @@ import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberEnableEqualizer
 import com.sosauce.chocola.data.datastore.rememberPauseOnMute
 import com.sosauce.chocola.data.datastore.rememberSeekButtonsDuration
-import com.sosauce.chocola.presentation.components.LazyRowWithScrollButton
 import com.sosauce.chocola.presentation.screens.settings.compenents.EqualizerPresetSelector
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsSwitch
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsWithTitle
 import com.sosauce.chocola.presentation.screens.settings.compenents.SliderSettingsCards
 import com.sosauce.chocola.utils.bouncySpec
+import com.sosauce.nekobites.components.LazyRowWithScrollButton
 
 @Composable
 fun SettingsPlayback(
@@ -116,7 +116,13 @@ fun SettingsPlayback(
                         ) { preset ->
                             EqualizerPresetSelector(
                                 preset = preset,
-                                onClick = { onHandlePlaybackSettingsActions(PlaybackSettingsActions.UsePreset(preset.gains)) }
+                                onClick = {
+                                    onHandlePlaybackSettingsActions(
+                                        PlaybackSettingsActions.UsePreset(
+                                            preset.gains
+                                        )
+                                    )
+                                }
                             )
                         }
                     }
@@ -141,7 +147,12 @@ fun SettingsPlayback(
                                 frequency = frequency,
                                 gain = gain,
                                 onBandGainChanged = { freq, gain ->
-                                    onHandlePlaybackSettingsActions(PlaybackSettingsActions.SetBandGain(freq, gain))
+                                    onHandlePlaybackSettingsActions(
+                                        PlaybackSettingsActions.SetBandGain(
+                                            freq,
+                                            gain
+                                        )
+                                    )
                                 }
                             )
                         }
@@ -189,7 +200,8 @@ private fun EqualizerBandSlider(
         modifier = Modifier.padding(horizontal = 5.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val label = if (frequency >= 1000) "${frequency.toInt() / 1000}kHz" else "${frequency.toInt()}Hz"
+        val label =
+            if (frequency >= 1000) "${frequency.toInt() / 1000}kHz" else "${frequency.toInt()}Hz"
         Text(
             text = label,
             style = MaterialTheme.typography.labelMediumEmphasized

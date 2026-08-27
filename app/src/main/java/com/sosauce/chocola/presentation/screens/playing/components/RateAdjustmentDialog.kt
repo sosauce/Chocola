@@ -2,7 +2,6 @@
 
 package com.sosauce.chocola.presentation.screens.playing.components
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth

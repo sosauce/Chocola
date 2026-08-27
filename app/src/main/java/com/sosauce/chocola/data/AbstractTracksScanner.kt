@@ -7,8 +7,6 @@ import android.content.Context
 import android.provider.MediaStore
 import androidx.compose.ui.util.fastFilter
 import androidx.core.net.toUri
-import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
 import com.sosauce.chocola.data.datastore.TracksSettings
 import com.sosauce.chocola.data.datastore.UserPreferences
 import com.sosauce.chocola.data.models.CuteTrack
@@ -20,15 +18,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -52,11 +45,13 @@ class AbstractTracksScanner(
     )
 
     private fun fetchLatestTracks(): Flow<List<CuteTrack>> {
-        val mediaStoreFlow = context.contentResolver.observe(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI)
+        val mediaStoreFlow =
+            context.contentResolver.observe(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI)
         val minTrackDurationFlow = userPreferences.getMinTrackDuration()
         val hiddenTracksFlow = userPreferences.getHiddenTracks()
         val whitelistedFoldersFlow = userPreferences.getWhitelistedFolders()
-        val tracksSettingsFlow = userPreferences.tracksSettings().debounce(250.milliseconds) // Debounce settings if user changes them quickly (prolly unnecessary)
+        val tracksSettingsFlow = userPreferences.tracksSettings()
+            .debounce(250.milliseconds) // Debounce settings if user changes them quickly (prolly unnecessary)
 
         return combine(
             mediaStoreFlow,
@@ -159,7 +154,7 @@ class AbstractTracksScanner(
     }
 
     private fun tracksSettingsToMediaStore(tracksSettings: TracksSettings): String {
-        val data = when(tracksSettings.sort) {
+        val data = when (tracksSettings.sort) {
             TrackSort.TITLE -> MediaStore.Audio.Media.TITLE
             TrackSort.ALBUM -> MediaStore.Audio.Media.ALBUM
             TrackSort.ARTIST -> MediaStore.Audio.Media.ARTIST
@@ -168,7 +163,7 @@ class AbstractTracksScanner(
             TrackSort.AS_ADDED -> ""
         }
 
-        val noCase = when(tracksSettings.sort) {
+        val noCase = when (tracksSettings.sort) {
             TrackSort.YEAR, TrackSort.DATE_MODIFIED -> ""
             else -> "COLLATE NOCASE"
         }

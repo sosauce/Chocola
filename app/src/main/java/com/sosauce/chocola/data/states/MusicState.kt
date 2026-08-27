@@ -1,6 +1,5 @@
 package com.sosauce.chocola.data.states
 
-import androidx.compose.runtime.Stable
 import androidx.media3.common.Player
 import com.sosauce.chocola.data.models.CuteTrack
 import com.sosauce.chocola.domain.model.Lyrics

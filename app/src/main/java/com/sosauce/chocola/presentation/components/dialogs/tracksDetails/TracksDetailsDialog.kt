@@ -2,9 +2,6 @@
 
 package com.sosauce.chocola.presentation.components.dialogs.tracksDetails
 
-import android.media.MediaMetadataRetriever
-import android.text.format.DateUtils
-import android.text.format.Formatter
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
@@ -38,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -46,9 +42,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.models.CuteTrack
-import com.sosauce.chocola.presentation.components.LoadingBox
-import com.sosauce.chocola.presentation.components.wrappers.ScopedViewModel
-import com.sosauce.chocola.utils.getTrackMetadata
+import com.sosauce.nekobites.components.LoadingBox
+import com.sosauce.nekobites.helpers.ScopedViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import sv.lib.squircleshape.CornerSmoothing
@@ -209,7 +204,12 @@ fun TracksDetailsDialog(
                                     text = R.string.path,
                                     data = track.folder
                                 ),
-                                shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp, bottomStart = 24.dp, bottomEnd = 24.dp)
+                                shape = RoundedCornerShape(
+                                    topStart = 4.dp,
+                                    topEnd = 4.dp,
+                                    bottomStart = 24.dp,
+                                    bottomEnd = 24.dp
+                                )
                             )
                         }
                     }

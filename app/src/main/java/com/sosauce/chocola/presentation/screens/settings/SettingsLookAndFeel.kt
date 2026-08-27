@@ -24,7 +24,6 @@ import com.sosauce.chocola.data.datastore.rememberPaletteStyle
 import com.sosauce.chocola.data.datastore.rememberShowShuffleButton
 import com.sosauce.chocola.data.datastore.rememberUseArtTheme
 import com.sosauce.chocola.data.datastore.rememberUseSystemFont
-import com.sosauce.chocola.presentation.components.LazyRowWithScrollButton
 import com.sosauce.chocola.presentation.screens.settings.compenents.PaletteSelector
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsSelector
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsSwitch
@@ -33,6 +32,7 @@ import com.sosauce.chocola.presentation.theme.anyDarkColorScheme
 import com.sosauce.chocola.presentation.theme.anyLightColorScheme
 import com.sosauce.chocola.utils.CutePaletteStyle
 import com.sosauce.chocola.utils.CuteTheme
+import com.sosauce.nekobites.components.LazyRowWithScrollButton
 
 @Composable
 fun SettingsLookAndFeel() {
@@ -215,7 +215,6 @@ data class FontItem(
     //val text: @Composable () -> Unit,
     val isSelected: Boolean
 )
-
 
 
 enum class FontStyle {

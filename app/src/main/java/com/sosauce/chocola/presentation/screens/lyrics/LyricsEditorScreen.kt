@@ -44,11 +44,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sosauce.chocola.R
 import com.sosauce.chocola.domain.model.Lyrics
 import com.sosauce.chocola.presentation.components.CuteListItem
-import com.sosauce.chocola.presentation.components.NoXFound
-import com.sosauce.chocola.presentation.components.Spacer
-import com.sosauce.chocola.presentation.components.animations.AnimatedFab
 import com.sosauce.chocola.utils.rememberFocusRequester
 import com.sosauce.chocola.utils.toLyricDuration
+import com.sosauce.nekobites.animations.AnimatedFab
+import com.sosauce.nekobites.components.NoXFound
+import com.sosauce.nekobites.components.Spacer
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -331,7 +331,7 @@ private fun LyricLineItem(
     }
 }
 
-private object DigitOnlyTransformation: InputTransformation {
+private object DigitOnlyTransformation : InputTransformation {
     override fun TextFieldBuffer.transformInput() {
         if (asCharSequence().any { !it.isDigit() }) {
             revertAllChanges()

@@ -240,7 +240,8 @@ class MusicViewModel(
         val window = Timeline.Window()
         val newTracks = buildList(timeline.windowCount) {
 
-            var currentWindowIndex = timeline.getFirstWindowIndex(mediaController!!.shuffleModeEnabled)
+            var currentWindowIndex =
+                timeline.getFirstWindowIndex(mediaController!!.shuffleModeEnabled)
 
             while (currentWindowIndex != C.INDEX_UNSET) {
                 timeline.getWindow(currentWindowIndex, window)
@@ -309,8 +310,10 @@ class MusicViewModel(
             mediaController?.run {
                 repeatMode = savedMusicState.repeatMode
                 shuffleModeEnabled = savedMusicState.shuffle
-                mediaController!!.playbackParameters = mediaController!!.playbackParameters.withSpeed(savedMusicState.speed)
-                mediaController!!.playbackParameters = mediaController!!.playbackParameters.withPitch(savedMusicState.pitch)
+                mediaController!!.playbackParameters =
+                    mediaController!!.playbackParameters.withSpeed(savedMusicState.speed)
+                mediaController!!.playbackParameters =
+                    mediaController!!.playbackParameters.withPitch(savedMusicState.pitch)
                 val mediaItems = savedMusicState.loadedMedias.fastMap { it.toMediaItem() }
                 val index = savedMusicState.loadedMedias.indexOf(savedMusicState.track)
 
@@ -322,7 +325,12 @@ class MusicViewModel(
                         savedMusicState.position
                     )
                     prepare()
-                    _musicState.update { it.copy(track = savedMusicState.track, loadedMedias = savedMusicState.loadedMedias) }
+                    _musicState.update {
+                        it.copy(
+                            track = savedMusicState.track,
+                            loadedMedias = savedMusicState.loadedMedias
+                        )
+                    }
                 }
             }
         }
@@ -373,10 +381,16 @@ class MusicViewModel(
                 }
             }
 
-            is PlayerActions.Shuffle -> mediaController!!.shuffleModeEnabled = !mediaController!!.shuffleModeEnabled
+            is PlayerActions.Shuffle -> mediaController!!.shuffleModeEnabled =
+                !mediaController!!.shuffleModeEnabled
+
             is PlayerActions.ChangeRepeatMode -> mediaController!!.changeRepeatMode()
-            is PlayerActions.SetSpeed -> mediaController!!.playbackParameters = mediaController!!.playbackParameters.withSpeed(action.speed)
-            is PlayerActions.SetPitch -> mediaController!!.playbackParameters = mediaController!!.playbackParameters.withPitch(action.pitch)
+            is PlayerActions.SetSpeed -> mediaController!!.playbackParameters =
+                mediaController!!.playbackParameters.withSpeed(action.speed)
+
+            is PlayerActions.SetPitch -> mediaController!!.playbackParameters =
+                mediaController!!.playbackParameters.withPitch(action.pitch)
+
             is PlayerActions.CancelSleepTimer -> {
                 sleepCountdownTimer?.cancel()
                 sleepCountdownTimer = null
@@ -408,7 +422,8 @@ class MusicViewModel(
                         playRandom()
                     }
                 } else {
-                    val index = targetTracks.indexOfFirst { it.mediaId == action.mediaId }.coerceAtLeast(0)
+                    val index =
+                        targetTracks.indexOfFirst { it.mediaId == action.mediaId }.coerceAtLeast(0)
 
                     if (targetTracks == musicState.value.loadedMedias) {
                         mediaController?.seekTo(index, 0)
@@ -495,7 +510,8 @@ class MusicViewModel(
             }
 
             is PlayerActions.AddToQueue -> {
-                val newUniqueTracks = action.cuteTracks.fastFilter { it !in musicState.value.loadedMedias }
+                val newUniqueTracks =
+                    action.cuteTracks.fastFilter { it !in musicState.value.loadedMedias }
 
 
                 if (newUniqueTracks.isNotEmpty()) {
@@ -516,13 +532,18 @@ class MusicViewModel(
 
                 mediaController.shuffleModeEnabled = false
 
-                val isCurrentlyPlayingMedia = mediaController.currentMediaItem?.mediaId == action.cuteTrack.mediaId
+                val isCurrentlyPlayingMedia =
+                    mediaController.currentMediaItem?.mediaId == action.cuteTrack.mediaId
                 if (!isCurrentlyPlayingMedia) {
                     // Removes the requested track from the playing list before adding it back to prevent duplicate
-                    tracks.value.indexOf(action.cuteTrack).takeIf { it != -1 }?.let { oldTrackIndex ->
-                        mediaController.removeMediaItem(oldTrackIndex)
-                    }
-                    mediaController.addMediaItem(mediaController.nextMediaItemIndex, action.cuteTrack.toMediaItem())
+                    tracks.value.indexOf(action.cuteTrack).takeIf { it != -1 }
+                        ?.let { oldTrackIndex ->
+                            mediaController.removeMediaItem(oldTrackIndex)
+                        }
+                    mediaController.addMediaItem(
+                        mediaController.nextMediaItemIndex,
+                        action.cuteTrack.toMediaItem()
+                    )
                 }
             }
 

@@ -1,7 +1,6 @@
 package com.sosauce.chocola.data.widgets
 
 import android.content.Context
-import android.net.Uri
 import android.util.Base64
 import androidx.compose.ui.util.fastForEach
 import androidx.datastore.preferences.core.Preferences
@@ -52,7 +51,9 @@ class WidgetsHelper(
 
         return try {
             art.takeIf { it.isNotEmpty() }?.let { Base64.encodeToString(it, Base64.DEFAULT) } ?: ""
-        } catch (e: Exception) { "" }
+        } catch (e: Exception) {
+            ""
+        }
 
 
     }

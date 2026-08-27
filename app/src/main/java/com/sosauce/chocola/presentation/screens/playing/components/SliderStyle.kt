@@ -15,19 +15,13 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.SliderState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.sosauce.chocola.data.datastore.rememberThumbStyle
-import com.sosauce.chocola.data.datastore.rememberTrackStyle
-import com.sosauce.chocola.utils.ThumbStyle
-import com.sosauce.chocola.utils.TrackStyle
 import com.sosauce.chocola.utils.rememberInteractionSource
-
 
 
 @Composable
@@ -48,7 +42,6 @@ fun StraightThumb(isDragging: Boolean) {
 
 @Composable
 fun MorphingThumb() = LoadingIndicator(modifier = Modifier.size(35.dp))
-
 
 
 @Composable

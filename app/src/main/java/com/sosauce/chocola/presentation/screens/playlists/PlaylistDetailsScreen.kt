@@ -35,22 +35,22 @@ import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.presentation.components.CuteSearchbar
 import com.sosauce.chocola.presentation.components.CuteSearchbarDefaults
 import com.sosauce.chocola.presentation.components.DefaultMusicListItemTrailingContent
-import com.sosauce.chocola.presentation.components.LoadingBox
 import com.sosauce.chocola.presentation.components.MoreOptions
 import com.sosauce.chocola.presentation.components.MusicListItem
 import com.sosauce.chocola.presentation.components.NoResult
 import com.sosauce.chocola.presentation.components.TracksSelectedBar
-import com.sosauce.chocola.presentation.components.animations.AnimatedFab
 import com.sosauce.chocola.presentation.navigation.Screen
 import com.sosauce.chocola.presentation.screens.album.components.NumberOfTracks
 import com.sosauce.chocola.presentation.screens.playlists.components.EmptyPlaylist
 import com.sosauce.chocola.presentation.screens.playlists.components.PlaylistHeader
-import com.sosauce.chocola.utils.ColorUtils.toColor
 import com.sosauce.chocola.utils.CuteTheme
 import com.sosauce.chocola.utils.barsContentTransform
 import com.sosauce.chocola.utils.copyMutate
 import com.sosauce.chocola.utils.selfAlignHorizontally
 import com.sosauce.chocola.utils.toPaletteStyle
+import com.sosauce.nekobites.animations.AnimatedFab
+import com.sosauce.nekobites.components.LoadingBox
+import com.sosauce.nekobites.utils.ColorUtils.toColor
 import com.sosauce.sweetselect.rememberSweetSelectState
 
 @Composable
@@ -143,7 +143,9 @@ fun SharedTransitionScope.PlaylistDetailsScreen(
                         ) {
                             if (textFieldState.text.isEmpty()) {
                                 EmptyPlaylist(state.playlist.emoji)
-                            } else { NoResult(Modifier.animateItem()) }
+                            } else {
+                                NoResult(Modifier.animateItem())
+                            }
 
                         }
                     } else {

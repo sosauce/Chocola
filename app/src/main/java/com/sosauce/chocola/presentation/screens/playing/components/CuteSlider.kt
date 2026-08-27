@@ -33,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -93,8 +92,10 @@ fun CuteSlider(
     }
 
     val multiplier = if (dynamicDuration) musicState.speed else 1f
-    val currentFormattedTime = DateUtils.formatElapsedTime(((musicState.position / multiplier) / 1000).toLong())
-    val totalFormattedTime = DateUtils.formatElapsedTime(((musicState.duration / multiplier) / 1000).toLong())
+    val currentFormattedTime =
+        DateUtils.formatElapsedTime(((musicState.position / multiplier) / 1000).toLong())
+    val totalFormattedTime =
+        DateUtils.formatElapsedTime(((musicState.duration / multiplier) / 1000).toLong())
 
     Column(modifier = modifier) {
         Row(
@@ -125,7 +126,8 @@ fun CuteSlider(
                     )
                 )
 
-                val seekFormattedTime = DateUtils.formatElapsedTime(((draggingPos / multiplier) / 1000).toLong())
+                val seekFormattedTime =
+                    DateUtils.formatElapsedTime(((draggingPos / multiplier) / 1000).toLong())
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
@@ -167,6 +169,7 @@ fun CuteSlider(
                         isPlaying = musicState.isPlaying,
                         sliderState = trackState
                     )
+
                     TrackStyle.STRAIGHT -> StraightTrack(trackState)
                 }
             }

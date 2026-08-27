@@ -2,7 +2,6 @@ package com.sosauce.chocola.domain.actions
 
 import android.net.Uri
 import com.sosauce.chocola.data.models.CuteTrack
-import kotlinx.serialization.Serializable
 
 sealed interface PlayerActions {
     data object PlayOrPause : PlayerActions

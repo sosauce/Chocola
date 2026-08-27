@@ -33,9 +33,7 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberInitialScreenBlocking
-import com.sosauce.chocola.presentation.screens.metadata.MetadataActions
 import com.sosauce.chocola.presentation.components.MusicViewModel
-import com.sosauce.chocola.presentation.components.wrappers.ObserveAsEvents
 import com.sosauce.chocola.presentation.screens.album.AlbumDetailsScreen
 import com.sosauce.chocola.presentation.screens.album.AlbumDetailsViewModel
 import com.sosauce.chocola.presentation.screens.album.AlbumsScreen
@@ -48,6 +46,7 @@ import com.sosauce.chocola.presentation.screens.lyrics.LyricsEditorScreen
 import com.sosauce.chocola.presentation.screens.lyrics.LyricsScreen
 import com.sosauce.chocola.presentation.screens.main.MainScreen
 import com.sosauce.chocola.presentation.screens.main.MainViewModel
+import com.sosauce.chocola.presentation.screens.metadata.MetadataActions
 import com.sosauce.chocola.presentation.screens.metadata.MetadataEditorScreen
 import com.sosauce.chocola.presentation.screens.metadata.MetadataEvents
 import com.sosauce.chocola.presentation.screens.metadata.MetadataViewModel
@@ -58,6 +57,7 @@ import com.sosauce.chocola.presentation.screens.playlists.PlaylistViewModel
 import com.sosauce.chocola.presentation.screens.playlists.PlaylistsScreen
 import com.sosauce.chocola.presentation.screens.settings.SettingsScreen
 import com.sosauce.chocola.utils.LocalScreen
+import com.sosauce.nekobites.helpers.ObserveAsEvents
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -204,15 +204,20 @@ fun Nav(
                             if (result.resultCode == Activity.RESULT_OK) {
                                 metadataViewModel.onHandleMetadataActions(MetadataActions.SaveChanges)
                             } else {
-                                Toast.makeText(context, resources.getString(R.string.allow_perform_changes), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    context,
+                                    resources.getString(R.string.allow_perform_changes),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
 
                         ObserveAsEvents(metadataViewModel.events) {
-                            when(it) {
+                            when (it) {
                                 is MetadataEvents.SaveSuccessful -> backStack.navigateBack()
                                 is MetadataEvents.SaveUnsuccessful -> {
-                                    val errorMessage = it.error ?: resources.getString(R.string.unknown_error)
+                                    val errorMessage =
+                                        it.error ?: resources.getString(R.string.unknown_error)
 
                                     Toast.makeText(
                                         context,
