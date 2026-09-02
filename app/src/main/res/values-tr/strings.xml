@@ -100,8 +100,8 @@
     <string name="song_loading">Şarkı yükleniyor…</string>
     <string name="use_carousel">Karusel kullan</string>
     <plurals name="tracks">
-        <item quantity="one">1 parça</item>
-        <item quantity="other">%d parça</item>
+        <item quantity="one">%d Parça</item>
+        <item quantity="other">%d Parça</item>
     </plurals>
     <plurals name="albums_plural">
         <item quantity="one">1 albüm</item>
@@ -256,4 +256,20 @@
     <string name="audio_perm_desc">Parçalarınıza erişmek için bu izin gereklidir.</string>
     <string name="navigation">Navigasyon</string>
     <string name="navigation_desc">Bunun için bir haritaya ihtiyacın yok!</string>
+    <string name="aod">Her zaman açık ekran</string>
+    <string name="aod_desc">Pil ömrünü biraz daha uzatmak için, haksız mıyım ?</string>
+    <string name="enter_new_value">Yeni bir değer gir</string>
+    <string name="library_setup">Kütüphane kurulumu</string>
+    <string name="allow_perform_changes">Uygulamanın değişiklikleri yapabilmesi için uygulamaya izin vermelisin!</string>
+    <string name="library_setup_desc"><![CDATA[Taranacak klasörleri seç ve minimum parça süresini ayarla]]></string>
+    <string name="date">Tarih</string>
+    <string name="unknown_error">Bilinmedik hata</string>
+    <string name="no_lyrics_desc">Bu şarkı için gömülü bir lyrics yada .lrc dosyası bulunamadı!</string>
+    <string name="shape_morph">Şekil değişimi</string>
+    <string name="shape_morph_desc">Resmin şekli şarkının oynayıp oynamadığına göre otomatik olarak değişir</string>
+    <string name="dynamic_duration">Dinamik süre</string>
+    <string name="dynamic_duration_desc">Parça süresini, çalma hızını hesaba katarak gerçek zamanda geçecek süreye göre belirler</string>
+    <string name="enter_value_between_range">%1$d ila %2$d arasında bir değer gir</string>
+    <string name="widget_2_1_description">Sadece kontroller</string>
+    <string name="widget_4_1_description">Tam geniş klasik widget</string>
 </resources>
