@@ -251,14 +251,6 @@
     <string name="enter_value_between_range">Enter a value between %1$d and %2$d</string>
     <string name="widget_2_1_description">Controls only</string>
     <string name="widget_4_1_description">Full width classic widget</string>
-
-
-
-
-    <plurals name="tracks">
-        <item quantity="one">%d track</item>
-        <item quantity="other">%d tracks</item>
-    </plurals>
     <plurals name="albums_plural">
         <item quantity="one">%d album</item>
         <item quantity="other">%d albums</item>

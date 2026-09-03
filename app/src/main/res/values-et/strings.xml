@@ -18,7 +18,7 @@
     <string name="no_artists_found">Esitajaid ei leidu!</string>
     <string name="artwork">Kaanepildid</string>
     <string name="artists">Esitajad</string>
-    <string name="albums">Albumid</string>
+    <string name="albums">Album</string>
     <string name="music">Lood</string>
     <string name="cm_by_sosauce">Chocola, autoriks sosauce</string>
     <string name="app_icon">Rakenduse ikoon</string>
@@ -179,8 +179,8 @@
     <string name="load">Laadi</string>
     <string name="not_a_lyric_file">See pole laulusõnade fail!</string>
     <plurals name="tracks">
-        <item quantity="one">%d lugu</item>
-        <item quantity="other">%d lugu</item>
+        <item quantity="one">Lood</item>
+        <item quantity="other">Lood</item>
     </plurals>
     <plurals name="albums_plural">
         <item quantity="one">%d album</item>
@@ -245,4 +245,31 @@
     </plurals>
     <string name="art_lyrics_desc">Eraldi vaate asemel kuvatakse laulusõnad kaanepildil. Üksikasjalikumaks vaateks klõpsa kaanepilti.</string>
     <string name="art_lyrics">Laulusõnad kaanepildil</string>
+    <string name="play_next">Esita järgmisena</string>
+    <string name="default_launch_screen">Vaikimisi vaade käivitusel</string>
+    <string name="main">Põhiline</string>
+    <string name="start">Alguses</string>
+    <string name="center">Keskel</string>
+    <string name="end">Lõpus</string>
+    <string name="text_alignment">Teksti joondumine</string>
+    <string name="music_and_audio_perm"><![CDATA[Muusika ja helifailide õigused]]></string>
+    <string name="audio_perm_desc">Need õigused on vajalikud muusika esitamiseks.</string>
+    <string name="navigation_desc">Selle jaoks pole kaarti vaja!</string>
+    <string name="navigation">Liikumine rakenduses</string>
+    <string name="aod">Ekraan on alati sisselülitatud</string>
+    <string name="aod_desc">Selle pisut pikema aku kestvuse pärast, eksole ju?</string>
+    <string name="enter_new_value">Sisesta uus väärtus</string>
+    <string name="library_setup">Muusikakogu seadistused</string>
+    <string name="allow_perform_changes">Palun luba rakendused teha muudatusi!</string>
+    <string name="library_setup_desc"><![CDATA[Vali kaustad, kust muusikat otsida ja määra loo miinimumkestus]]></string>
+    <string name="date">Kuupäev</string>
+    <string name="unknown_error">Tundmatu viga</string>
+    <string name="no_lyrics_desc">Selle loo jaoks ei leidu ei lõimitud laulusõnu ega .lrc faili!</string>
+    <string name="shape_morph_desc">Kaanepildi kuju muutub dünaamiliselt vastavalt sellele, kas muusika on esitamisel või mitte</string>
+    <string name="shape_morph">Kaanepildi muutumine</string>
+    <string name="dynamic_duration">Dünaamiline kestus</string>
+    <string name="dynamic_duration_desc">Kohandab loo kestust vastavalt taasesituskiirusele, et näidata tegelikku kuulamisaega</string>
+    <string name="enter_value_between_range">Sisesta väärtus vahemikust %1$d kuni %2$d</string>
+    <string name="widget_2_1_description">Vaid juhtnupud</string>
+    <string name="widget_4_1_description">Täislaiuses klassikaline vidin</string>
 </resources>
