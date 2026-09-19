@@ -118,7 +118,7 @@
     <string name="look_and_feel">外观和感觉</string>
     <string name="look_and_feel_desc">这些音乐是你的，那为什么不也自定义一下呢？</string>
     <string name="now_playing">播放</string>
-    <string name="now_playing_desc">让它变成你的样子！</string>
+    <string name="now_playing_desc">让它变成你的风格！</string>
     <string name="library">库</string>
     <string name="library_desc">管理你的音乐列表，像DJ一样！</string>
     <string name="show_close_button">在 CuteSearchbar 上显示关闭按钮</string>
@@ -141,8 +141,7 @@
     <string name="album">专辑</string>
     <string name="date_modified">修改时间</string>
     <plurals name="tracks">
-        <item quantity="one">%d 个歌曲</item>
-        <item quantity="other">%d 个歌曲</item>
+        <item quantity="other">歌曲</item>
     </plurals>
     <plurals name="albums_plural">
         <item quantity="one">%d 个专辑</item>
@@ -244,4 +243,27 @@
     <string name="start">靠左</string>
     <string name="center">居中</string>
     <string name="end">靠右</string>
+    <string name="play_next">播放下一首</string>
+    <string name="default_launch_screen">默认启动屏幕</string>
+    <string name="main">主界面</string>
+    <string name="text_alignment">文本居中</string>
+    <string name="music_and_audio_perm"><![CDATA[音乐权限]]></string>
+    <string name="audio_perm_desc">需要这个权限来获取你的音乐队列。</string>
+    <string name="navigation">导航</string>
+    <string name="navigation_desc">你不需要这个的映射！</string>
+    <string name="aod">屏幕常亮</string>
+    <string name="aod_desc">只需要那么一点点对于的电量，对吧？</string>
+    <string name="enter_new_value">输入一个新值</string>
+    <string name="library_setup">曲目设置</string>
+    <string name="allow_perform_changes">请允许程序应用变化！</string>
+    <string name="library_setup_desc"><![CDATA[请选择文件夹并设置最小追踪的音乐时长]]></string>
+    <string name="date">日期</string>
+    <string name="unknown_error">未知错误</string>
+    <string name="no_lyrics_desc">未找到首歌内置的歌词或外部.lrc文件！</string>
+    <string name="shape_morph">形状变换</string>
+    <string name="shape_morph_desc">专辑封面会随音乐是否播放而改变形状</string>
+    <string name="dynamic_duration">动态时长</string>
+    <string name="dynamic_duration_desc">根据播放速度调整曲目时长，以显示实际听歌时间</string>
+    <string name="enter_value_between_range">输入一个在 %1$d 和 %2$d之间的值</string>
+    <string name="widget_4_1_description">经典全宽小组件</string>
 </resources>
