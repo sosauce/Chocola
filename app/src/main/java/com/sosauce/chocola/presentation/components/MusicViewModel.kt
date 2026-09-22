@@ -38,6 +38,7 @@ import com.sosauce.chocola.domain.actions.PlaySource
 import com.sosauce.chocola.domain.actions.PlayerActions
 import com.sosauce.chocola.utils.changeRepeatMode
 import com.sosauce.chocola.utils.copyMutate
+import com.sosauce.chocola.utils.orderAlbumTrackNumber
 import com.sosauce.chocola.utils.pauseWithFadeOut
 import com.sosauce.chocola.utils.playOrPause
 import com.sosauce.chocola.utils.playRandom
@@ -410,7 +411,7 @@ class MusicViewModel(
 
                 val targetTracks = when (val source = action.source) {
                     is PlaySource.All -> currentTracks
-                    is PlaySource.Album -> currentTracks.fastFilter { it.album == source.name }
+                    is PlaySource.Album -> currentTracks.fastFilter { it.album == source.name }.orderAlbumTrackNumber()
                     is PlaySource.Artist -> currentTracks.fastFilter { it.artist == source.name }
                     is PlaySource.ExplicitTracks -> source.tracks
                 }
@@ -564,7 +565,7 @@ class MusicViewModel(
 
                 val targetTracks = when (val source = action.source) {
                     is PlaySource.All -> currentTracks
-                    is PlaySource.Album -> currentTracks.fastFilter { it.album == source.name }
+                    is PlaySource.Album -> currentTracks.fastFilter { it.album == source.name }.orderAlbumTrackNumber()
                     is PlaySource.Artist -> currentTracks.fastFilter { it.artist == source.name }
                     is PlaySource.ExplicitTracks -> source.tracks
                 }
