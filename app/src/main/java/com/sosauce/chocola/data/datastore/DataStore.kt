@@ -30,6 +30,7 @@ import com.sosauce.chocola.data.datastore.PreferencesKeys.HAS_SEEN_TIP
 import com.sosauce.chocola.data.datastore.PreferencesKeys.HIDDEN_FOLDERS
 import com.sosauce.chocola.data.datastore.PreferencesKeys.HIDDEN_TRACKS
 import com.sosauce.chocola.data.datastore.PreferencesKeys.INITIAL_SCREEN
+import com.sosauce.chocola.data.datastore.PreferencesKeys.KEEP_ALIVE
 import com.sosauce.chocola.data.datastore.PreferencesKeys.LYRICS_ALIGNMENT
 import com.sosauce.chocola.data.datastore.PreferencesKeys.LYRICS_FONT_SIZE
 import com.sosauce.chocola.data.datastore.PreferencesKeys.MATCH_CASE_FILTER
@@ -298,6 +299,10 @@ fun rememberDynamicDuration() =
 @Composable
 fun rememberNowPlayingShapeMorph() =
     rememberPreference(key = NOW_PLAYING_SHAPE_MORPH, defaultValue = true)
+
+@Composable
+fun rememberKeepAlive() =
+    rememberPreference(key = KEEP_ALIVE, defaultValue = false)
 
 
 @Composable

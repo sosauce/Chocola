@@ -35,14 +35,22 @@ class AbstractTracksScanner(
     private val safManager: SafManager
 ) {
 
-    /**
-     * Single source of truth to get all filtered tracks
-     */
-    fun latestTracks(hiddenTracks: Boolean = false) = fetchLatestTracks(hiddenTracks).stateIn(
+    private val defaultTracks = fetchLatestTracks(false).stateIn(
         ioCoroutineScope,
         SharingStarted.WhileSubscribed(5000),
         emptyList()
     )
+
+    private val tracksIncludingHidden by lazy {
+        fetchLatestTracks(true).stateIn(
+            ioCoroutineScope,
+            SharingStarted.WhileSubscribed(5000),
+            emptyList()
+        )
+    }
+
+    fun latestTracks(hiddenTracks: Boolean = false) =
+        if (hiddenTracks) tracksIncludingHidden else defaultTracks
 
     private fun fetchLatestTracks(hiddenTracks: Boolean): Flow<List<CuteTrack>> {
         val mediaStoreFlow =

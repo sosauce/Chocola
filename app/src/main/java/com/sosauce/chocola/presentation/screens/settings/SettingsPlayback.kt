@@ -34,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
 import com.sosauce.chocola.data.datastore.rememberEnableEqualizer
+import com.sosauce.chocola.data.datastore.rememberKeepAlive
 import com.sosauce.chocola.data.datastore.rememberPauseOnMute
 import com.sosauce.chocola.data.datastore.rememberSeekButtonsDuration
 import com.sosauce.chocola.presentation.screens.settings.compenents.EqualizerPresetSelector
@@ -50,6 +51,7 @@ fun SettingsPlayback(
 ) {
 
     var pauseOnMute by rememberPauseOnMute()
+    var keepAlive by rememberKeepAlive()
     var seekButtonsDuration by rememberSeekButtonsDuration()
     var enableEqualizer by rememberEnableEqualizer()
 
@@ -69,9 +71,17 @@ fun SettingsPlayback(
                 checked = pauseOnMute,
                 onCheckedChange = { pauseOnMute = !pauseOnMute },
                 topDp = 2.dp,
-                bottomDp = 24.dp,
+                bottomDp = 2.dp,
                 text = stringResource(R.string.pause_on_mute),
                 optionalDescription = R.string.pause_on_mute_desc
+            )
+            SettingsSwitch(
+                checked = keepAlive,
+                onCheckedChange = { keepAlive = !keepAlive },
+                topDp = 2.dp,
+                bottomDp = 24.dp,
+                text = stringResource(R.string.keep_alive),
+                optionalDescription = R.string.keep_alive_desc
             )
         }
 

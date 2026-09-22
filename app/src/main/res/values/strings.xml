@@ -157,6 +157,8 @@
     <string name="audio">Audio</string>
     <string name="pause_on_mute">Pause on mute</string>
     <string name="pause_on_mute_desc">Playback will be paused when the device\'s volume is muted</string>
+    <string name="keep_alive">Keep alive</string>
+    <string name="keep_alive_desc">Keep playing music when the app is removed from recents</string>
     <string name="its_empty_here">It\'s pretty empty here</string>
     <string name="empty_playlist_desc">*Cricket noises*</string>
     <string name="date_modified">Date modified</string>

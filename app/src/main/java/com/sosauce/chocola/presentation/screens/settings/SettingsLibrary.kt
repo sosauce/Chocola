@@ -205,7 +205,7 @@ fun SettingsLibrary(
             ) {
                 CuteListItem(
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .animateItem()
                         .padding(horizontal = 11.dp),
                     onClick = { safAudioPicker.launch(arrayOf("audio/*")) },
                     backgroundColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -269,7 +269,9 @@ fun SettingsLibrary(
         ) { index, track ->
             val isActive = musicState.track == track
             MusicListItem(
-                modifier = Modifier.padding(horizontal = 11.dp),
+                modifier = Modifier
+                    .animateItem()
+                    .padding(horizontal = 11.dp),
                 track = track,
                 backgroundColor = MaterialTheme.colorScheme.surfaceContainer,
                 shape = RoundedCornerShape(

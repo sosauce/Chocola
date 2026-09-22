@@ -1,3 +1,5 @@
+@file:kotlin.OptIn(ExperimentalCoroutinesApi::class)
+
 package com.sosauce.chocola.core
 
 import android.annotation.SuppressLint
@@ -22,6 +24,8 @@ import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.sosauce.chocola.R
+import com.sosauce.chocola.data.datastore.PreferencesKeys.KEEP_ALIVE
+import com.sosauce.chocola.data.datastore.dataStore
 import com.sosauce.chocola.data.widgets.WIDGET_ART
 import com.sosauce.chocola.data.widgets.WIDGET_ARTIST
 import com.sosauce.chocola.data.widgets.WIDGET_IS_PLAYING
@@ -31,6 +35,12 @@ import com.sosauce.chocola.domain.EqualizerManager
 import com.sosauce.chocola.domain.helpers.AndroidAutoHelper
 import com.sosauce.chocola.utils.CUTE_MUSIC_ID
 import com.sosauce.chocola.utils.playOrPause
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -47,6 +57,9 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
         .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
         .setUsage(C.USAGE_MEDIA)
         .build()
+
+    private var keepAliveEnabled = false
+    private var keepAliveJob: Job? = null
 
 
     val listener = object : Player.Listener {
@@ -159,7 +172,6 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
     override fun onCreate() {
         super.onCreate()
         val player: Player = ExoPlayer.Builder(applicationContext)
-            //.enablePerStreamMediaProgression(true)
             .setDeviceVolumeControlEnabled(true)
             .setHandleAudioBecomingNoisy(true)
             .setAudioAttributes(audioAttributes, true)
@@ -186,11 +198,19 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
 
         player.addListener(listener)
 
+        keepAliveJob = lifecycleScope.launch {
+            applicationContext.dataStore.data
+                .mapLatest { it[KEEP_ALIVE] ?: false }
+                .collectLatest { keepAliveEnabled = it }
+        }
+
     }
 
 
     @UnstableApi
     override fun onDestroy() {
+        keepAliveJob?.cancel()
+        keepAliveJob = null
         equalizerManager.releaseDynamicsProcessing()
         mediaLibrarySession?.let {
             it.player.removeListener(listener)
@@ -205,6 +225,11 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
 
     @UnstableApi
     override fun onTaskRemoved(rootIntent: Intent?) {
+        val isPlaying = mediaLibrarySession?.player?.isPlaying == true
+        if (keepAliveEnabled && isPlaying) {
+            super.onTaskRemoved(rootIntent)
+            return
+        }
         equalizerManager.releaseDynamicsProcessing()
         mediaLibrarySession?.let {
             it.player.removeListener(listener)
