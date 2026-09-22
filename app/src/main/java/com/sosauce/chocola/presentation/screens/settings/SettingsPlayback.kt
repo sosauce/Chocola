@@ -61,19 +61,14 @@ fun SettingsPlayback(
                 value = seekButtonsDuration,
                 onValueChange = { seekButtonsDuration = it },
                 topDp = 24.dp,
-                bottomDp = 24.dp,
+                bottomDp = 2.dp,
                 unit = "s",
                 text = stringResource(R.string.seek_buttons_duration)
             )
-        }
-
-        SettingsWithTitle(
-            title = R.string.audio
-        ) {
             SettingsSwitch(
                 checked = pauseOnMute,
                 onCheckedChange = { pauseOnMute = !pauseOnMute },
-                topDp = 24.dp,
+                topDp = 2.dp,
                 bottomDp = 24.dp,
                 text = stringResource(R.string.pause_on_mute),
                 optionalDescription = R.string.pause_on_mute_desc
@@ -83,15 +78,14 @@ fun SettingsPlayback(
         SettingsWithTitle(
             title = R.string.equalizer
         ) {
-
             SettingsSwitch(
                 checked = enableEqualizer,
                 onCheckedChange = {
                     onHandlePlaybackSettingsActions(PlaybackSettingsActions.ToggleEqualizer(!enableEqualizer))
                     enableEqualizer = !enableEqualizer
                 },
-                topDp = 50.dp,
-                bottomDp = 50.dp,
+                topDp = 24.dp,
+                bottomDp = 24.dp,
                 text = stringResource(R.string.enable_equalizer)
             )
             Spacer(Modifier.height(10.dp))
@@ -103,12 +97,12 @@ fun SettingsPlayback(
                         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 2.dp),
+                            .padding(horizontal = 16.dp, vertical = 1.dp),
                         shape = RoundedCornerShape(
                             topStart = 24.dp,
                             topEnd = 24.dp,
-                            bottomStart = 4.dp,
-                            bottomEnd = 4.dp
+                            bottomStart = 2.dp,
+                            bottomEnd = 2.dp
                         )
                     ) {
                         LazyRowWithScrollButton(
@@ -130,10 +124,10 @@ fun SettingsPlayback(
                         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 2.dp),
+                            .padding(horizontal = 16.dp, vertical = 1.dp),
                         shape = RoundedCornerShape(
-                            topStart = 4.dp,
-                            topEnd = 4.dp,
+                            topStart = 2.dp,
+                            topEnd = 2.dp,
                             bottomStart = 24.dp,
                             bottomEnd = 24.dp
                         )

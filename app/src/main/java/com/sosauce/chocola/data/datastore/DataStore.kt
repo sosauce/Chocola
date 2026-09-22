@@ -87,7 +87,6 @@ data object PreferencesKeys {
     val WHITELISTED_FOLDERS = stringSetPreferencesKey("WHITELISTED_FOLDERS")
     val HAS_SEEN_TIP = booleanPreferencesKey("has_seen_tip")
     val SNAP_SPEED_N_PITCH = booleanPreferencesKey("snap_peed_n_pitch")
-    val KILL_SERVICE = booleanPreferencesKey("kill_service")
     val USE_ART_THEME = booleanPreferencesKey("use_art_theme")
     val SHOW_X_BUTTON = booleanPreferencesKey("show_x_button")
     val SHOW_SHUFFLE_BUTTON = booleanPreferencesKey("show_shuffle_button")
@@ -134,6 +133,7 @@ data object PreferencesKeys {
     val DYNAMIC_DURATION = booleanPreferencesKey("DYNAMIC_DURATION")
 
     val NOW_PLAYING_SHAPE_MORPH = booleanPreferencesKey("NOW_PLAYING_SHAPE_MORPH")
+    val KEEP_ALIVE = booleanPreferencesKey("KEEP_ALIVE")
 
 }
 

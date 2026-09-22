@@ -10,6 +10,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSliderState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,6 +28,7 @@ import com.sosauce.chocola.data.datastore.rememberShowAlbumName
 import com.sosauce.chocola.data.datastore.rememberThumbStyle
 import com.sosauce.chocola.data.datastore.rememberTrackStyle
 import com.sosauce.chocola.data.datastore.rememberUseArtAsBackground
+import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsCardHeader
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsSwitch
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsWithTitle
 import com.sosauce.chocola.presentation.screens.settings.compenents.ShapeSelector
@@ -74,127 +76,107 @@ fun SettingsNowPlaying() {
     )
 
     Column {
-        SettingsWithTitle(
-            title = R.string.artwork
+        Card(
+            colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 1.dp),
+            shape = RoundedCornerShape(
+                topStart = 24.dp,
+                topEnd = 24.dp,
+                bottomStart = 2.dp,
+                bottomEnd = 2.dp
+            )
         ) {
-            Card(
-                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 2.dp),
-                shape = RoundedCornerShape(
-                    topStart = 24.dp,
-                    topEnd = 24.dp,
-                    bottomStart = 4.dp,
-                    bottomEnd = 4.dp
+            SettingsCardHeader(R.string.artwork_shape)
+            LazyRowWithScrollButton(
+                items = shapes
+            ) { shape ->
+                ShapeSelector(
+                    onClick = { artworkShape = shape },
+                    shape = shape,
+                    isSelected = artworkShape == shape
                 )
-            ) {
-                LazyRowWithScrollButton(
-                    items = shapes
-                ) { shape ->
-                    ShapeSelector(
-                        onClick = { artworkShape = shape },
-                        shape = shape,
-                        isSelected = artworkShape == shape
-                    )
-                }
-            }
-            SettingsSwitch(
-                checked = useArtBackground,
-                onCheckedChange = { useArtBackground = !useArtBackground },
-                topDp = 4.dp,
-                bottomDp = 4.dp,
-                text = stringResource(R.string.art_as_bg)
-            )
-            SettingsSwitch(
-                checked = shapeMorph,
-                onCheckedChange = { shapeMorph = !shapeMorph },
-                topDp = 4.dp,
-                bottomDp = 4.dp,
-                text = stringResource(R.string.shape_morph),
-                optionalDescription = R.string.shape_morph_desc
-            )
-            SettingsSwitch(
-                checked = useCarousel,
-                onCheckedChange = { useCarousel = !useCarousel },
-                topDp = 4.dp,
-                bottomDp = 24.dp,
-                text = stringResource(R.string.use_carousel)
-            )
-        }
-        SettingsWithTitle(
-            title = R.string.slider
-        ) {
-            Card(
-                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 2.dp),
-                shape = RoundedCornerShape(
-                    topStart = 24.dp,
-                    topEnd = 24.dp,
-                    bottomStart = 4.dp,
-                    bottomEnd = 4.dp
-                )
-            ) {
-                LazyRowWithScrollButton(
-                    items = thumbs
-                ) { thumb ->
-                    SquareSelector(
-                        onClick = { thumbStyle = thumb },
-                        isSelected = thumbStyle == thumb
-                    ) { ThumbStyle.toThumb(thumb, false) }
-                }
-            }
-            Card(
-                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 2.dp),
-                shape = RoundedCornerShape(
-                    topStart = 4.dp,
-                    topEnd = 4.dp,
-                    bottomStart = 24.dp,
-                    bottomEnd = 24.dp
-                )
-            ) {
-                LazyRowWithScrollButton(
-                    items = tracks
-                ) { track ->
-                    SquareSelector(
-                        onClick = { trackStyle = track },
-                        isSelected = trackStyle == track,
-                        width = 100.dp
-                    ) { TrackStyle.toTrack(track, true, rememberSliderState(value = 0.5f)) }
-                }
             }
         }
-
-        SettingsWithTitle(
-            title = R.string.ui
+        Card(
+            colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 1.dp),
+            shape = RoundedCornerShape(2.dp)
         ) {
-            SettingsSwitch(
-                checked = centerTitle,
-                onCheckedChange = { centerTitle = !centerTitle },
-                topDp = 24.dp,
-                bottomDp = 4.dp,
-                text = stringResource(R.string.centered_title)
-            )
-            SettingsSwitch(
-                checked = showAlbumName,
-                onCheckedChange = { showAlbumName = !showAlbumName },
-                topDp = 4.dp,
-                bottomDp = 4.dp,
-                text = stringResource(R.string.show_album_name)
-            )
-            SettingsSwitch(
-                checked = dynamicDuration,
-                onCheckedChange = { dynamicDuration = !dynamicDuration },
-                topDp = 4.dp,
-                bottomDp = 24.dp,
-                text = stringResource(R.string.dynamic_duration),
-                optionalDescription = R.string.dynamic_duration_desc
-            )
+            SettingsCardHeader(R.string.slider_thumb)
+            LazyRowWithScrollButton(
+                items = thumbs
+            ) { thumb ->
+                SquareSelector(
+                    onClick = { thumbStyle = thumb },
+                    isSelected = thumbStyle == thumb
+                ) { ThumbStyle.toThumb(thumb, false) }
+            }
         }
+        Card(
+            colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 1.dp),
+            shape = RoundedCornerShape(2.dp)
+        ) {
+            SettingsCardHeader(R.string.slider_track)
+            LazyRowWithScrollButton(
+                items = tracks
+            ) { track ->
+                SquareSelector(
+                    onClick = { trackStyle = track },
+                    isSelected = trackStyle == track,
+                    width = 100.dp
+                ) { TrackStyle.toTrack(track, true, rememberSliderState(value = 0.5f)) }
+            }
+        }
+        SettingsSwitch(
+            checked = useArtBackground,
+            onCheckedChange = { useArtBackground = !useArtBackground },
+            topDp = 2.dp,
+            bottomDp = 2.dp,
+            text = stringResource(R.string.art_as_bg)
+        )
+        SettingsSwitch(
+            checked = shapeMorph,
+            onCheckedChange = { shapeMorph = !shapeMorph },
+            topDp = 2.dp,
+            bottomDp = 2.dp,
+            text = stringResource(R.string.shape_morph),
+            optionalDescription = R.string.shape_morph_desc
+        )
+        SettingsSwitch(
+            checked = useCarousel,
+            onCheckedChange = { useCarousel = !useCarousel },
+            topDp = 2.dp,
+            bottomDp = 2.dp,
+            text = stringResource(R.string.use_carousel)
+        )
+        SettingsSwitch(
+            checked = centerTitle,
+            onCheckedChange = { centerTitle = !centerTitle },
+            topDp = 2.dp,
+            bottomDp = 2.dp,
+            text = stringResource(R.string.centered_title)
+        )
+        SettingsSwitch(
+            checked = showAlbumName,
+            onCheckedChange = { showAlbumName = !showAlbumName },
+            topDp = 2.dp,
+            bottomDp = 2.dp,
+            text = stringResource(R.string.show_album_name)
+        )
+        SettingsSwitch(
+            checked = dynamicDuration,
+            onCheckedChange = { dynamicDuration = !dynamicDuration },
+            topDp = 2.dp,
+            bottomDp = 24.dp,
+            text = stringResource(R.string.dynamic_duration),
+            optionalDescription = R.string.dynamic_duration_desc
+        )
     }
 }

@@ -25,6 +25,7 @@ import com.sosauce.chocola.data.datastore.rememberShowShuffleButton
 import com.sosauce.chocola.data.datastore.rememberUseArtTheme
 import com.sosauce.chocola.data.datastore.rememberUseSystemFont
 import com.sosauce.chocola.presentation.screens.settings.compenents.PaletteSelector
+import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsCardHeader
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsSelector
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsSwitch
 import com.sosauce.chocola.presentation.screens.settings.compenents.SettingsWithTitle
@@ -107,31 +108,7 @@ fun SettingsLookAndFeel() {
 
     Column {
         SettingsWithTitle(
-            title = R.string.theme
-        ) {
-            Card(
-                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 1.dp),
-                shape = RoundedCornerShape(24.dp)
-            ) {
-                LazyRowWithScrollButton(
-                    items = themeItems
-                ) { theme ->
-                    SettingsSelector(
-                        onClick = theme.onClick,
-                        icon = theme.icon,
-                        text = theme.text,
-                        isSelected = theme.isSelected,
-                        containerColor = theme.backgroundColor,
-                        contentColor = theme.iconColor
-                    )
-                }
-            }
-        }
-        SettingsWithTitle(
-            title = R.string.palette
+            title = R.string.appearance
         ) {
             Card(
                 colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
@@ -145,6 +122,28 @@ fun SettingsLookAndFeel() {
                     bottomEnd = 2.dp
                 )
             ) {
+                SettingsCardHeader(R.string.theme)
+                LazyRowWithScrollButton(
+                    items = themeItems
+                ) { theme ->
+                    SettingsSelector(
+                        onClick = theme.onClick,
+                        icon = theme.icon,
+                        text = theme.text,
+                        isSelected = theme.isSelected,
+                        containerColor = theme.backgroundColor,
+                        contentColor = theme.iconColor
+                    )
+                }
+            }
+            Card(
+                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 1.dp),
+                shape = RoundedCornerShape(2.dp)
+            ) {
+                SettingsCardHeader(R.string.palette)
                 LazyRowWithScrollButton(
                     items = paletteItems
                 ) { palette ->
@@ -155,24 +154,14 @@ fun SettingsLookAndFeel() {
                     )
                 }
             }
-            SettingsSwitch(
-                checked = useMaterialArt,
-                onCheckedChange = { useMaterialArt = !useMaterialArt },
-                topDp = 2.dp,
-                bottomDp = 24.dp,
-                text = stringResource(R.string.use_art)
-            )
-        }
-        SettingsWithTitle(
-            title = R.string.font
-        ) {
             Card(
                 colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 1.dp),
-                shape = RoundedCornerShape(24.dp)
+                shape = RoundedCornerShape(2.dp)
             ) {
+                SettingsCardHeader(R.string.font)
                 LazyRowWithScrollButton(
                     items = fontItems
                 ) { font ->
@@ -184,17 +173,25 @@ fun SettingsLookAndFeel() {
                     )
                 }
             }
-        }
-        SettingsWithTitle(
-            title = R.string.cute_searchbar
-        ) {
+            SettingsSwitch(
+                checked = useMaterialArt,
+                onCheckedChange = { useMaterialArt = !useMaterialArt },
+                topDp = 2.dp,
+                bottomDp = 2.dp,
+                text = stringResource(R.string.use_art)
+            )
             SettingsSwitch(
                 checked = showShuffleButton,
                 onCheckedChange = { showShuffleButton = !showShuffleButton },
-                topDp = 24.dp,
+                topDp = 2.dp,
                 bottomDp = 24.dp,
                 text = stringResource(R.string.show_shuffle_btn)
             )
+        }
+        SettingsWithTitle(
+            title = R.string.now_playing
+        ) {
+            SettingsNowPlaying()
         }
     }
 }

@@ -70,7 +70,21 @@ import com.sosauce.chocola.utils.rememberFocusRequester
 import com.sosauce.chocola.utils.toPaletteStyle
 import com.sosauce.nekobites.components.Spacer
 
-
+@Composable
+fun SettingsCardHeader(
+    text: Int
+) {
+    Text(
+        text = stringResource(text),
+        style = MaterialTheme.typography.bodyMediumEmphasized.copy(
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        ),
+        modifier = Modifier.padding(
+            start = 20.dp,
+            top = 10.dp
+        )
+    )
+}
 @Composable
 fun SettingsSwitch(
     modifier: Modifier = Modifier,
@@ -543,23 +557,19 @@ fun ShapeSelector(
     val borderColor by animateColorAsState(
         targetValue = if (isSelected) MaterialTheme.colorScheme.secondary else Color.Transparent,
     )
-
-    SelectorSurface(
-        onClick = onClick
-    ) {
-        Box(
-            modifier = Modifier
-                .padding(10.dp)
-                .size(50.dp)
-                .clip(ArtworkShape.toShape(shape))
-                .border(
-                    width = 2.dp,
-                    color = borderColor,
-                    shape = ArtworkShape.toShape(shape)
-                )
-                .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-        )
-    }
+    Box(
+        modifier = Modifier
+            .padding(15.dp)
+            .size(50.dp)
+            .clip(ArtworkShape.toShape(shape))
+            .border(
+                width = 2.dp,
+                color = borderColor,
+                shape = ArtworkShape.toShape(shape)
+            )
+            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+            .clickable(onClick = onClick)
+    )
 }
 
 @Composable
