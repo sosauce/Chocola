@@ -46,6 +46,12 @@ fun SettingsNavigation() {
             icon = R.drawable.artists_filled,
             text = R.string.artists,
             isSelected = initialScreen == Screen.Artists.toString()
+        ),
+        ScreenItem(
+            onClick = { initialScreen = Screen.Playlists.toString() },
+            icon = R.drawable.playlist,
+            text = R.string.playlists,
+            isSelected = initialScreen == Screen.Playlists.toString()
         )
     )
 

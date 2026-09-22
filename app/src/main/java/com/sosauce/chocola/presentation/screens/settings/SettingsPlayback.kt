@@ -189,11 +189,8 @@ private fun EqualizerBandSlider(
 
     val sliderState = rememberSliderState(
         value = gain,
-        valueRange = -15f..15f
-    ).apply {
-        onValueChangeFinished = { onBandGainChanged(frequency, value) }
-
-    }
+        trackRange = -15f..15f
+    )
 
 
     Column(
@@ -211,6 +208,7 @@ private fun EqualizerBandSlider(
             modifier = Modifier.height(300.dp),
             topToBottom = false,
             state = sliderState,
+            onValueChangeFinished = { onBandGainChanged(frequency, sliderState.value) },
             thumb = { state ->
                 val rotation by animateFloatAsState(
                     targetValue = state.value * 360,

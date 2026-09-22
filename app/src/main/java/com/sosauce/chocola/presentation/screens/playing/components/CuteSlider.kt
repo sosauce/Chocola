@@ -66,26 +66,8 @@ fun CuteSlider(
 
     val sliderState = rememberSliderState(
         value = currentPosition,
-        valueRange = 0f..musicState.duration.toFloat(),
-        onValueChangeFinished = {
-            tempSliderValue?.let { finalValue ->
-                val seekPos = finalValue.toLong()
-                onHandlePlayerActions(PlayerActions.UpdateCurrentPosition(seekPos))
-                onHandlePlayerActions(PlayerActions.SeekToSlider(seekPos))
-            }
-            tempSliderValue = null
-            lastHapticSecond = -1L
-        }
-    ).apply {
-        onValueChange = { newValue ->
-            tempSliderValue = newValue
-            val currentSecond = (newValue / 1000).toLong()
-            if (currentSecond != lastHapticSecond) {
-                lastHapticSecond = currentSecond
-                haptics.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
-            }
-        }
-    }
+        trackRange = 0f..musicState.duration.toFloat()
+    )
 
     LaunchedEffect(animatedPosition) {
         sliderState.value = animatedPosition
@@ -156,6 +138,23 @@ fun CuteSlider(
 
         Slider(
             state = sliderState,
+            onValueChange = { newValue ->
+                tempSliderValue = newValue
+                val currentSecond = (newValue / 1000).toLong()
+                if (currentSecond != lastHapticSecond) {
+                    lastHapticSecond = currentSecond
+                    haptics.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
+                }
+            },
+            onValueChangeFinished = {
+                tempSliderValue?.let { finalValue ->
+                    val seekPos = finalValue.toLong()
+                    onHandlePlayerActions(PlayerActions.UpdateCurrentPosition(seekPos))
+                    onHandlePlayerActions(PlayerActions.SeekToSlider(seekPos))
+                }
+                tempSliderValue = null
+                lastHapticSecond = -1L
+            },
             thumb = {
                 when (thumbStyle) {
                     ThumbStyle.STRAIGHT -> StraightThumb(it.isDragging)

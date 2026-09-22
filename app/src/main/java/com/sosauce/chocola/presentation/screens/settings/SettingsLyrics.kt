@@ -33,13 +33,6 @@ fun SettingsLyrics() {
     var lyricsAlignment by rememberLyricsAlignment()
     var lyricsFontSize by rememberLyricsFontSize()
     var artLyrics by rememberArtLyrics()
-
-    val lyricsAlignmentOptions = listOf(
-        LyricsAlignment.START,
-        LyricsAlignment.CENTERED,
-        LyricsAlignment.END
-    )
-
     val alignmentItems = listOf(
         AlignmentItem(
             onClick = { lyricsAlignment = LyricsAlignment.START },
@@ -71,12 +64,12 @@ fun SettingsLyrics() {
                 colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 2.dp),
+                    .padding(horizontal = 16.dp, vertical = 1.dp),
                 shape = RoundedCornerShape(
                     topStart = 24.dp,
                     topEnd = 24.dp,
-                    bottomEnd = 4.dp,
-                    bottomStart = 4.dp
+                    bottomEnd = 2.dp,
+                    bottomStart = 2.dp
                 )
             ) {
                 Column {
@@ -97,15 +90,15 @@ fun SettingsLyrics() {
                 value = lyricsFontSize,
                 minValue = 20,
                 maxValue = 30,
-                topDp = 4.dp,
-                bottomDp = 4.dp,
+                topDp = 2.dp,
+                bottomDp = 2.dp,
                 text = R.string.font_size,
                 onNewValue = { lyricsFontSize = it }
             )
             SettingsSwitch(
                 checked = artLyrics,
                 onCheckedChange = { artLyrics = !artLyrics },
-                topDp = 4.dp,
+                topDp = 2.dp,
                 bottomDp = 24.dp,
                 text = stringResource(R.string.art_lyrics),
                 optionalDescription = R.string.art_lyrics_desc

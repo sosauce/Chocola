@@ -34,7 +34,8 @@ class SafManager(
         return context.contentResolver.openFileDescriptor(uri, "r")?.use { fd ->
             val metadata = TagLib.getMetadata(fd.dup().detachFd())
 
-            val title = metadata?.propertyMap?.get("TITLE")?.getOrNull(0) ?: "<unknown>"
+            println("uri: $uri")
+            val title = metadata?.propertyMap?.get("TITLE")?.getOrNull(0)  ?: "<unknown>"
             val artist = metadata?.propertyMap?.get("ARTIST")?.joinToString(", ") ?: "<unknown>"
             val album = metadata?.propertyMap?.get("ALBUM")?.getOrNull(0) ?: "<unknown>"
             val artUri =

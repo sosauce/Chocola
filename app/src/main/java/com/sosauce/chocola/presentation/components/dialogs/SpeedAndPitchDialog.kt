@@ -151,9 +151,8 @@ private fun RateSliderCard(
     val animatedValue by animateFloatAsState(value)
     val sliderState = rememberSliderState(
         value = animatedValue,
-        valueRange = 0.5f..3.0f,
+        trackRange = 0.5f..3.0f,
     )
-    sliderState.onValueChange = { onValueChange(it) }
 
     LaunchedEffect(animatedValue) {
         sliderState.value = animatedValue
@@ -179,7 +178,10 @@ private fun RateSliderCard(
                 }
                 Text(text = "%.2f".format(animatedValue))
             }
-            WavySlider(state = sliderState)
+            WavySlider(
+                state = sliderState,
+                onValueChange = onValueChange
+            )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween

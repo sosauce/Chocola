@@ -13,7 +13,7 @@ class AndroidAutoHelper(
         limit: Int,
         offset: Int
     ): List<MediaItem> {
-        val allTracks = abstractTracksScanner.latestTracks.value
+        val allTracks = abstractTracksScanner.latestTracks().value
 
         return if (limit > 0 && offset >= 0) {
             allTracks

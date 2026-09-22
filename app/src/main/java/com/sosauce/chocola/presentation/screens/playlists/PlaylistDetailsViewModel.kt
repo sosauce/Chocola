@@ -38,7 +38,7 @@ class PlaylistDetailsViewModel(
 
     val state = combine(
         dao.getPlaylistDetails(id),
-        abstractTracksScanner.latestTracks,
+        abstractTracksScanner.latestTracks(),
         userPreferences.searchSettings(),
         searchQuery
     ) { playlist, tracks, settings, query ->

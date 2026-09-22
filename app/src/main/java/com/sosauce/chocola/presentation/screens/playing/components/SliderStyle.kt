@@ -60,10 +60,14 @@ fun ClassicThumb(isDragging: Boolean) {
 
 @Composable
 fun WavySlider(
-    state: SliderState
+    state: SliderState,
+    onValueChange: ((Float) -> Unit),
+    onValueChangeFinished: (() -> Unit)? = null,
 ) {
     Slider(
         state = state,
+        onValueChange = onValueChange,
+        onValueChangeFinished = onValueChangeFinished,
         thumb = { StraightThumb(it.isDragging) },
         track = { WavyTrack(true, state) }
     )
@@ -88,9 +92,9 @@ fun WavyTrack(
     LinearWavyProgressIndicator(
         modifier = Modifier.fillMaxWidth(),
         progress = {
-            val rangeLength = sliderState.valueRange.endInclusive - sliderState.valueRange.start
+            val rangeLength = sliderState.trackRange.endInclusive - sliderState.trackRange.start
             if (rangeLength > 0f) {
-                (sliderState.value - sliderState.valueRange.start) / rangeLength
+                (sliderState.value - sliderState.trackRange.start) / rangeLength
             } else 0f
         },
         stopSize = 0.dp,

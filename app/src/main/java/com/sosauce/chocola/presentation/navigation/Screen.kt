@@ -66,6 +66,7 @@ sealed class Screen : NavKey {
                 Main.toString() -> Main
                 Albums.toString() -> Albums
                 Artists.toString() -> Artists
+                Playlists.toString() -> Playlists
                 else -> Main
             }
         }

@@ -36,7 +36,7 @@ class AlbumsViewModel(
     private val ids = idRepository.getAllAlbumIds()
 
     val state = combine(
-        abstractTracksScanner.latestTracks,
+        abstractTracksScanner.latestTracks(),
         userPreferences.getAlbumsSort,
         userPreferences.getRegexFilter,
         userPreferences.getMatchCaseFilter,

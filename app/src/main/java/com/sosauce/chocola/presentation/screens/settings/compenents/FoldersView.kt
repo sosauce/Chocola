@@ -82,8 +82,8 @@ fun LazyListScope.foldersView(
     ) { index, folder ->
         FolderItem(
             folder = folder.path,
-            topDp = if (index == 0) 24.dp else 4.dp,
-            bottomDp = if (index == blacklisted.lastIndex) 24.dp else 4.dp,
+            topDp = if (index == 0) 24.dp else 2.dp,
+            bottomDp = if (index == blacklisted.lastIndex) 24.dp else 2.dp,
             actionButton = {
                 IconButton(
                     onClick = { onSingleEdit(folder.path) }

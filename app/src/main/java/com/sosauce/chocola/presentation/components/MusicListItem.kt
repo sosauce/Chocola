@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Badge
 import androidx.compose.material3.DropdownMenuGroup
 import androidx.compose.material3.DropdownMenuItem
@@ -42,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -72,6 +74,8 @@ import sv.lib.squircleshape.SquircleShape
 fun MusicListItem(
     modifier: Modifier = Modifier,
     track: CuteTrack,
+    shape: Shape = RoundedCornerShape(24.dp),
+    backgroundColor: Color = Color.Transparent,
     onShortClick: () -> Unit,
     onLongClick: (() -> Unit)? = null,
     isSelected: Boolean = false,
@@ -85,7 +89,7 @@ fun MusicListItem(
     )
 
     val background by animateColorAsState(
-        targetValue = if (isActive) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f) else Color.Transparent
+        targetValue = if (isActive) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f) else backgroundColor
     )
 
     CuteListItem(
@@ -95,6 +99,7 @@ fun MusicListItem(
                 scaleY = scale
             },
         onClick = onShortClick,
+        shape = shape,
         onLongClick = onLongClick,
         backgroundColor = background,
         leadingContent = {
@@ -105,7 +110,7 @@ fun MusicListItem(
                     modifier = Modifier
                         .size(50.dp)
                         .clip(SquircleShape(smoothing = CornerSmoothing.Full))
-                        .background(MaterialTheme.colorScheme.surfaceContainer),
+                        .background(MaterialTheme.colorScheme.surfaceContainerHigh),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(

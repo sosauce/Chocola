@@ -84,7 +84,7 @@ fun SettingsSwitch(
     Card(
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
         modifier = modifier
-            .padding(horizontal = 16.dp, vertical = 2.dp),
+            .padding(horizontal = 16.dp, vertical = 1.dp),
         shape = RoundedCornerShape(
             topStart = topDp,
             topEnd = topDp,
@@ -139,7 +139,7 @@ fun ClickableSettingsCard(
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 2.dp),
+            .padding(horizontal = 16.dp, vertical = 1.dp),
         shape = RoundedCornerShape(
             topStart = topDp,
             topEnd = topDp,
@@ -258,7 +258,7 @@ fun SettingsInput(
     Card(
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
         modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 2.dp),
+            .padding(horizontal = 16.dp, vertical = 1.dp),
         shape = RoundedCornerShape(
             topStart = topDp,
             topEnd = topDp,
@@ -322,9 +322,8 @@ fun SliderSettingsCards(
     val animatedValue by animateIntAsState(value)
     val sliderState = rememberSliderState(
         value = value.toFloat(),
-        valueRange = valueRange,
+        trackRange = valueRange,
     )
-    sliderState.onValueChange = { onValueChange(it.toInt()) }
 
     LaunchedEffect(animatedValue) {
         sliderState.value = animatedValue.toFloat()
@@ -333,7 +332,7 @@ fun SliderSettingsCards(
     Card(
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
         modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 2.dp),
+            .padding(horizontal = 16.dp, vertical = 1.dp),
         shape = RoundedCornerShape(
             topStart = topDp,
             topEnd = topDp,
@@ -362,7 +361,10 @@ fun SliderSettingsCards(
                     }
                 )
             }
-            WavySlider(state = sliderState)
+            WavySlider(
+                state = sliderState,
+                onValueChange = { onValueChange(it.toInt()) }
+            )
             optionalDescription?.let {
                 Text(
                     text = stringResource(it),

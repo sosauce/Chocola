@@ -171,8 +171,8 @@ fun SettingsScreen(
                                 icon = item.icon,
                                 name = item.name,
                                 description = item.description,
-                                topDp = if (index == 0) 24.dp else 4.dp,
-                                bottomDp = if (index == items.lastIndex) 24.dp else 4.dp,
+                                topDp = if (index == 0) 24.dp else 2.dp,
+                                bottomDp = if (index == items.lastIndex) 24.dp else 2.dp,
                                 onNavigate = item.onNavigate
                             )
                         }

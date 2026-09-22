@@ -38,13 +38,13 @@ class AbstractTracksScanner(
     /**
      * Single source of truth to get all filtered tracks
      */
-    val latestTracks = fetchLatestTracks().stateIn(
+    fun latestTracks(hiddenTracks: Boolean = false) = fetchLatestTracks(hiddenTracks).stateIn(
         ioCoroutineScope,
         SharingStarted.WhileSubscribed(5000),
         emptyList()
     )
 
-    private fun fetchLatestTracks(): Flow<List<CuteTrack>> {
+    private fun fetchLatestTracks(hiddenTracks: Boolean): Flow<List<CuteTrack>> {
         val mediaStoreFlow =
             context.contentResolver.observe(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI)
         val minTrackDurationFlow = userPreferences.getMinTrackDuration()
@@ -71,7 +71,11 @@ class AbstractTracksScanner(
                 val isNotHidden = !hidden.contains(track.mediaId)
                 val isWhitelisted = whitelistedFolders.contains(track.folder)
 
-                isNotHidden && isWhitelisted
+                if (hiddenTracks) {
+                    isWhitelisted
+                } else {
+                    isNotHidden && isWhitelisted
+                }
             } + saf
         }.flowOn(Dispatchers.IO)
     }

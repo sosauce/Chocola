@@ -34,7 +34,7 @@ class SettingsLibraryViewModel(
     )
 
     val hiddenTracks = combine(
-        abstractTracksScanner.latestTracks,
+        abstractTracksScanner.latestTracks(true),
         userPreferences.getHiddenTracks()
     ) { tracks, hidden ->
         tracks.fastFilter { track ->

@@ -31,7 +31,7 @@ class MainViewModel(
     private val searchQuery = snapshotFlow { textFieldState.text }.debounce(250.milliseconds)
 
     val state = combine(
-        abstractTracksScanner.latestTracks,
+        abstractTracksScanner.latestTracks(),
         userPreferences.searchSettings(),
         searchQuery,
     ) { tracks, searchSettings, query ->

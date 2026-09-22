@@ -113,7 +113,7 @@ fun SettingsLookAndFeel() {
                 colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 2.dp),
+                    .padding(horizontal = 16.dp, vertical = 1.dp),
                 shape = RoundedCornerShape(24.dp)
             ) {
                 LazyRowWithScrollButton(
@@ -137,12 +137,12 @@ fun SettingsLookAndFeel() {
                 colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 2.dp),
+                    .padding(horizontal = 16.dp, vertical = 1.dp),
                 shape = RoundedCornerShape(
                     topStart = 24.dp,
                     topEnd = 24.dp,
-                    bottomStart = 4.dp,
-                    bottomEnd = 4.dp
+                    bottomStart = 2.dp,
+                    bottomEnd = 2.dp
                 )
             ) {
                 LazyRowWithScrollButton(
@@ -158,7 +158,7 @@ fun SettingsLookAndFeel() {
             SettingsSwitch(
                 checked = useMaterialArt,
                 onCheckedChange = { useMaterialArt = !useMaterialArt },
-                topDp = 4.dp,
+                topDp = 2.dp,
                 bottomDp = 24.dp,
                 text = stringResource(R.string.use_art)
             )
@@ -170,7 +170,7 @@ fun SettingsLookAndFeel() {
                 colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 2.dp),
+                    .padding(horizontal = 16.dp, vertical = 1.dp),
                 shape = RoundedCornerShape(24.dp)
             ) {
                 LazyRowWithScrollButton(

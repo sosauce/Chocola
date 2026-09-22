@@ -30,7 +30,7 @@ class ArtistsViewModel(
 
 
     val state = combine(
-        abstractTracksScanner.latestTracks,
+        abstractTracksScanner.latestTracks(),
         userPreferences.getArtistsSort,
         userPreferences.getRegexFilter,
         userPreferences.getMatchCaseFilter,

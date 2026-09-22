@@ -64,7 +64,7 @@ class MusicViewModel(
     private val _musicState = MutableStateFlow(MusicState())
     val musicState = _musicState.asStateFlow()
 
-    private val tracks = abstractTracksScanner.latestTracks
+    private val tracks = abstractTracksScanner.latestTracks()
 
     var artworkImageBitmap by mutableStateOf<ImageBitmap?>(null)
         private set

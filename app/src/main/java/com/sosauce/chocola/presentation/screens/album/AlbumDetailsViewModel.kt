@@ -36,7 +36,7 @@ class AlbumDetailsViewModel(
 
 
     val state = combine(
-        abstractTracksScanner.latestTracks,
+        abstractTracksScanner.latestTracks(),
         userPreferences.searchSettings(),
         searchQuery
     ) { tracks, settings, query ->
