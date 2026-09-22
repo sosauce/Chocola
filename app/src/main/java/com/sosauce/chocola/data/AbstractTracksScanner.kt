@@ -14,6 +14,7 @@ import com.sosauce.chocola.data.repositories.SafManager
 import com.sosauce.chocola.utils.TrackSort
 import com.sosauce.chocola.utils.combine
 import com.sosauce.chocola.utils.observe
+import com.sosauce.chocola.utils.orderAlbumTrackNumber
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -75,7 +76,7 @@ class AbstractTracksScanner(
                 minTrackDuration = minTrackDuration
             )
 
-            rawTracks.fastFilter { track ->
+            val filtered = (rawTracks + saf).fastFilter { track ->
                 val isNotHidden = !hidden.contains(track.mediaId)
                 val isWhitelisted = whitelistedFolders.contains(track.folder)
 
@@ -84,7 +85,8 @@ class AbstractTracksScanner(
                 } else {
                     isNotHidden && isWhitelisted
                 }
-            } + saf
+            }
+            if (tracksSettings.sort == TrackSort.ALBUM) filtered.orderAlbumTrackNumber() else filtered
         }.flowOn(Dispatchers.IO)
     }
 
