@@ -111,7 +111,6 @@ fun SharedTransitionScope.AlbumDetailsScreen(
                 ) {
                     AlbumHeader(
                         album = state.album,
-                        tracks = state.album.tracks,
                         onHandlePlayerActions = onHandlePlayerActions
                     )
                     if (state.album.tracks.isNotEmpty()) {
@@ -119,7 +118,6 @@ fun SharedTransitionScope.AlbumDetailsScreen(
                     }
                 }
 
-                // Don't check "is searching" considering if we're in an album's details it means it needs to have at least 1 track
                 if (state.album.tracks.isEmpty()) {
                     item(
                         key = "empty"

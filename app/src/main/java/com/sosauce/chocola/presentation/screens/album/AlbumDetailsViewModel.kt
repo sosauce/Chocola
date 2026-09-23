@@ -40,20 +40,19 @@ class AlbumDetailsViewModel(
         userPreferences.searchSettings(),
         searchQuery
     ) { tracks, settings, query ->
-        val searched = tracks
+        val filtered = tracks
             .fastFilter { it.album == albumName }
-            .search(query.toString(), settings)
             .orderAlbumTrackNumber()
 
 
-        val lastTrack = tracks.lastOrNull()
+        val lastTrack = filtered.lastOrNull()
         val artist = lastTrack?.artist ?: ""
 
         val album = Album(
             id = idRepositories.getAlbumId(albumName),
             name = albumName,
             artist = artist,
-            tracks = searched
+            tracks = filtered.search(query.toString(), settings)
         )
 
         AlbumDetailsState(

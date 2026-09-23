@@ -41,7 +41,6 @@ import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 @Composable
 fun SharedTransitionScope.AlbumHeader(
     album: Album,
-    tracks: List<CuteTrack>,
     onHandlePlayerActions: (PlayerActions) -> Unit
 ) {
 
