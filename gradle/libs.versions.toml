@@ -39,6 +39,7 @@ material3 = "1.5.0-alpha28"
 nav3Core = "1.1.7"
 lifecycleViewmodelNav3 = "2.11.0"
 foundation = "1.12.1"
+junit = "4.13.2"
 
 
 
@@ -87,6 +88,7 @@ androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runt
 androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "nav3Core" }
 androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleViewmodelNav3" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
+junit = { module = "junit:junit", version.ref = "junit" }
 
 
 

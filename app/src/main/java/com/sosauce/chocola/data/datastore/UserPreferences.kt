@@ -38,7 +38,7 @@ class UserPreferences(
 
     val getTrackSort = context.dataStore.data.map {
         val sort = it[TRACK_SORT] ?: 0
-        TrackSort.entries[sort]
+        TrackSort.entries.getOrNull(sort) ?: TrackSort.TITLE
     }
 
     val getArtistsSort = context.dataStore.data.map {

@@ -167,24 +167,25 @@ class AbstractTracksScanner(
         return musics
     }
 
-    private fun tracksSettingsToMediaStore(tracksSettings: TracksSettings): String {
-        val data = when (tracksSettings.sort) {
+    private fun tracksSettingsToMediaStore(tracksSettings: TracksSettings): String? {
+        val column = when (tracksSettings.sort) {
             TrackSort.TITLE -> MediaStore.Audio.Media.TITLE
             TrackSort.ALBUM -> MediaStore.Audio.Media.ALBUM
             TrackSort.ARTIST -> MediaStore.Audio.Media.ARTIST
             TrackSort.YEAR -> MediaStore.Audio.Media.YEAR
             TrackSort.DATE_MODIFIED -> MediaStore.Audio.Media.DATE_MODIFIED
-            TrackSort.AS_ADDED -> ""
+            TrackSort.AS_ADDED -> return null
         }
+        if (column.isBlank()) return null
 
         val noCase = when (tracksSettings.sort) {
             TrackSort.YEAR, TrackSort.DATE_MODIFIED -> ""
             else -> "COLLATE NOCASE"
         }
 
-        val asc = if (tracksSettings.ascending) "ASC" else "DESC"
+        val direction = if (tracksSettings.ascending) "ASC" else "DESC"
 
-        return "$data $noCase $asc"
+        return "$column $noCase $direction"
     }
 
     fun forceScanDevice() {
