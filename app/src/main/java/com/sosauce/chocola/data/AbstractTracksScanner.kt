@@ -14,6 +14,7 @@ import com.sosauce.chocola.data.repositories.SafManager
 import com.sosauce.chocola.utils.TrackSort
 import com.sosauce.chocola.utils.combine
 import com.sosauce.chocola.utils.observe
+import com.sosauce.chocola.utils.orderAlbumTrackNumber
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,14 +36,22 @@ class AbstractTracksScanner(
     private val safManager: SafManager
 ) {
 
-    /**
-     * Single source of truth to get all filtered tracks
-     */
-    fun latestTracks(hiddenTracks: Boolean = false) = fetchLatestTracks(hiddenTracks).stateIn(
+    private val defaultTracks = fetchLatestTracks(false).stateIn(
         ioCoroutineScope,
         SharingStarted.WhileSubscribed(5000),
         emptyList()
     )
+
+    private val tracksIncludingHidden by lazy {
+        fetchLatestTracks(true).stateIn(
+            ioCoroutineScope,
+            SharingStarted.WhileSubscribed(5000),
+            emptyList()
+        )
+    }
+
+    fun latestTracks(hiddenTracks: Boolean = false) =
+        if (hiddenTracks) tracksIncludingHidden else defaultTracks
 
     private fun fetchLatestTracks(hiddenTracks: Boolean): Flow<List<CuteTrack>> {
         val mediaStoreFlow =
@@ -67,7 +76,7 @@ class AbstractTracksScanner(
                 minTrackDuration = minTrackDuration
             )
 
-            rawTracks.fastFilter { track ->
+            val filtered = (rawTracks + saf).fastFilter { track ->
                 val isNotHidden = !hidden.contains(track.mediaId)
                 val isWhitelisted = whitelistedFolders.contains(track.folder)
 
@@ -76,7 +85,8 @@ class AbstractTracksScanner(
                 } else {
                     isNotHidden && isWhitelisted
                 }
-            } + saf
+            }
+            if (tracksSettings.sort == TrackSort.ALBUM) filtered.orderAlbumTrackNumber() else filtered
         }.flowOn(Dispatchers.IO)
     }
 

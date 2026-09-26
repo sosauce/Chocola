@@ -196,7 +196,7 @@ class MusicViewModel(
                 super.onPositionDiscontinuity(oldPosition, newPosition, reason)
                 _musicState.update {
                     it.copy(
-                        position = newPosition.positionMs.coerceAtLeast(0)
+                        position = newPosition.positionMs
                     )
                 }
             }
@@ -206,7 +206,7 @@ class MusicViewModel(
                 super.onEvents(player, events)
                 _musicState.update {
                     it.copy(
-                        duration = player.duration
+                        duration = sanitizeDuration(player.duration, it.duration)
                     )
                 }
 
@@ -309,6 +309,11 @@ class MusicViewModel(
             val savedMusicState = userPreferences.getSavedMusicState()
 
             mediaController?.run {
+                if (mediaItemCount > 0 || currentMediaItem != null) {
+                    syncFromLiveController(this)
+                    return@launch
+                }
+
                 repeatMode = savedMusicState.repeatMode
                 shuffleModeEnabled = savedMusicState.shuffle
                 mediaController!!.playbackParameters =
@@ -334,6 +339,42 @@ class MusicViewModel(
                     }
                 }
             }
+        }
+    }
+
+
+
+    private fun sanitizeDuration(rawDuration: Long, previousDuration: Long): Long =
+        if (rawDuration == C.TIME_UNSET || rawDuration < 0) previousDuration else rawDuration
+
+    /**
+     * Restores playback from service if it was already running
+     */
+    private fun syncFromLiveController(controller: MediaController) {
+        val liveTrack = controller.currentMediaItem?.mediaId?.let { mediaId ->
+            tracks.value.fastFirstOrNull { it.mediaId == mediaId }
+        }
+        liveTrack?.let { track ->
+            _musicState.update { it.copy(track = track) }
+        }
+        updateLoadedMedias(controller.currentTimeline)
+
+        _musicState.update {
+            it.copy(
+                isPlaying = controller.isPlaying,
+                position = controller.currentPosition.coerceAtLeast(0),
+                duration = sanitizeDuration(controller.duration, it.duration),
+                shuffle = controller.shuffleModeEnabled,
+                repeatMode = controller.repeatMode,
+                speed = controller.playbackParameters.speed,
+                pitch = controller.playbackParameters.pitch,
+                isPlayerReady = controller.playbackState != Player.STATE_IDLE
+            )
+        }
+
+        liveTrack?.let { track ->
+            loadNewArt(track.artUri)
+            parseLyrics(track.path)
         }
     }
 
@@ -411,7 +452,7 @@ class MusicViewModel(
 
                 val targetTracks = when (val source = action.source) {
                     is PlaySource.All -> currentTracks
-                    is PlaySource.Album -> currentTracks.fastFilter { it.album == source.name }.orderAlbumTrackNumber()
+                    is PlaySource.Album -> currentTracks.fastFilter { it.album == source.name }
                     is PlaySource.Artist -> currentTracks.fastFilter { it.artist == source.name }
                     is PlaySource.ExplicitTracks -> source.tracks
                 }
@@ -565,7 +606,7 @@ class MusicViewModel(
 
                 val targetTracks = when (val source = action.source) {
                     is PlaySource.All -> currentTracks
-                    is PlaySource.Album -> currentTracks.fastFilter { it.album == source.name }.orderAlbumTrackNumber()
+                    is PlaySource.Album -> currentTracks.fastFilter { it.album == source.name }
                     is PlaySource.Artist -> currentTracks.fastFilter { it.artist == source.name }
                     is PlaySource.ExplicitTracks -> source.tracks
                 }

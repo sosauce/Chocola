@@ -64,7 +64,13 @@ class QuickPlayViewModel(
             super.onEvents(player, events)
 
             _musicState.update {
-                it.copy(duration = player.duration)
+                // Same transient-unavailable guard as the main player: Media3
+                // reports C.TIME_UNSET while preparing/seeking, which must
+                // never reach the slider UI.
+                val duration =
+                    if (player.duration == C.TIME_UNSET || player.duration < 0) it.duration
+                    else player.duration
+                it.copy(duration = duration)
             }
             viewModelScope.launch {
                 while (player.isPlaying) {

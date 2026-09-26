@@ -70,12 +70,6 @@ fun SettingsScreen(
             onNavigate = { backstack.navigate(SettingsScreens.LookAndFeel) }
         ),
         Item(
-            icon = R.drawable.music_note,
-            name = stringResource(R.string.now_playing),
-            description = stringResource(R.string.now_playing_desc),
-            onNavigate = { backstack.navigate(SettingsScreens.NowPlaying) }
-        ),
-        Item(
             icon = R.drawable.navigation,
             name = stringResource(R.string.navigation),
             description = stringResource(R.string.navigation_desc),
@@ -122,7 +116,7 @@ fun SettingsScreen(
                     .navigationBarsPadding()
                     .selfAlignHorizontally(Alignment.Start),
                 icon = R.drawable.back,
-                containerColor = MaterialTheme.colorScheme.surfaceContainer
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
             )
         }
     ) { paddingValues ->

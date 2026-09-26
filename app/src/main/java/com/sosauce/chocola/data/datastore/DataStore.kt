@@ -30,6 +30,7 @@ import com.sosauce.chocola.data.datastore.PreferencesKeys.HAS_SEEN_TIP
 import com.sosauce.chocola.data.datastore.PreferencesKeys.HIDDEN_FOLDERS
 import com.sosauce.chocola.data.datastore.PreferencesKeys.HIDDEN_TRACKS
 import com.sosauce.chocola.data.datastore.PreferencesKeys.INITIAL_SCREEN
+import com.sosauce.chocola.data.datastore.PreferencesKeys.KEEP_ALIVE
 import com.sosauce.chocola.data.datastore.PreferencesKeys.LYRICS_ALIGNMENT
 import com.sosauce.chocola.data.datastore.PreferencesKeys.LYRICS_FONT_SIZE
 import com.sosauce.chocola.data.datastore.PreferencesKeys.MATCH_CASE_FILTER
@@ -87,7 +88,6 @@ data object PreferencesKeys {
     val WHITELISTED_FOLDERS = stringSetPreferencesKey("WHITELISTED_FOLDERS")
     val HAS_SEEN_TIP = booleanPreferencesKey("has_seen_tip")
     val SNAP_SPEED_N_PITCH = booleanPreferencesKey("snap_peed_n_pitch")
-    val KILL_SERVICE = booleanPreferencesKey("kill_service")
     val USE_ART_THEME = booleanPreferencesKey("use_art_theme")
     val SHOW_X_BUTTON = booleanPreferencesKey("show_x_button")
     val SHOW_SHUFFLE_BUTTON = booleanPreferencesKey("show_shuffle_button")
@@ -134,6 +134,7 @@ data object PreferencesKeys {
     val DYNAMIC_DURATION = booleanPreferencesKey("DYNAMIC_DURATION")
 
     val NOW_PLAYING_SHAPE_MORPH = booleanPreferencesKey("NOW_PLAYING_SHAPE_MORPH")
+    val KEEP_ALIVE = booleanPreferencesKey("KEEP_ALIVE")
 
 }
 
@@ -298,6 +299,10 @@ fun rememberDynamicDuration() =
 @Composable
 fun rememberNowPlayingShapeMorph() =
     rememberPreference(key = NOW_PLAYING_SHAPE_MORPH, defaultValue = true)
+
+@Composable
+fun rememberKeepAlive() =
+    rememberPreference(key = KEEP_ALIVE, defaultValue = false)
 
 
 @Composable
