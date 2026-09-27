@@ -179,8 +179,8 @@
     <string name="load">Laadi</string>
     <string name="not_a_lyric_file">See pole laulusõnade fail!</string>
     <plurals name="tracks_plural">
-        <item quantity="one">Lood</item>
-        <item quantity="other">Lood</item>
+        <item quantity="one">%d lugu</item>
+        <item quantity="other">%d lugu</item>
     </plurals>
     <plurals name="albums_plural">
         <item quantity="one">%d album</item>
@@ -272,4 +272,11 @@
     <string name="enter_value_between_range">Sisesta väärtus vahemikust %1$d kuni %2$d</string>
     <string name="widget_2_1_description">Vaid juhtnupud</string>
     <string name="widget_4_1_description">Täislaiuses klassikaline vidin</string>
+    <string name="tracks">Lood</string>
+    <string name="appearance">Välimus</string>
+    <string name="artwork_shape">Kaanepildi kuju</string>
+    <string name="keep_alive">Jäta rakendus tööle</string>
+    <string name="keep_alive_desc">Rakenduse eemaldamisel hiljutiste rakenduste seast jätka muusika esitamist</string>
+    <string name="slider_thumb">Liuguri pöial</string>
+    <string name="slider_track">Liuguri lugu</string>
 </resources>
