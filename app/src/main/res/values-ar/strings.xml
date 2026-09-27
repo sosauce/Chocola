@@ -77,7 +77,7 @@
     <string name="artist">فنان</string>
     <string name="shuffle">ترتيب عشوائي</string>
     <string name="no_result_found">لا يوجد نتائج!</string>
-    <string name="better_luck_next_time">حظ اوفر المره القادمه!</string>
+    <string name="better_luck_next_time">حظ أوفر في المرة القادمة !</string>
     <string name="no_playlist_desc">سيكون من الرائع لو أنشأت واحداً</string>
     <string name="no_album_desc">لا بأس بإن كنت تحب الأغاني المنفردة</string>
     <string name="no_artist_desc">انا متأكد انك تغني بطريقه افضل علي اي حال</string>
