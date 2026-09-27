@@ -286,4 +286,9 @@
     <string name="aod">Always-on display</string>
     <string name="keep_alive">Utrzymuj działanie aplikacji</string>
     <string name="keep_alive_desc">Kontynuuj odtwarzanie muzyki po zamknięciu aplikacji z ekranu ostatnich zadań</string>
+    <string name="tracks">Utwory</string>
+    <string name="appearance">Wygląd</string>
+    <string name="artwork_shape">Kształt okładki</string>
+    <string name="slider_thumb">Kursor suwaka</string>
+    <string name="slider_track">Pasek suwaka</string>
 </resources>
