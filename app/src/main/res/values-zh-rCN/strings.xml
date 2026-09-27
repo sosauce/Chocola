@@ -3,7 +3,7 @@
     <string name="theme">主题</string>
     <string name="settings">设置</string>
     <string name="dark_mode">深色</string>
-    <string name="amoled_mode">amoled_modus</string>
+    <string name="amoled_mode">Amoled</string>
     <string name="version">版本</string>
     <string name="support">帮助与支持</string>
     <string name="update">检查更新</string>
@@ -141,11 +141,10 @@
     <string name="album">专辑</string>
     <string name="date_modified">修改时间</string>
     <plurals name="tracks_plural">
-        <item quantity="other">歌曲</item>
+        <item quantity="other">%d 首歌曲</item>
     </plurals>
     <plurals name="albums_plural">
-        <item quantity="one">%d 个专辑</item>
-        <item quantity="other">%d 个专辑</item>
+        <item quantity="other">%d 张专辑</item>
     </plurals>
     <string name="permission_granted">权限已授予，请继续……</string>
     <string name="next_step">下一步</string>
@@ -266,4 +265,12 @@
     <string name="dynamic_duration_desc">根据播放速度调整曲目时长，以显示实际听歌时间</string>
     <string name="enter_value_between_range">输入一个在 %1$d 和 %2$d之间的值</string>
     <string name="widget_4_1_description">经典全宽小组件</string>
+    <string name="tracks">歌曲</string>
+    <string name="keep_alive">保持活跃</string>
+    <string name="keep_alive_desc">从最近应用删除本应用后继续播放音乐</string>
+    <string name="widget_2_1_description">仅控制</string>
+    <string name="appearance">外观</string>
+    <string name="artwork_shape">封面图形状</string>
+    <string name="slider_thumb">滑块拇指</string>
+    <string name="slider_track">滑块轨迹</string>
 </resources>
