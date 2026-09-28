@@ -252,7 +252,7 @@
     <string name="navigation_desc">没那么复杂，不需要一张地图！</string>
     <string name="aod">屏幕常亮</string>
     <string name="aod_desc">就为了多出那么一点点的电量，对吧？</string>
-    <string name="enter_new_value">输入一个新值</string>
+    <string name="enter_new_value">输入新值</string>
     <string name="library_setup">音乐库设置</string>
     <string name="allow_perform_changes">请允许程序应用变化！</string>
     <string name="library_setup_desc"><![CDATA[选择要扫描的文件夹并设置歌曲最短持续时间]]></string>
@@ -263,7 +263,7 @@
     <string name="shape_morph_desc">专辑封面会随音乐是否播放而改变形状</string>
     <string name="dynamic_duration">动态时长</string>
     <string name="dynamic_duration_desc">根据播放速度调整曲目时长，以显示实际听歌时间</string>
-    <string name="enter_value_between_range">输入一个在 %1$d 和 %2$d之间的值</string>
+    <string name="enter_value_between_range">输入 %1$d 和 %2$d 之间的值</string>
     <string name="widget_4_1_description">经典全宽小组件</string>
     <string name="tracks">歌曲</string>
     <string name="keep_alive">保持活跃</string>
