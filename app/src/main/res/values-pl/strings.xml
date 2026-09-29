@@ -132,7 +132,7 @@
     <string name="slider">Suwak</string>
     <string name="thumbless_slider">Suwak bez uchwytu</string>
     <string name="art_as_bg">Okładka jako tło</string>
-    <string name="default_text">Domyślne</string>
+    <string name="default_text">Domyślny</string>
     <string name="font">Czcionka</string>
     <string name="show_back_button">Pokaż przycisk Wstecz</string>
     <string name="album">Album</string>
