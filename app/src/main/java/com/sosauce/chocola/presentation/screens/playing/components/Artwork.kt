@@ -44,8 +44,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.skydoves.cloudy.cloudy
@@ -68,6 +70,7 @@ import kotlinx.coroutines.flow.map
 
 @Composable
 fun Artwork(
+    modifier: Modifier = Modifier,
     musicState: MusicState,
     onHandlePlayerActions: (PlayerActions) -> Unit,
 ) {
@@ -94,9 +97,23 @@ fun Artwork(
     } else ArtworkShape.toShape(artworkShape)
 
     Box(
-        modifier = Modifier
-            .fillMaxWidth(if (isLandscape) 0.4f else 1f)
-            .aspectRatio(1f)
+        modifier = if (isLandscape) {
+            modifier
+                .fillMaxWidth(0.4f)
+                .aspectRatio(1f)
+        } else {
+            modifier
+                // Shrink to fit
+                .layout { measurable, constraints ->
+                    val side = minOf(
+                        constraints.maxWidth,
+                        if (constraints.hasBoundedHeight) constraints.maxHeight
+                        else constraints.maxWidth
+                    ).coerceAtLeast(0)
+                    val placeable = measurable.measure(Constraints.fixed(side, side))
+                    layout(side, side) { placeable.place(0, 0) }
+                }
+        }
             .clickable(
                 enabled = artLyrics,
                 indication = null,
