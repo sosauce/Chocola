@@ -11,7 +11,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconButton
@@ -96,7 +96,7 @@ fun ActionButtonsRow(
                     interactionSource = interactionSources[0],
                     modifier = Modifier
                         .weight(1f)
-                        .size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
+                        .height(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide).height)
                         .animateWidth(interactionSource = interactionSources[0])
                 ) {
                     Icon(
@@ -120,7 +120,7 @@ fun ActionButtonsRow(
                     interactionSource = interactionSources[1],
                     modifier = Modifier
                         .weight(1f)
-                        .size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
+                        .height(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide).height)
                         .animateWidth(interactionSource = interactionSources[1])
                 ) {
                     Icon(
@@ -144,7 +144,7 @@ fun ActionButtonsRow(
                     interactionSource = interactionSources[2],
                     modifier = Modifier
                         .weight(1.5f)
-                        .size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
+                        .height(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide).height)
                         .animateWidth(interactionSource = interactionSources[2])
                 ) {
                     AnimatedDrawable(
@@ -168,7 +168,7 @@ fun ActionButtonsRow(
                     interactionSource = interactionSources[3],
                     modifier = Modifier
                         .weight(1f)
-                        .size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
+                        .height(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide).height)
                         .animateWidth(interactionSource = interactionSources[3])
                 ) {
                     Icon(
@@ -192,7 +192,7 @@ fun ActionButtonsRow(
                     interactionSource = interactionSources[4],
                     modifier = Modifier
                         .weight(1f)
-                        .size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
+                        .height(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide).height)
                         .animateWidth(interactionSource = interactionSources[4])
                 ) {
                     Icon(
