@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -51,8 +52,13 @@ fun <T> rememberPreference(
 @Composable
 fun rememberIsLandscape(): Boolean {
     val config = LocalConfiguration.current
+    val containerSize = LocalWindowInfo.current.containerSize
 
-    return remember(config.orientation) {
+    // In split-screen or niche devices the window can be whatever
+    // Don't make assumptions, this is Android
+    return if (containerSize.width > 0 && containerSize.height > 0) {
+        containerSize.width > containerSize.height * 1.15f
+    } else {
         config.orientation == Configuration.ORIENTATION_LANDSCAPE
     }
 }

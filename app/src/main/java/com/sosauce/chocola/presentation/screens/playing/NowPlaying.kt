@@ -198,6 +198,9 @@ private fun NowPlayingContent(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Artwork(
+                // Lets the artwork shrink to a square that fits the leftover height in short windows
+                // (e.g. split-screen), instead of overflowing.
+                modifier = Modifier.weight(1f, fill = false),
                 musicState = musicState,
                 onHandlePlayerActions = onHandlePlayerActions
             )
