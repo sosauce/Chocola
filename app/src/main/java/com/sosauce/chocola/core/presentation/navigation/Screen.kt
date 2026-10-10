@@ -1,6 +1,7 @@
 package com.sosauce.chocola.core.presentation.navigation
 
 import androidx.navigation3.runtime.NavKey
+import com.sosauce.chocola.feature.settings.presentation.components.SettingsScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -9,7 +10,9 @@ sealed class Screen : NavKey {
     data object Main : Screen()
 
     @Serializable
-    data object Settings : Screen()
+    data class Settings(
+        val initialScreen: SettingsScreen? = null
+    ) : Screen()
 
     @Serializable
     data object Albums : Screen()

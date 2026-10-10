@@ -734,7 +734,7 @@ object CuteSearchbarDefaults {
                                         }
                                     }
                                     IconButton(
-                                        onClick = { onNavigate(Screen.Settings) },
+                                        onClick = { onNavigate(Screen.Settings()) },
                                         shapes = IconButtonDefaults.shapes()
                                     ) {
                                         Icon(

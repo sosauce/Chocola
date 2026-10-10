@@ -136,8 +136,9 @@ fun Nav(
                         )
                     }
 
-                    entry<Screen.Settings> {
+                    entry<Screen.Settings> { key ->
                         SettingsScreen(
+                            initialScreen = key.initialScreen,
                             onNavigateUp = backStack::navigateBack,
                             musicState = musicState,
                             onNavigate = backStack::navigate,

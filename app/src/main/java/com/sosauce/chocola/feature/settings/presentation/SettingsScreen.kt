@@ -22,7 +22,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.retain.RetainedEffect
@@ -50,7 +49,7 @@ import com.sosauce.chocola.app.navigation.navigateBack
 import com.sosauce.chocola.feature.playing.presentation.aod.AlwaysOnDisplay
 import com.sosauce.chocola.feature.settings.presentation.components.AboutCard
 import com.sosauce.chocola.feature.settings.presentation.components.SettingsCategoryCard
-import com.sosauce.chocola.feature.settings.presentation.components.SettingsScreens
+import com.sosauce.chocola.feature.settings.presentation.components.SettingsScreen
 import com.sosauce.chocola.core.presentation.util.selfAlignHorizontally
 import com.sosauce.nekobites.animations.AnimatedFab
 import com.sosauce.nekobites.helpers.ObserveAsEvents
@@ -61,6 +60,7 @@ import kotlin.uuid.Uuid
 
 @Composable
 fun SettingsScreen(
+    initialScreen: SettingsScreen?,
     onNavigateUp: () -> Unit,
     musicState: MusicState,
     onHandlePlayerActions: (PlayerActions) -> Unit,
@@ -69,7 +69,7 @@ fun SettingsScreen(
     val context = LocalContext.current
     val resources = LocalResources.current
     val scrollState = rememberScrollState()
-    val backstack = rememberNavBackStack(SettingsScreens.Settings)
+    val backstack = rememberNavBackStack(initialScreen ?: SettingsScreen.Settings)
     var showBackButton by retain { mutableStateOf(true) }
 
     val items = listOf(
@@ -77,37 +77,37 @@ fun SettingsScreen(
             icon = R.drawable.palette,
             name = stringResource(R.string.look_and_feel),
             description = stringResource(R.string.look_and_feel_desc),
-            onNavigate = { backstack.navigate(SettingsScreens.LookAndFeel) }
+            onNavigate = { backstack.navigate(SettingsScreen.LookAndFeel) }
         ),
         Item(
             icon = R.drawable.navigation,
             name = stringResource(R.string.navigation),
             description = stringResource(R.string.navigation_desc),
-            onNavigate = { backstack.navigate(SettingsScreens.Navigation) }
+            onNavigate = { backstack.navigate(SettingsScreen.Navigation) }
         ),
         Item(
             icon = R.drawable.brightness_medium,
             name = stringResource(R.string.aod),
             description = stringResource(R.string.aod_desc),
-            onNavigate = { backstack.navigate(SettingsScreens.AlwaysOnDisplay) }
+            onNavigate = { backstack.navigate(SettingsScreen.AlwaysOnDisplay) }
         ),
         Item(
             icon = R.drawable.lyrics_rounded,
             name = stringResource(R.string.lyrics),
             description = stringResource(R.string.lyrics_settings_desc),
-            onNavigate = { backstack.navigate(SettingsScreens.Lyrics) }
+            onNavigate = { backstack.navigate(SettingsScreen.Lyrics) }
         ),
         Item(
             icon = R.drawable.headphones,
             name = stringResource(R.string.playback_controls),
             description = stringResource(R.string.playback_controls_desc),
-            onNavigate = { backstack.navigate(SettingsScreens.Playback) }
+            onNavigate = { backstack.navigate(SettingsScreen.Playback) }
         ),
         Item(
             icon = R.drawable.library,
             name = stringResource(R.string.library),
             description = stringResource(R.string.library_desc),
-            onNavigate = { backstack.navigate(SettingsScreens.Library) }
+            onNavigate = { backstack.navigate(SettingsScreen.Library) }
         )
     )
 
@@ -168,7 +168,7 @@ fun SettingsScreen(
                 rememberViewModelStoreNavEntryDecorator()
             ),
             entryProvider = entryProvider {
-                entry<SettingsScreens.Settings> {
+                entry<SettingsScreen.Settings> {
                     Column(
                         modifier = Modifier
                             .verticalScroll(scrollState)
@@ -189,7 +189,7 @@ fun SettingsScreen(
                     }
                 }
 
-                entry<SettingsScreens.LookAndFeel> {
+                entry<SettingsScreen.LookAndFeel> {
                     Column(
                         modifier = Modifier
                             .verticalScroll(scrollState)
@@ -199,7 +199,7 @@ fun SettingsScreen(
                     }
                 }
 
-                entry<SettingsScreens.Navigation> {
+                entry<SettingsScreen.Navigation> {
                     Column(
                         modifier = Modifier
                             .verticalScroll(scrollState)
@@ -209,7 +209,7 @@ fun SettingsScreen(
                     }
                 }
 
-                entry<SettingsScreens.NowPlaying> {
+                entry<SettingsScreen.NowPlaying> {
                     Column(
                         modifier = Modifier
                             .verticalScroll(scrollState)
@@ -219,7 +219,7 @@ fun SettingsScreen(
                     }
                 }
 
-                entry<SettingsScreens.Lyrics> {
+                entry<SettingsScreen.Lyrics> {
                     Column(
                         modifier = Modifier
                             .verticalScroll(scrollState)
@@ -229,7 +229,7 @@ fun SettingsScreen(
                     }
                 }
 
-                entry<SettingsScreens.Playback> {
+                entry<SettingsScreen.Playback> {
                     val viewModel = koinViewModel<PlaybackSettingsViewModel>()
                     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -244,7 +244,7 @@ fun SettingsScreen(
                         )
                     }
                 }
-                entry<SettingsScreens.AlwaysOnDisplay> {
+                entry<SettingsScreen.AlwaysOnDisplay> {
                     var showAod by retain { mutableStateOf(false) }
 
                     RetainedEffect(showAod) {
@@ -276,9 +276,7 @@ fun SettingsScreen(
 
                 }
 
-                entry<SettingsScreens.Library> {
-
-
+                entry<SettingsScreen.Library> {
                     val viewModel = koinViewModel<SettingsLibraryViewModel>()
                     val safTracks by viewModel.safTracks.collectAsStateWithLifecycle()
                     val hiddenTracks by viewModel.hiddenTracks.collectAsStateWithLifecycle()

@@ -163,23 +163,6 @@ fun SettingsPlayback(
                                 }
                             )
                         }
-//                        Row(
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .horizontalScroll(rememberScrollState())
-//                                .padding(10.dp),
-//                            horizontalArrangement = Arrangement.SpaceBetween
-//                        ) {
-//                            state.eqBands.fastForEach { (frequency, gain) ->
-//                                EqualizerBandSlider(
-//                                    frequency = frequency,
-//                                    gain = gain,
-//                                    onBandGainChanged = { freq, gain ->
-//                                        onHandlePlaybackSettingsActions(PlaybackSettingsActions.SetBandGain(freq, gain))
-//                                    }
-//                                )
-//                            }
-//                        }
                     }
                 }
             }
