@@ -5,6 +5,8 @@ package com.sosauce.chocola.core.presentation.preferences
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.ALBUM_SORT
+import com.sosauce.chocola.core.data.datastore.PreferencesKeys.AOD_ENABLE_GESTURES
+import com.sosauce.chocola.core.data.datastore.PreferencesKeys.AOD_SHOW_CONTROLS
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.ARTIST_SORT
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.ARTWORK_SHAPE
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.ART_AS_BACKGROUND
@@ -229,6 +231,13 @@ fun rememberKeepAlive() =
 fun rememberInitialScreen() =
     rememberPreference(key = INITIAL_SCREEN, defaultValue = Screen.Main.toString())
 
+@Composable
+fun rememberAodEnableGestures() =
+    rememberPreference(key = AOD_ENABLE_GESTURES, defaultValue = true)
+
+@Composable
+fun rememberAodShowControls() =
+    rememberPreference(key = AOD_SHOW_CONTROLS, defaultValue = true)
 @Composable
 fun rememberInitialScreenBlocking(): Screen {
     val context = LocalContext.current

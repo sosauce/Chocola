@@ -257,6 +257,10 @@
     <string name="artwork_shape">Artwork shape</string>
     <string name="slider_thumb">Slider thumb</string>
     <string name="slider_track">Slider track</string>
+    <string name="start_aod">Start always-on display</string>
+    <string name="enable_gestures">Enable gestures</string>
+    <string name="enable_gestures_desc">If disabled, you can still exit the screen by double tapping it.</string>
+    <string name="show_controls">Show controls</string>
 
 
     <plurals name="tracks_plural">

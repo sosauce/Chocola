@@ -6,7 +6,7 @@ import androidx.compose.foundation.text.input.TextFieldBuffer
 object NumbersOnlyTransformation : InputTransformation {
     override fun TextFieldBuffer.transformInput() {
 
-        if (!asCharSequence().isEmpty()) {
+        if (asCharSequence().isNotEmpty()) {
             val input = asCharSequence().toString().toIntOrNull()
             if (input == null) {
                 revertAllChanges()

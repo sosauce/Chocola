@@ -3,11 +3,14 @@
 package com.sosauce.chocola.feature.settings.presentation
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -19,7 +22,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.retain.RetainedEffect
+import androidx.compose.runtime.retain.retain
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -62,6 +70,8 @@ fun SettingsScreen(
     val resources = LocalResources.current
     val scrollState = rememberScrollState()
     val backstack = rememberNavBackStack(SettingsScreens.Settings)
+    var showBackButton by retain { mutableStateOf(true) }
+
     val items = listOf(
         Item(
             icon = R.drawable.palette,
@@ -103,21 +113,27 @@ fun SettingsScreen(
 
     Scaffold(
         bottomBar = {
-            AnimatedFab(
-                onClick = {
-                    if (backstack.size == 1) {
-                        onNavigateUp()
-                    } else {
-                        backstack.navigateBack()
-                    }
-                },
-                modifier = Modifier
-                    .padding(start = 15.dp)
-                    .navigationBarsPadding()
-                    .selfAlignHorizontally(Alignment.Start),
-                icon = R.drawable.back,
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-            )
+            AnimatedVisibility(
+                visible = showBackButton,
+                enter = slideInVertically { it },
+                exit = slideOutVertically { it }
+            ) {
+                AnimatedFab(
+                    onClick = {
+                        if (backstack.size == 1) {
+                            onNavigateUp()
+                        } else {
+                            backstack.navigateBack()
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(start = 15.dp)
+                        .navigationBarsPadding()
+                        .selfAlignHorizontally(Alignment.Start),
+                    icon = R.drawable.back,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                )
+            }
         }
     ) { paddingValues ->
         NavDisplay(
@@ -229,13 +245,35 @@ fun SettingsScreen(
                     }
                 }
                 entry<SettingsScreens.AlwaysOnDisplay> {
-                    AlwaysOnDisplay(
-                        title = musicState.track.title,
-                        artist = musicState.track.artist,
-                        isPlaying = musicState.isPlaying,
-                        onHandlePlayerActions = onHandlePlayerActions,
-                        onExitAod = backstack::navigateBack
-                    )
+                    var showAod by retain { mutableStateOf(false) }
+
+                    RetainedEffect(showAod) {
+                        showBackButton = !showAod
+                        onRetire { showBackButton = true }
+                    }
+
+                    if (showAod) {
+                        AlwaysOnDisplay(
+                            title = musicState.track.title,
+                            artist = musicState.track.artist,
+                            isPlaying = musicState.isPlaying,
+                            onHandlePlayerActions = onHandlePlayerActions,
+                            onExitAod = { showAod = false }
+                        )
+                    } else {
+                        Column(
+                            modifier = Modifier
+                                .verticalScroll(scrollState)
+                                .padding(paddingValues)
+                        ) {
+                            AodSettings(
+                                onToggleAod = { toggle ->
+                                    showAod = toggle
+                                }
+                            )
+                        }
+                    }
+
                 }
 
                 entry<SettingsScreens.Library> {

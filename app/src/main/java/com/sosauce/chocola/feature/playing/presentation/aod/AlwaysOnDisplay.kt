@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,6 +33,8 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.sosauce.chocola.R
 import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.core.designsystem.components.PlayPauseButton
+import com.sosauce.chocola.core.presentation.preferences.rememberAodEnableGestures
+import com.sosauce.chocola.core.presentation.preferences.rememberAodShowControls
 import com.sosauce.nekobites.components.Spacer
 
 @Composable
@@ -45,6 +48,8 @@ fun AlwaysOnDisplay(
     val view = LocalView.current
     val activity = LocalActivity.current!!
     val window = activity.window
+    val showControls by rememberAodShowControls()
+    val enableGestures by rememberAodEnableGestures()
 
     DisposableEffect(window) {
         window?.run {
@@ -94,7 +99,9 @@ fun AlwaysOnDisplay(
         }
     }
 
-    BackHandler(true) { /* do nothing to prevent accidental swipe backs */ }
+    if (!enableGestures) {
+        BackHandler(true) { /* do nothing to prevent accidental swipe backs */ }
+    }
 
     CompositionLocalProvider(
         LocalContentColor provides Color.White
@@ -105,6 +112,7 @@ fun AlwaysOnDisplay(
                 .background(Color.Black)
                 .combinedClickable(
                     onClick = {},
+                    enabled = !enableGestures,
                     indication = null,
                     interactionSource = null,
                     onDoubleClick = onExitAod
@@ -128,32 +136,34 @@ fun AlwaysOnDisplay(
                     textAlign = TextAlign.Center
                 )
             )
-
-            Spacer(15.dp)
-            Row {
-                IconButton(
-                    onClick = { onHandlePlayerActions(PlayerActions.SeekToPreviousMusic) },
-                    shapes = IconButtonDefaults.shapes()
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.skip_previous),
-                        contentDescription = null
+            if (showControls) {
+                Spacer(15.dp)
+                Row {
+                    IconButton(
+                        onClick = { onHandlePlayerActions(PlayerActions.SeekToPreviousMusic) },
+                        shapes = IconButtonDefaults.shapes()
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.skip_previous),
+                            contentDescription = null
+                        )
+                    }
+                    PlayPauseButton(
+                        isPlaying = isPlaying,
+                        onHandlePlayerActions = onHandlePlayerActions
                     )
-                }
-                PlayPauseButton(
-                    isPlaying = isPlaying,
-                    onHandlePlayerActions = onHandlePlayerActions
-                )
-                IconButton(
-                    onClick = { onHandlePlayerActions(PlayerActions.SeekToNextMusic) },
-                    shapes = IconButtonDefaults.shapes()
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.skip_next),
-                        contentDescription = null
-                    )
+                    IconButton(
+                        onClick = { onHandlePlayerActions(PlayerActions.SeekToNextMusic) },
+                        shapes = IconButtonDefaults.shapes()
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.skip_next),
+                            contentDescription = null
+                        )
+                    }
                 }
             }
+
         }
     }
 }

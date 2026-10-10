@@ -78,6 +78,8 @@ data object PreferencesKeys {
 
     val NOW_PLAYING_SHAPE_MORPH = booleanPreferencesKey("NOW_PLAYING_SHAPE_MORPH")
     val KEEP_ALIVE = booleanPreferencesKey("KEEP_ALIVE")
+    val AOD_ENABLE_GESTURES = booleanPreferencesKey("AOD_ENABLE_GESTURES")
+    val AOD_SHOW_CONTROLS = booleanPreferencesKey("AOD_SHOW_CONTROLS")
 
 }
 
