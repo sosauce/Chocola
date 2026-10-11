@@ -291,4 +291,8 @@
     <string name="artwork_shape">Kształt okładki</string>
     <string name="slider_thumb">Kursor suwaka</string>
     <string name="slider_track">Pasek suwaka</string>
+    <string name="start_aod">Uruchom ekran zawsze włączony</string>
+    <string name="enable_gestures">Włącz gesty</string>
+    <string name="enable_gestures_desc">Jeśli ta opcja jest wyłączona, nadal możesz wyjść z ekranu, stukając go dwukrotnie.</string>
+    <string name="show_controls">Pokaż elementy sterujące</string>
 </resources>
