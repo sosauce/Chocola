@@ -279,4 +279,8 @@
     <string name="keep_alive_desc">Rakenduse eemaldamisel hiljutiste rakenduste seast jätka muusika esitamist</string>
     <string name="slider_thumb">Liuguri pöial</string>
     <string name="slider_track">Liuguri lugu</string>
+    <string name="show_controls">Näita juhtnuppe</string>
+    <string name="enable_gestures_desc">Väljalülitatamisel, saad ekraanilt ikkagi väljuda, klõpsates sellele kaks korda.</string>
+    <string name="enable_gestures">Luba viiped</string>
+    <string name="start_aod">Käivita alati sisselülitatud ekraan</string>
 </resources>
