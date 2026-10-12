@@ -295,4 +295,11 @@
     <string name="enable_gestures">Włącz gesty</string>
     <string name="enable_gestures_desc">Jeśli ta opcja jest wyłączona, nadal możesz wyjść z ekranu, stukając go dwukrotnie.</string>
     <string name="show_controls">Pokaż elementy sterujące</string>
+    <string name="backup_and_restore"><![CDATA[Kopia zapasowa i przywracanie]]></string>
+    <string name="export_settings">Ustawienia eksportu</string>
+    <string name="backup_and_restore_desc">Kopia zapasowa i przywracanie – czego oczekujesz?</string>
+    <string name="import_settings">Ustawienia importu</string>
+    <string name="import_settings_desc">Importuj ustawienia aplikacji z pliku JSON.</string>
+    <string name="export_settings_desc">Wyeksportuj ustawienia aplikacji do pliku JSON.</string>
+    <string name="importing_in_progress">Importowanie – to nie powinno potrwać zbyt długo…</string>
 </resources>
