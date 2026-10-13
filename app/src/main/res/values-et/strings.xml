@@ -283,4 +283,11 @@
     <string name="enable_gestures_desc">Väljalülitatamisel, saad ekraanilt ikkagi väljuda, klõpsates sellele kaks korda.</string>
     <string name="enable_gestures">Luba viiped</string>
     <string name="start_aod">Käivita alati sisselülitatud ekraan</string>
+    <string name="backup_and_restore"><![CDATA[Varundus ja taastamine]]></string>
+    <string name="export_settings">Ekspordi seadistused</string>
+    <string name="backup_and_restore_desc">Varundus ja taastamine, mida muud siis eeldasid?</string>
+    <string name="import_settings">Impordi seadistused</string>
+    <string name="import_settings_desc">Impordi rakenduse seadistused JSON-failist.</string>
+    <string name="export_settings_desc">Ekspordi rakenduse seadistused JSON-faili.</string>
+    <string name="importing_in_progress">Impordin, selleks ei peaks kuluma palju aega…</string>
 </resources>
