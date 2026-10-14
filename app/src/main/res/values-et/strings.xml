@@ -290,4 +290,6 @@
     <string name="import_settings_desc">Impordi rakenduse seadistused JSON-failist.</string>
     <string name="export_settings_desc">Ekspordi rakenduse seadistused JSON-faili.</string>
     <string name="importing_in_progress">Impordin, selleks ei peaks kuluma palju aega…</string>
+    <string name="scanning_folders_notice">Otsin hoolega muusikakaustu…</string>
+    <string name="cancel_timer">Katkesta taimeri töö</string>
 </resources>
