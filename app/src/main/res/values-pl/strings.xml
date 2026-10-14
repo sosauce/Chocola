@@ -302,4 +302,6 @@
     <string name="import_settings_desc">Importuj ustawienia aplikacji z pliku JSON.</string>
     <string name="export_settings_desc">Wyeksportuj ustawienia aplikacji do pliku JSON.</string>
     <string name="importing_in_progress">Importowanie – to nie powinno potrwać zbyt długo…</string>
+    <string name="scanning_folders_notice">Dogłębne i intensywne skanowanie w poszukiwaniu folderów z muzyką…</string>
+    <string name="cancel_timer">Anuluj minutnik</string>
 </resources>
