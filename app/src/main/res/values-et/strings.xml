@@ -292,4 +292,10 @@
     <string name="importing_in_progress">Impordin, selleks ei peaks kuluma palju aega…</string>
     <string name="scanning_folders_notice">Otsin hoolega muusikakaustu…</string>
     <string name="cancel_timer">Katkesta taimeri töö</string>
+    <string name="auto_whitelist_sub">Luba automaatselt kasutada alamkaustu</string>
+    <string name="auto_whitelist_sub_desc">Koos põhikasutaga luba automaatselt kasutada alamkaustu</string>
+    <string name="new_folder_policy">Uute kaustade reegel</string>
+    <string name="blacklist">Keela</string>
+    <string name="whitelist">Luba</string>
+    <string name="select_new_value">Vali uus väärtus</string>
 </resources>
