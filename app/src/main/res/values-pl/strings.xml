@@ -304,4 +304,10 @@
     <string name="importing_in_progress">Importowanie – to nie powinno potrwać zbyt długo…</string>
     <string name="scanning_folders_notice">Dogłębne i intensywne skanowanie w poszukiwaniu folderów z muzyką…</string>
     <string name="cancel_timer">Anuluj minutnik</string>
+    <string name="auto_whitelist_sub">Automatycznie dodawaj podfoldery do białej listy</string>
+    <string name="auto_whitelist_sub_desc">Automatycznie dodawaj do białej listy podfoldery katalogów z białej listy</string>
+    <string name="new_folder_policy">Zasady dotyczące nowych folderów</string>
+    <string name="blacklist">Czarna lista</string>
+    <string name="whitelist">Biała lista</string>
+    <string name="select_new_value">Wybierz nową wartość</string>
 </resources>
