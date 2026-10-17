@@ -4,7 +4,7 @@
     <string name="settings">Paramètres</string>
     <string name="dark_mode">Sombre</string>
     <string name="light_mode">Clair</string>
-    <string name="amoled_mode">mode_amoled</string>
+    <string name="amoled_mode">Amoled</string>
     <string name="version">Version</string>
     <string name="support">Assistance</string>
     <string name="update">Vérifier les mises à jour</string>
@@ -124,7 +124,7 @@
     <string name="screen_selection">Sélection de l\’écran</string>
     <string name="emoji">Emoji</string>
     <string name="remove_emoji">Supprimer l\’emoji</string>
-    <string name="look_and_feel">Aspect et convivialité</string>
+    <string name="look_and_feel">Aspect &amp; convivialité</string>
     <string name="look_and_feel_desc">La musique, c\'est vous qui la choisissez, alors pourquoi pas le style aussi ?</string>
     <string name="now_playing">Lecture en cours</string>
     <string name="now_playing_desc">Personnalisez-le !</string>
@@ -136,7 +136,7 @@
     <string name="slider">Curseur</string>
     <string name="thumbless_slider">Curseur sans pouce</string>
     <string name="art_as_bg">Pochette en arrière-plan</string>
-    <string name="default_text">Défaut</string>
+    <string name="default_text">Par défaut</string>
     <string name="font">Police d\'écriture</string>
     <string name="cute_searchbar">CuteSearchbar</string>
     <string name="show_back_button">Afficher le bouton « Retour »</string>
@@ -181,9 +181,9 @@
     <string name="already_in_queue">Déjà dans la file d\’attente</string>
     <string name="already_in_playlist">Ce titre est déjà dans la playlist.</string>
     <plurals name="tracks_plural">
-        <item quantity="one">Titre</item>
-        <item quantity="many">Titres</item>
-        <item quantity="other">Titres</item>
+        <item quantity="one">%d titre</item>
+        <item quantity="many">%d titres</item>
+        <item quantity="other">%d titres</item>
     </plurals>
     <plurals name="albums_plural">
         <item quantity="one">%d album</item>
@@ -278,4 +278,11 @@
     <string name="enter_value_between_range">Entrez une valeur comprise entre %1$d et %2$d</string>
     <string name="widget_2_1_description">Commandes uniquement</string>
     <string name="widget_4_1_description">Widget classique pleine largeur</string>
+    <string name="keep_alive">Maintenir en vie</string>
+    <string name="keep_alive_desc">Continuer la lecture de la musique lorsque l\'application est supprimée de la liste des applications récentes</string>
+    <string name="tracks">Titres</string>
+    <string name="appearance">Apparence</string>
+    <string name="artwork_shape">Forme de l\'illustration</string>
+    <string name="slider_thumb">Pouce curseur</string>
+    <string name="slider_track">Piste de glissement</string>
 </resources>

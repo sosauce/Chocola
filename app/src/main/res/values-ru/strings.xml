@@ -178,7 +178,7 @@
         <item quantity="many">%d песен</item>
         <item quantity="other">%d песен</item>
     </plurals>
-    <string name="albums">Альбомы</string>
+    <string name="albums">Альбом</string>
     <string name="permission_granted">Разрешение получено, можно продолжать…</string>
     <string name="next_step">Следующий шаг</string>
     <string name="no_music_tip">Совет: Не забудьте про папки, которые вы хотите сканировать в настройках!</string>

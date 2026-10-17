@@ -132,7 +132,7 @@
     <string name="slider">Suwak</string>
     <string name="thumbless_slider">Suwak bez uchwytu</string>
     <string name="art_as_bg">Okładka jako tło</string>
-    <string name="default_text">Domyślne</string>
+    <string name="default_text">Domyślny</string>
     <string name="font">Czcionka</string>
     <string name="show_back_button">Pokaż przycisk Wstecz</string>
     <string name="album">Album</string>
@@ -286,4 +286,28 @@
     <string name="aod">Always-on display</string>
     <string name="keep_alive">Utrzymuj działanie aplikacji</string>
     <string name="keep_alive_desc">Kontynuuj odtwarzanie muzyki po zamknięciu aplikacji z ekranu ostatnich zadań</string>
+    <string name="tracks">Utwory</string>
+    <string name="appearance">Wygląd</string>
+    <string name="artwork_shape">Kształt okładki</string>
+    <string name="slider_thumb">Kursor suwaka</string>
+    <string name="slider_track">Pasek suwaka</string>
+    <string name="start_aod">Uruchom ekran zawsze włączony</string>
+    <string name="enable_gestures">Włącz gesty</string>
+    <string name="enable_gestures_desc">Jeśli ta opcja jest wyłączona, nadal możesz wyjść z ekranu, stukając go dwukrotnie.</string>
+    <string name="show_controls">Pokaż elementy sterujące</string>
+    <string name="backup_and_restore"><![CDATA[Kopia zapasowa i przywracanie]]></string>
+    <string name="export_settings">Ustawienia eksportu</string>
+    <string name="backup_and_restore_desc">Kopia zapasowa i przywracanie – czego oczekujesz?</string>
+    <string name="import_settings">Ustawienia importu</string>
+    <string name="import_settings_desc">Importuj ustawienia aplikacji z pliku JSON.</string>
+    <string name="export_settings_desc">Wyeksportuj ustawienia aplikacji do pliku JSON.</string>
+    <string name="importing_in_progress">Importowanie – to nie powinno potrwać zbyt długo…</string>
+    <string name="scanning_folders_notice">Dogłębne i intensywne skanowanie w poszukiwaniu folderów z muzyką…</string>
+    <string name="cancel_timer">Anuluj minutnik</string>
+    <string name="auto_whitelist_sub">Automatycznie dodawaj podfoldery do białej listy</string>
+    <string name="auto_whitelist_sub_desc">Automatycznie dodawaj do białej listy podfoldery katalogów z białej listy</string>
+    <string name="new_folder_policy">Zasady dotyczące nowych folderów</string>
+    <string name="blacklist">Czarna lista</string>
+    <string name="whitelist">Biała lista</string>
+    <string name="select_new_value">Wybierz nową wartość</string>
 </resources>
