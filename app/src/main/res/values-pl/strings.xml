@@ -246,4 +246,10 @@
     <string name="whitelist_folder_tree_desc">Wybierz folder. Zostanie on dodany do białej listy wraz z obecnymi i nowo dodawanymi podfolderami</string>
     <string name="no_folder_picker">Na tym urządzeniu nie znaleziono narzędzia do wyboru folderów</string>
     <string name="folder_tree_unsupported">Można wybierać tylko foldery znajdujące się w pamięci urządzenia</string>
+    <string name="bakery_desc">Twoje utwory, prosto z pieca!</string>
+    <string name="bakery">Piekarnia</string>
+    <string name="listens">Odtworzenia</string>
+    <string name="all_time">Od początku</string>
+    <string name="listening_time">Czas słuchania</string>
+    <string name="listening_time_value">Słuchano: %1$s</string>
 </resources>
