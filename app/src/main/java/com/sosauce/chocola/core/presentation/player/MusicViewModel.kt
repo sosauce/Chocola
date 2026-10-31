@@ -243,30 +243,49 @@ class MusicViewModel(
     private fun updateLoadedMedias(timeline: Timeline) {
         val allTracks = tracks.value
         val window = Timeline.Window()
-        val newTracks = buildList(timeline.windowCount) {
+        val shuffledIndices = _musicState.value.shuffledIndices.toMutableList()
+        val newTracks = if (!mediaController!!.shuffleModeEnabled) {
+            buildList(timeline.windowCount) {
 
-            var currentWindowIndex =
-                timeline.getFirstWindowIndex(mediaController!!.shuffleModeEnabled)
+                var currentWindowIndex =
+                    timeline.getFirstWindowIndex(mediaController!!.shuffleModeEnabled)
 
-            while (currentWindowIndex != C.INDEX_UNSET) {
-                timeline.getWindow(currentWindowIndex, window)
+                while (currentWindowIndex != C.INDEX_UNSET) {
+                    timeline.getWindow(currentWindowIndex, window)
 
-                val mediaId = window.mediaItem.mediaId
-                val found = allTracks.fastFirstOrNull { it.mediaId == mediaId }
-                found?.let { add(it) }
+                    val mediaId = window.mediaItem.mediaId
+                    val found = allTracks.fastFirstOrNull { it.mediaId == mediaId }
+                    found?.let { add(it) }
 
-                currentWindowIndex = timeline.getNextWindowIndex(
-                    currentWindowIndex,
-                    Player.REPEAT_MODE_OFF,
-                    mediaController!!.shuffleModeEnabled
-                )
+                    currentWindowIndex = timeline.getNextWindowIndex(
+                        currentWindowIndex,
+                        Player.REPEAT_MODE_OFF,
+                        mediaController!!.shuffleModeEnabled
+                    )
+                }
+            }
+        } else {
+            buildList(timeline.windowCount) {
+
+                var currentWindowIndex = 0
+
+                while (currentWindowIndex < shuffledIndices.size) {
+
+                    val mediaId = mediaController!!.getMediaItemAt(shuffledIndices[currentWindowIndex]).mediaId
+                    val found = allTracks.fastFirstOrNull { it.mediaId == mediaId }
+                    found?.let { add(it) }
+
+                    currentWindowIndex++
+                }
             }
         }
 
         _musicState.update {
             it.copy(
                 loadedMedias = newTracks,
+                shuffledIndices = shuffledIndices,
                 mediaIndex = newTracks.indexOf(it.track),
+                curIndex = newTracks.indexOf(it.track)
             )
         }
     }
@@ -388,16 +407,78 @@ class MusicViewModel(
         mediaController!!.release()
     }
 
+    private fun setup(targetTracks: List<CuteTrack>) {
+        val indices = buildList(targetTracks.size) {
+            for (i in targetTracks.indices) add(i)
+        }.toMutableList()
+        indices.shuffle()
+        _musicState.update {
+            it.copy(
+                shuffledIndices = indices,
+            )
+        }
+    }
+
+    private fun reshuffle() {
+        val indices = buildList(mediaController!!.mediaItemCount) {
+            for (i in 0..<mediaController!!.mediaItemCount) add(i)
+        }.toMutableList()
+        indices.shuffle()
+        _musicState.update {
+            it.copy(
+                shuffledIndices = indices,
+            )
+        }
+    }
+
+    private fun Player.goToNext() {
+        if (!mediaController!!.shuffleModeEnabled) mediaController!!.seekToNextMediaItem()
+        else {
+            var nextIndex = _musicState.value.curIndex+1
+            val size = _musicState.value.shuffledIndices.size
+            if (mediaController!!.repeatMode == Player.REPEAT_MODE_ALL && nextIndex >= size) nextIndex = 0
+            else if (nextIndex >= size) nextIndex = size-1
+
+            _musicState.update {
+                it.copy(
+                    curIndex = nextIndex
+                )
+            }
+
+            nextIndex = _musicState.value.shuffledIndices[nextIndex]
+            seekTo(nextIndex, 0)
+        }
+    }
+
+    private fun Player.goToPrevious() {
+        if (!mediaController!!.shuffleModeEnabled) mediaController!!.seekToPreviousMediaItem()
+        else {
+            var nextIndex = _musicState.value.curIndex-1
+            val size = _musicState.value.shuffledIndices.size
+            if (mediaController!!.repeatMode == Player.REPEAT_MODE_ALL && nextIndex < 0) nextIndex = size-1
+            else if (nextIndex < 0) nextIndex = 0
+
+            _musicState.update {
+                it.copy(
+                    curIndex = nextIndex
+                )
+            }
+
+            nextIndex = _musicState.value.shuffledIndices[nextIndex]
+            seekTo(nextIndex, 0)
+        }
+    }
+
     @androidx.annotation.OptIn(UnstableApi::class)
     fun handlePlayerActions(action: PlayerActions) {
         when (action) {
             is PlayerActions.RestartSong -> mediaController!!.seekTo(0)
             is PlayerActions.PlayRandom -> mediaController!!.playRandom()
             is PlayerActions.PlayOrPause -> mediaController!!.playOrPause()
-            is PlayerActions.SeekToNextMusic -> mediaController!!.seekToNextMediaItem()
+            is PlayerActions.SeekToNextMusic -> mediaController!!.goToNext()
             is PlayerActions.SeekToPreviousMusic -> {
                 if (mediaController!!.currentPosition >= 5000) mediaController!!.seekTo(0)
-                else mediaController!!.seekToPreviousMediaItem()
+                else mediaController!!.goToPrevious()
             }
             is PlayerActions.SeekTo -> mediaController!!.seekTo(mediaController!!.currentPosition + action.position)
             is PlayerActions.SeekToSlider -> mediaController!!.seekTo(action.position)
@@ -432,8 +513,12 @@ class MusicViewModel(
                 }
             }
 
-            is PlayerActions.Shuffle -> mediaController!!.shuffleModeEnabled =
-                !mediaController!!.shuffleModeEnabled
+            is PlayerActions.Shuffle -> {
+                if (!mediaController!!.shuffleModeEnabled) {
+                    reshuffle()
+                }
+                mediaController!!.shuffleModeEnabled = !mediaController!!.shuffleModeEnabled
+            }
 
             is PlayerActions.ChangeRepeatMode -> mediaController!!.changeRepeatMode()
             is PlayerActions.SetSpeed -> mediaController!!.playbackParameters =
@@ -465,6 +550,7 @@ class MusicViewModel(
                     is PlaySource.Artist -> currentTracks.fastFilter { it.artist == source.name }
                     is PlaySource.ExplicitTracks -> source.tracks
                 }
+                setup(targetTracks)
 
                 if (random) {
                     mediaController!!.setMediaItems(targetTracks.fastMap { it.toMediaItem() })
@@ -570,6 +656,7 @@ class MusicViewModel(
 
 
                 if (newUniqueTracks.isNotEmpty()) {
+                    setup(_musicState.value.loadedMedias + newUniqueTracks)
                     _musicState.update {
                         it.copy(
                             loadedMedias = it.loadedMedias + newUniqueTracks
@@ -624,6 +711,7 @@ class MusicViewModel(
                     is PlaySource.Artist -> currentTracks.fastFilter { it.artist == source.name }
                     is PlaySource.ExplicitTracks -> source.tracks
                 }
+                setup(targetTracks)
 
                 mediaController!!.setMediaItems(targetTracks.fastMap { it.toMediaItem() }, 0, 0)
                 mediaController!!.play()

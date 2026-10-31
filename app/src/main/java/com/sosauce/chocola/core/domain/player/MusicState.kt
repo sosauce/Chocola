@@ -21,6 +21,8 @@ data class MusicState(
     val repeatMode: Int = Player.REPEAT_MODE_OFF,
     val shuffle: Boolean = false,
     val loadedMedias: List<CuteTrack> = emptyList(),
+    val shuffledIndices: List<Int> = emptyList(),
+    val curIndex: Int = 0,
     val audioSessionAudio: Int = 0,
     val lyrics: List<Lyrics> = emptyList(),
 )
