@@ -8,5 +8,6 @@ data class Artist(
     val name: String = "",
     val albumId: Long = 0,
     val tracks: List<CuteTrack> = emptyList(),
-    val numberAlbums: Int = 0
+    val numberAlbums: Int = 0,
+    val isFavorite: Boolean = false
 )

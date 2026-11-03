@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.util.fastFilter
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.sosauce.chocola.R
@@ -53,9 +54,12 @@ class PlaylistViewModel(
 
                 val sortedPlaylists =
                     playlists.ordered(sort, regex, matchCase, ascending, query.toString())
+                        .sortedByDescending { it.isFavorite }
 
                 PlaylistsState(
                     playlists = sortedPlaylists,
+                    favoritePlaylists = sortedPlaylists.fastFilter { it.isFavorite },
+                    nonFavoritePlaylists = sortedPlaylists.filterNot { it.isFavorite },
                     isLoading = false
                 )
 
@@ -66,6 +70,9 @@ class PlaylistViewModel(
 
     fun handlePlaylistActions(action: PlaylistActions) {
         when (action) {
+            is PlaylistActions.SetFavorite -> viewModelScope.launch(Dispatchers.IO) {
+                dao.setFavorite(action.playlistId, action.isFavorite)
+            }
             is PlaylistActions.DeletePlaylists -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     dao.deletePlaylist(action.playlists)
@@ -187,5 +194,7 @@ class PlaylistViewModel(
 @Stable
 data class PlaylistsState(
     val isLoading: Boolean = false,
-    val playlists: List<Playlist> = emptyList()
+    val playlists: List<Playlist> = emptyList(),
+    val favoritePlaylists: List<Playlist> = emptyList(),
+    val nonFavoritePlaylists: List<Playlist> = emptyList()
 )

@@ -50,6 +50,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.core.app.ShareCompat
 import androidx.core.net.toUri
@@ -136,7 +137,7 @@ fun MusicListItem(
         Text(
             text = track.artist,
             maxLines = 1,
-            style = MaterialTheme.typography.bodyLargeEmphasized.copy(
+            style = MaterialTheme.typography.bodyMediumEmphasized.copy(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             ),
             modifier = Modifier.basicMarquee()
@@ -205,6 +206,11 @@ fun TrackDropdownMenu(
     var showPlaylistDialog by remember { mutableStateOf(false) }
     var hiddenTracks by rememberHiddenTracks()
     val trackOptions = listOf(
+        MoreOptions(
+            text = { stringResource(if (track.isFavorite) R.string.remove_favorite else R.string.add_favorite) },
+            onClick = { track.mediaId.toLongOrNull()?.let { onHandlePlayerActions(PlayerActions.ToggleFavorite(it)) } },
+            icon = R.drawable.favorite_filled
+        ),
         MoreOptions(
             text = { stringResource(R.string.edit) },
             onClick = { onNavigate(Screen.MetadataEditor(track.path, track.uri.toString())) },

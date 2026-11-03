@@ -10,8 +10,9 @@ import com.sosauce.chocola.feature.bakery.presentation.model.FunFactUi
 import com.sosauce.chocola.feature.bakery.presentation.model.PeriodId
 import com.sosauce.chocola.feature.bakery.presentation.model.StoryPageUi
 
-fun PeriodTotal.toTotalsPage(): StoryPageUi.Totals =
+fun PeriodTotal.toTotalsPage(periodTitle: String): StoryPageUi.Totals =
     StoryPageUi.Totals(
+        periodTitle = periodTitle,
         totalListens = totalListens,
         totalListenedMillis = totalListenedMillis
     )

@@ -74,6 +74,17 @@ fun SharedTransitionScope.ArtistHeader(
                     .weight(1f)
                     .basicMarquee()
             )
+            androidx.compose.material3.IconButton(
+                onClick = { onHandlePlayerActions(PlayerActions.ToggleArtistFavorite(artist.id)) }
+            ) {
+                androidx.compose.material3.Icon(
+                    painter = androidx.compose.ui.res.painterResource(R.drawable.favorite_filled),
+                    contentDescription = androidx.compose.ui.res.stringResource(
+                        if (artist.isFavorite) R.string.remove_favorite else R.string.add_favorite
+                    ),
+                    tint = if (artist.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
             AnimatedFab(
                 onClick = {
                     onHandlePlayerActions(

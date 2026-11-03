@@ -19,6 +19,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -105,7 +106,8 @@ fun SharedTransitionScope.ArtistsScreen(
                     ArtistItem(
                         modifier = Modifier.animateItem(),
                         artist = artist,
-                        onClick = { onNavigate(Screen.ArtistsDetails(artist.name)) }
+                        onClick = { onNavigate(Screen.ArtistsDetails(artist.name)) },
+                        onToggleFavorite = { onHandlePlayerActions(PlayerActions.ToggleArtistFavorite(artist.id)) }
                     )
                 }
             }
@@ -120,7 +122,8 @@ fun SharedTransitionScope.ArtistsScreen(
 fun SharedTransitionScope.ArtistItem(
     modifier: Modifier = Modifier,
     artist: Artist,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onToggleFavorite: () -> Unit
 ) {
 
     CuteListItem(
@@ -143,6 +146,15 @@ fun SharedTransitionScope.ArtistItem(
                     model = ImageUtils.getAlbumArt(artist.albumId),
                     contentDescription = stringResource(R.string.artwork),
                     contentScale = ContentScale.Crop,
+                )
+            }
+        },
+        trailingContent = {
+            IconButton(onClick = onToggleFavorite) {
+                Icon(
+                    painter = painterResource(R.drawable.favorite_filled),
+                    contentDescription = stringResource(if (artist.isFavorite) R.string.remove_favorite else R.string.add_favorite),
+                    tint = if (artist.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }

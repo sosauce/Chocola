@@ -7,6 +7,8 @@ import com.sosauce.chocola.core.data.datastore.UserPreferences
 import com.sosauce.chocola.core.data.local.MIGRATION_1_2
 import com.sosauce.chocola.core.data.local.PlaylistCleanup
 import com.sosauce.chocola.core.data.local.PlaylistDatabase
+import com.sosauce.chocola.core.data.local.FavoritesDatabase
+import com.sosauce.chocola.core.data.local.MIGRATION_2_3
 import com.sosauce.chocola.core.data.library.FoldersRepository
 import com.sosauce.chocola.core.data.library.SafManager
 import com.sosauce.chocola.core.data.widgets.WidgetsHelper
@@ -47,9 +49,15 @@ val appModule = module {
             name = "playlist.db"
         )
             .addMigrations(MIGRATION_1_2)
+            .addMigrations(MIGRATION_2_3)
             //.addCallback(DEFAULT_PLAYLISTS_CALLBACK)
             .build()
             .dao
+    }
+
+    single {
+        Room.databaseBuilder(androidApplication(), FavoritesDatabase::class.java, "favorites.db")
+            .build().dao
     }
 
     single { CoroutineScope(Dispatchers.IO + SupervisorJob()) }

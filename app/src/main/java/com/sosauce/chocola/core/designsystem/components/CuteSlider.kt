@@ -46,6 +46,7 @@ import com.sosauce.chocola.core.domain.player.MusicState
 import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.core.designsystem.ThumbStyle
 import com.sosauce.chocola.core.designsystem.TrackStyle
+import com.sosauce.chocola.core.designsystem.theme.sansFlexCustomWidth
 
 @Composable
 fun CuteSlider(

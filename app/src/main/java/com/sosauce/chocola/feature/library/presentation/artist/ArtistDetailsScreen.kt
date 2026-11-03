@@ -166,6 +166,7 @@ fun SharedTransitionScope.ArtistDetailsScreen(
                             AlbumCard(
                                 album = album,
                                 onClick = { onNavigate(Screen.AlbumsDetails(name = album.name)) },
+                                onToggleFavorite = { onHandlePlayerAction(PlayerActions.ToggleAlbumFavorite(album.id)) },
                                 modifier = Modifier.maskClip(MaterialTheme.shapes.extraLarge)
                             )
                         }

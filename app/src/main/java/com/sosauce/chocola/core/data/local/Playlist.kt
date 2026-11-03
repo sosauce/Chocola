@@ -11,5 +11,6 @@ data class Playlist(
     val name: String = "",
     val musics: Set<String> = emptySet(), // List of songs ID aka mediaId
     val color: Int = -1,
-    val tags: Set<String> = emptySet()
+    val tags: Set<String> = emptySet(),
+    val isFavorite: Boolean = false
 )

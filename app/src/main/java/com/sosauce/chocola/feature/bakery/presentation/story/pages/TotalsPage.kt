@@ -16,9 +16,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +31,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
+import com.sosauce.chocola.core.designsystem.theme.ChocolaTheme
+import com.sosauce.chocola.core.designsystem.theme.sansFlexCustomWidth
 import com.sosauce.chocola.feature.bakery.presentation.model.StoryPageUi
 
 @Composable
@@ -46,7 +50,7 @@ fun TotalsPage(
         Box(
             modifier = Modifier
                 .size(92.dp)
-                .clip(CircleShape)
+                .clip(MaterialShapes.Cookie12Sided.toShape())
                 .background(MaterialTheme.colorScheme.primaryContainer),
             contentAlignment = Alignment.Center
         ) {
@@ -61,16 +65,18 @@ fun TotalsPage(
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = stringResource(R.string.all_time),
+            text = totals.periodTitle,
             style = MaterialTheme.typography.titleMediumEmphasized,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         Text(
             text = totals.totalListens.toString(),
-            style = MaterialTheme.typography.displayLargeEmphasized,
-            color = MaterialTheme.colorScheme.primary,
-            textAlign = TextAlign.Center
+            style = MaterialTheme.typography.displayLargeEmphasized.copy(
+                fontFamily = sansFlexCustomWidth(130f),
+                color = MaterialTheme.colorScheme.primary,
+                textAlign = TextAlign.Center
+            )
         )
 
         Text(
@@ -120,17 +126,18 @@ private fun formatListeningTime(millis: Long): String {
     }
 }
 
-@Preview(showBackground = true, widthDp = 360, heightDp = 720)
+@Preview(showBackground = true, widthDp = 380, heightDp = 820)
+
 @Composable
 private fun TotalsPagePreview() {
-    MaterialTheme {
-        Surface {
-            TotalsPage(
-                totals = StoryPageUi.Totals(
-                    totalListens = 12_482,
-                    totalListenedMillis = 218_340_000L
-                )
+
+    ChocolaTheme() {
+        TotalsPage(
+            totals = StoryPageUi.Totals(
+                periodTitle = "October 2026",
+                totalListens = 12_482,
+                totalListenedMillis = 218_340_000L
             )
-        }
+        )
     }
 }

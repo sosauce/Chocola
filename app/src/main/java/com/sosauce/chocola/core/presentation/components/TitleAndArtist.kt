@@ -49,7 +49,6 @@ fun TitleAndArtist(
                 text = it,
                 style = MaterialTheme.typography.headlineMediumEmphasized.copy(
                     color = MaterialTheme.colorScheme.onBackground,
-                    fontWeight = FontWeight.ExtraBold,
                     textAlign = textAlignment
                 ),
                 modifier = titleModifier

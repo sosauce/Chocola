@@ -7,5 +7,6 @@ data class Album(
     val name: String = "",
     val artist: String = "",
     val art: Uri? = null,
-    val tracks: List<CuteTrack> = emptyList()
+    val tracks: List<CuteTrack> = emptyList(),
+    val isFavorite: Boolean = false
 )

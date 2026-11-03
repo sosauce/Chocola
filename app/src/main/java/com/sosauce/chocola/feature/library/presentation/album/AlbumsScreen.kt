@@ -99,11 +99,11 @@ fun SharedTransitionScope.AlbumsScreen(
                     AlbumCard(
                         modifier = Modifier.animateItem(),
                         album = album,
-                        onClick = { onNavigate(Screen.AlbumsDetails(album.name)) }
+                        onClick = { onNavigate(Screen.AlbumsDetails(album.name)) },
+                        onToggleFavorite = { onHandlePlayerActions(PlayerActions.ToggleAlbumFavorite(album.id)) }
                     )
                 }
             }
         }
     }
 }
-
