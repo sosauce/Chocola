@@ -207,7 +207,7 @@ fun SharedTransitionScope.PlaylistsScreen(
 
                         },
                         sortMenu = {
-                            CuteSearchbarDefaults.PlaylistSortPopupContent()
+
                         }
                     )
                 }

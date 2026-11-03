@@ -21,11 +21,13 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlin.time.Duration.Companion.milliseconds
 import androidx.core.net.toUri
+import com.sosauce.chocola.core.data.local.FavoritesDao
 import com.sosauce.chocola.feature.library.presentation.util.ImageUtils
 
 class AlbumsViewModel(
     private val abstractTracksScanner: AbstractTracksScanner,
-    private val userPreferences: UserPreferences
+    private val userPreferences: UserPreferences,
+    private val favoritesDao: FavoritesDao
 ) : ViewModel() {
 
 
@@ -34,14 +36,13 @@ class AlbumsViewModel(
 
 
     val state = combine(
-        abstractTracksScanner.latestTracks(),
+        combine(abstractTracksScanner.latestTracks(), favoritesDao.observeAlbumIds()) { tracks, favAlbumIds -> tracks to favAlbumIds },
         userPreferences.getAlbumsSort,
         userPreferences.getRegexFilter,
         userPreferences.getMatchCaseFilter,
         userPreferences.sortAlbumsAscending,
-        userPreferences.getHideSingleAlbums(),
         searchQuery
-    ) { tracks, sort, regex, matchCase, ascending, hideSingleAlbums, query ->
+    ) { (tracks, favAlbumIds), sort, regex, matchCase, ascending, query ->
         var albums = tracks
             .groupBy { it.album }
             .map { (album, albumTracks) ->
@@ -54,12 +55,12 @@ class AlbumsViewModel(
                     name = album,
                     artist = lastTrack.artist,
                     tracks = albumTracks,
-                    art = ImageUtils.getAlbumArt(albumId)
+                    art = ImageUtils.getAlbumArt(albumId),
+                    isFavorite = albumId in favAlbumIds
                 )
             }
             .ordered(sort, regex, matchCase, ascending, query.toString())
-
-        if (hideSingleAlbums) albums = albums.filter { it.tracks.size > 1 }
+            .sortedByDescending { it.isFavorite }
 
         AlbumsState(
             isLoading = false,

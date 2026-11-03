@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sosauce.chocola.core.data.library.AbstractTracksScanner
 import com.sosauce.chocola.core.data.datastore.UserPreferences
+import com.sosauce.chocola.core.data.local.FavoritesDao
 import com.sosauce.chocola.core.domain.model.Artist
 import com.sosauce.chocola.core.domain.util.combine
 import com.sosauce.chocola.core.domain.library.ordered
@@ -24,7 +25,8 @@ import kotlin.time.Duration.Companion.milliseconds
 
 class ArtistsViewModel(
     private val userPreferences: UserPreferences,
-    private val abstractTracksScanner: AbstractTracksScanner
+    private val abstractTracksScanner: AbstractTracksScanner,
+    private val favoritesDao: FavoritesDao
 ) : ViewModel() {
 
     val textFieldState = TextFieldState()
@@ -32,14 +34,13 @@ class ArtistsViewModel(
 
 
     val state = combine(
-        abstractTracksScanner.latestTracks(),
+        kotlinx.coroutines.flow.combine(abstractTracksScanner.latestTracks(), favoritesDao.observeArtistIds()) { tracks, ids -> tracks to ids },
         userPreferences.getArtistsSort,
         userPreferences.getRegexFilter,
         userPreferences.getMatchCaseFilter,
         userPreferences.sortArtistsAscending,
-                userPreferences.getHideSingleAlbums(),
         searchQuery
-    ) { tracks, sort, regex, matchCase, ascending, hideSingleAlbums, query ->
+    ) { (tracks, favoriteIds), sort, regex, matchCase, ascending, query ->
         val artists = tracks.groupBy { it.artist }
             .map { (artist, tracks) ->
                 val albums = mutableMapOf<String, Int>()
@@ -48,17 +49,16 @@ class ArtistsViewModel(
                     else albums[track.album] = albums[track.album]!! + 1
                 }
                 var numberAlbums = 0
-                if (hideSingleAlbums) {
-                    for ((album, size) in albums) if (size > 1) numberAlbums++
-                } else numberAlbums = albums.size
                 Artist(
                     id = Random.nextLong(),
                     tracks = tracks,
                     numberAlbums = numberAlbums,
-                    name = artist
+                    name = artist,
+                    isFavorite = tracks.firstOrNull()?.artistId in favoriteIds
                 )
             }
             .ordered(sort, regex, matchCase, ascending, query.toString())
+            .sortedByDescending { it.isFavorite }
 
         ArtistsState(
             isLoading = false,

@@ -890,41 +890,6 @@ object CuteSearchbarDefaults {
     }
 
     @Composable
-    fun PlaylistSortPopupContent() {
-
-        var isSortedByASC by rememberSortPlaylistsAscending()
-        var playlistSort by rememberPlaylistSort()
-
-        DropdownMenuGroup(
-            shapes = MenuDefaults.groupShapes(),
-            content = {
-                repeat(4) { i ->
-                    val text = when (i) {
-                        0 -> R.string.name
-                        1 -> R.string.number_of_tracks
-                        2 -> R.string.playlist_color
-                        3 -> R.string.playlist_tags
-                        else -> throw IndexOutOfBoundsException()
-                    }
-
-                    SelectableDropdownMenuItem(
-                        selected = playlistSort == i,
-                        onClick = { playlistSort = i },
-                        shapes = MenuDefaults.itemShape(i, 3),
-                        colors = MenuDefaults.selectableItemColors(),
-                        text = { Text(stringResource(text)) }
-                    )
-                }
-            }
-        )
-        Spacer(Modifier.height(MenuDefaults.GroupSpacing))
-        SortingButtons(
-            ascending = isSortedByASC,
-            onChangeSort = { isSortedByASC = it }
-        )
-    }
-
-    @Composable
     fun SortingButtons(
         ascending: Boolean,
         onChangeSort: (Boolean) -> Unit

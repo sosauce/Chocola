@@ -2,7 +2,6 @@
 
 package com.sosauce.chocola.feature.playing.presentation
 
-import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -49,7 +48,6 @@ fun QueueScreen(
     onHandlePlayerAction: (PlayerActions) -> Unit
 ) {
 
-    Log.i("COMPOSED QUEUE SCREEN", musicState.loadedMedias.size.toString())
     val hapticFeedback = LocalHapticFeedback.current
     val lazyListState = rememberLazyListState()
     val activeTrackId = remember(musicState.track) { musicState.track.mediaId }
@@ -72,13 +70,6 @@ fun QueueScreen(
 
         hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
 
-    }
-
-    LaunchedEffect(musicState.loadedMedias) {
-        val target = musicState.loadedMedias.indexOfFirst { it.mediaId == musicState.track.mediaId }
-        if (target != -1 && lazyListState.firstVisibleItemIndex != target) {
-            lazyListState.scrollToItem(target)
-        }
     }
 
     Scaffold(

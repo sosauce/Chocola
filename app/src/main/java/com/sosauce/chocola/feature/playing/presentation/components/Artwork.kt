@@ -182,7 +182,6 @@ fun Artwork(
                         model = musicState.loadedMedias[page].artUri,
                         contentDescription = stringResource(R.string.artwork),
                         contentScale = ContentScale.Crop,
-                        filterQuality = FilterQuality.High,
                         modifier = Modifier
                             .fillMaxSize()
                             .cloudy(
@@ -241,7 +240,6 @@ fun Artwork(
                     model = musicState.track.artUri,
                     contentDescription = stringResource(R.string.artwork),
                     contentScale = ContentScale.Crop,
-                    filterQuality = FilterQuality.High,
                     modifier = Modifier
                         .fillMaxSize()
                         .cloudy(

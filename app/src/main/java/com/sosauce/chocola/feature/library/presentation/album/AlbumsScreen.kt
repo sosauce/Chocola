@@ -30,7 +30,6 @@ import com.sosauce.chocola.core.presentation.components.CuteSearchbarDefaults
 import com.sosauce.chocola.core.designsystem.components.NoResult
 import com.sosauce.chocola.core.domain.model.Album
 import com.sosauce.chocola.core.presentation.navigation.Screen
-import com.sosauce.chocola.core.presentation.preferences.rememberHideSingleAlbums
 import com.sosauce.chocola.feature.library.presentation.album.components.AlbumCard
 import com.sosauce.chocola.core.presentation.util.selfAlignHorizontally
 import com.sosauce.nekobites.components.LoadingBox
@@ -46,7 +45,6 @@ fun SharedTransitionScope.AlbumsScreen(
 ) {
     val lazyState = rememberLazyGridState()
     var numberOfAlbumGrids by rememberAlbumGrids()
-    var hideSingleAlbums by rememberHideSingleAlbums()
 
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,
