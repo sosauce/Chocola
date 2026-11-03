@@ -1,7 +1,4 @@
-@file:OptIn(
-    ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class,
-    ExperimentalSharedTransitionApi::class, ExperimentalMaterial3ExpressiveApi::class
-)
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
 
 package com.sosauce.chocola.core.presentation.components
 
