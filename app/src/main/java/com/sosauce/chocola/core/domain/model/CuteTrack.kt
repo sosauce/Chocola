@@ -15,12 +15,12 @@ data class CuteTrack(
     val folder: String = "",
     val path: String = "",
     val isSaf: Boolean = false,
-    val albumId: Long = -1
+    val albumId: Long = -1,
+    val isFavorite: Boolean = false,
+    val artistId: Long = -1
 ) {
     val uri
         get() = uriString.toUri()
 
 }
-
-
 

@@ -6,10 +6,12 @@ import android.icu.number.IntegerWidth
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MotionScheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.ImageBitmap
@@ -69,7 +71,6 @@ fun ChocolaTheme(
             isLight = !isDark
         )
     }
-
     DynamicMaterialExpressiveTheme(
         state = state,
         motionScheme = MotionScheme.expressive(),
@@ -81,11 +82,9 @@ fun ChocolaTheme(
 val googleSansFlexFontFamily = FontFamily(
     Font(
         resId = R.font.google_sans_flex,
-        weight = FontWeight.ExtraBold,
-        style = FontStyle.Normal,
         variationSettings = FontVariation.Settings(
             FontVariation.Setting("ROND", 100f),
-            FontVariation.weight(900),
+            FontVariation.weight(850),
             FontVariation.width(110f)
         )
     )
@@ -95,8 +94,6 @@ fun sansFlexCustomWidth(width: Float): FontFamily {
     return FontFamily(
         Font(
             resId = R.font.google_sans_flex,
-            weight = FontWeight.ExtraBold,
-            style = FontStyle.Normal,
             variationSettings = FontVariation.Settings(
                 FontVariation.Setting("ROND", 100f),
                 FontVariation.Setting("wght", 900f),
@@ -110,7 +107,6 @@ val GoogleSansFlexTypography = Typography().run {
     copy(
         displayLarge = displayLarge.copy(
             fontFamily = googleSansFlexFontFamily,
-
         ),
         displayMedium = displayMedium.copy(
             fontFamily = googleSansFlexFontFamily

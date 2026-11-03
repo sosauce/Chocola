@@ -90,6 +90,14 @@ fun PlaylistItem(
         }
     val playlistOptions = listOf(
         MoreOptions(
+            text = { stringResource(if (playlist.isFavorite) R.string.remove_favorite else R.string.add_favorite) },
+            onClick = {
+                isDropdownExpanded = false
+                onHandlePlaylistActions(PlaylistActions.SetFavorite(playlist.id, !playlist.isFavorite))
+            },
+            icon = R.drawable.favorite_filled
+        ),
+        MoreOptions(
             text = { stringResource(R.string.edit_playlist) },
             onClick = {
                 isDropdownExpanded = false

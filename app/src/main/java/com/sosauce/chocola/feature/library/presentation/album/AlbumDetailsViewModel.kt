@@ -11,6 +11,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sosauce.chocola.core.data.library.AbstractTracksScanner
+import com.sosauce.chocola.core.data.local.FavoritesDao
 import com.sosauce.chocola.core.data.datastore.UserPreferences
 import com.sosauce.chocola.core.domain.model.Album
 import com.sosauce.chocola.core.domain.library.orderAlbumTrackNumber
@@ -29,7 +30,8 @@ import kotlin.time.Duration.Companion.milliseconds
 class AlbumDetailsViewModel(
     private val albumName: String,
     private val userPreferences: UserPreferences,
-    private val abstractTracksScanner: AbstractTracksScanner
+    private val abstractTracksScanner: AbstractTracksScanner,
+    private val favoritesDao: FavoritesDao
 ) : ViewModel() {
 
 
@@ -38,16 +40,17 @@ class AlbumDetailsViewModel(
 
 
     val state = combine(
-        abstractTracksScanner.latestTracks(),
+        combine(abstractTracksScanner.latestTracks(), favoritesDao.observeAlbumIds()) { tracks, ids -> tracks to ids },
         userPreferences.searchSettings(),
         searchQuery
-    ) { tracks, settings, query ->
+    ) { (tracks, favoriteIds), settings, query ->
         val filtered = tracks
             .fastFilter { it.album == albumName }
             .orderAlbumTrackNumber()
 
 
-        val lastTrack = filtered.last()
+        val lastTrack = filtered.lastOrNull()
+        if (lastTrack == null) return@combine AlbumDetailsState(isLoading = false)
         val albumId = lastTrack.albumId
 
         val album = Album(
@@ -55,7 +58,8 @@ class AlbumDetailsViewModel(
             name = albumName,
             artist = lastTrack.artist,
             tracks = filtered.search(query.toString(), settings),
-            art = ImageUtils.getAlbumArt(albumId)
+            art = ImageUtils.getAlbumArt(albumId),
+            isFavorite = albumId in favoriteIds
         )
 
         AlbumDetailsState(

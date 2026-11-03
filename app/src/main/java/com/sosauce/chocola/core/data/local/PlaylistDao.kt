@@ -12,6 +12,9 @@ interface PlaylistDao {
     @Upsert
     suspend fun upsertPlaylist(playlist: Playlist)
 
+    @Query("UPDATE playlist SET isFavorite = :favorite WHERE id = :id")
+    suspend fun setFavorite(id: Int, favorite: Boolean)
+
     @Delete
     suspend fun deletePlaylist(playlists: List<Playlist>)
 

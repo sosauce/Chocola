@@ -8,6 +8,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sosauce.chocola.core.data.library.AbstractTracksScanner
+import com.sosauce.chocola.core.data.local.FavoritesDao
 import com.sosauce.chocola.core.data.datastore.UserPreferences
 import com.sosauce.chocola.core.domain.model.Artist
 import com.sosauce.chocola.core.domain.util.combine
@@ -18,12 +19,12 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
-import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
 
 class ArtistsViewModel(
     private val userPreferences: UserPreferences,
-    private val abstractTracksScanner: AbstractTracksScanner
+    private val abstractTracksScanner: AbstractTracksScanner,
+    private val favoritesDao: FavoritesDao
 ) : ViewModel() {
 
     val textFieldState = TextFieldState()
@@ -31,22 +32,24 @@ class ArtistsViewModel(
 
 
     val state = combine(
-        abstractTracksScanner.latestTracks(),
+        kotlinx.coroutines.flow.combine(abstractTracksScanner.latestTracks(), favoritesDao.observeArtistIds()) { tracks, ids -> tracks to ids },
         userPreferences.getArtistsSort,
         userPreferences.getRegexFilter,
         userPreferences.getMatchCaseFilter,
         userPreferences.sortArtistsAscending,
         searchQuery
-    ) { tracks, sort, regex, matchCase, ascending, query ->
+    ) { (tracks, favoriteIds), sort, regex, matchCase, ascending, query ->
         val artists = tracks.groupBy { it.artist }
             .map { (artist, tracks) ->
                 Artist(
-                    id = Random.nextLong(),
+                    id = tracks.firstOrNull()?.artistId ?: -1L,
                     tracks = tracks,
-                    name = artist
+                    name = artist,
+                    isFavorite = tracks.firstOrNull()?.artistId in favoriteIds
                 )
             }
             .ordered(sort, regex, matchCase, ascending, query.toString())
+            .sortedByDescending { it.isFavorite }
 
         ArtistsState(
             isLoading = false,

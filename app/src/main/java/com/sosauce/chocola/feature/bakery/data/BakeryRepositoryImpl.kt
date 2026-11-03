@@ -219,7 +219,7 @@ class BakeryRepositoryImpl(
         val topDayLabel = data.topDay?.let { formatDayLabel(it.epochDay) }.orEmpty()
 
         return buildList {
-            add(data.total.toTotalsPage())
+            add(data.total.toTotalsPage(period.title()))
             add(data.topTracks.toTopTracksPage(STORY_TOP_LIMIT))
             add(data.topArtists.toTopArtistsPage(STORY_TOP_LIMIT))
             add(data.topAlbums.toTopAlbumsPage(STORY_TOP_LIMIT))

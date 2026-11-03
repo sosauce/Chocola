@@ -9,6 +9,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sosauce.chocola.core.data.library.AbstractTracksScanner
+import com.sosauce.chocola.core.data.local.FavoritesDao
 import com.sosauce.chocola.core.data.datastore.UserPreferences
 import com.sosauce.chocola.core.domain.model.Album
 import com.sosauce.chocola.core.domain.util.combine
@@ -25,7 +26,8 @@ import com.sosauce.chocola.feature.library.presentation.util.ImageUtils
 
 class AlbumsViewModel(
     private val abstractTracksScanner: AbstractTracksScanner,
-    private val userPreferences: UserPreferences
+    private val userPreferences: UserPreferences,
+    private val favoritesDao: FavoritesDao
 ) : ViewModel() {
 
 
@@ -34,13 +36,13 @@ class AlbumsViewModel(
 
 
     val state = combine(
-        abstractTracksScanner.latestTracks(),
+        combine(abstractTracksScanner.latestTracks(), favoritesDao.observeAlbumIds()) { tracks, favAlbumIds -> tracks to favAlbumIds },
         userPreferences.getAlbumsSort,
         userPreferences.getRegexFilter,
         userPreferences.getMatchCaseFilter,
         userPreferences.sortAlbumsAscending,
         searchQuery
-    ) { tracks, sort, regex, matchCase, ascending, query ->
+    ) { (tracks, favAlbumIds), sort, regex, matchCase, ascending, query ->
         val albums = tracks
             .groupBy { it.album }
             .map { (album, albumTracks) ->
@@ -53,10 +55,12 @@ class AlbumsViewModel(
                     name = album,
                     artist = lastTrack.artist,
                     tracks = albumTracks,
-                    art = ImageUtils.getAlbumArt(albumId)
+                    art = ImageUtils.getAlbumArt(albumId),
+                    isFavorite = albumId in favAlbumIds
                 )
             }
             .ordered(sort, regex, matchCase, ascending, query.toString())
+            .sortedByDescending { it.isFavorite }
 
         AlbumsState(
             isLoading = false,

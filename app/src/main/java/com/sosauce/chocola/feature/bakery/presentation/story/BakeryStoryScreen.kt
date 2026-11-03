@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FloatingToolbarColors
@@ -141,17 +142,14 @@ fun BakeryStoryScreen(
 
     Scaffold(
         topBar = {
-            Column(
-                modifier = Modifier.statusBarsPadding()
-            ) {
-
-                StoryProgressBar(
-                    pageCount = state.pages.size,
-                    currentPage = state.currentPage,
-                    pageProgress = state.pageProgress,
-                    modifier = Modifier.padding(horizontal = 20.dp)
-                )
-            }
+            StoryProgressBar(
+                pageCount = state.pages.size,
+                currentPage = state.currentPage,
+                pageProgress = state.pageProgress,
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .padding(horizontal = 20.dp)
+            )
         },
         bottomBar = {
             StoryControls(
@@ -184,7 +182,7 @@ fun BakeryStoryScreen(
                             .weight(1f),
                         contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator()
+                        CircularWavyProgressIndicator()
                     }
                 }
 
@@ -205,7 +203,6 @@ fun BakeryStoryScreen(
                         summaryLayer = summaryLayer,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight(1f)
                     )
                 }
             }
@@ -245,8 +242,7 @@ private fun StoryPager(
     HorizontalPager(
         state = pagerState,
         modifier = modifier
-            .fillMaxSize()
-            .pointerInput(Unit) {},
+            .fillMaxSize(),
         userScrollEnabled = false
     ) { page ->
         when (val content = state.pages.getOrNull(page)) {
@@ -456,6 +452,7 @@ private fun BakeryStorySummaryPreview() {
 
 private val previewPages = listOf(
     StoryPageUi.Totals(
+        periodTitle = "October 2026",
         totalListens = 1_284,
         totalListenedMillis = 21_834_000L
     ),

@@ -9,15 +9,16 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.sosauce.chocola.core.data.library.AbstractTracksScanner
+import com.sosauce.chocola.core.data.local.FavoritesDao
 import com.sosauce.chocola.core.data.datastore.UserPreferences
 import com.sosauce.chocola.core.domain.model.CuteTrack
 import com.sosauce.chocola.core.domain.model.SearchSettings
 import com.sosauce.chocola.core.domain.library.search
+import com.sosauce.chocola.core.domain.util.combine
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
@@ -27,7 +28,8 @@ import kotlin.time.Duration.Companion.milliseconds
 class MainViewModel(
     private val application: Application,
     private val abstractTracksScanner: AbstractTracksScanner,
-    private val userPreferences: UserPreferences
+    private val userPreferences: UserPreferences,
+    private val favoritesDao: FavoritesDao
 ) : AndroidViewModel(application) {
 
     val textFieldState = TextFieldState()
@@ -39,8 +41,11 @@ class MainViewModel(
         searchQuery,
         userPreferences.getHiddenFolders,
         userPreferences.getGroupByFolders,
-    ) { tracks: List<CuteTrack>, searchSettings: SearchSettings, query: CharSequence, hiddenFolders: Set<String>, groupByFolders: Boolean ->
-        val filteredTracks = tracks.search(query.toString(), searchSettings)
+        favoritesDao.observeTrackIds()
+    ) { tracks: List<CuteTrack>, searchSettings: SearchSettings, query: CharSequence, hiddenFolders: Set<String>, groupByFolders: Boolean, favoriteIds: List<Long> ->
+        val prioritizedTracks = tracks.map { it.copy(isFavorite = it.mediaId.toLongOrNull() in favoriteIds) }
+            .sortedByDescending { it.isFavorite }
+        val filteredTracks = prioritizedTracks.search(query.toString(), searchSettings)
         MainState(
             isLoading = false,
             tracks = filteredTracks,

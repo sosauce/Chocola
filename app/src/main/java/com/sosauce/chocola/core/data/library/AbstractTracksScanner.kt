@@ -161,6 +161,7 @@ class AbstractTracksScanner(
         val folderColumn = getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
         val trackNbColumn = getColumnIndexOrThrow(MediaStore.Audio.Media.TRACK)
         val albumIdColumn = getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID)
+        val artistIdColumn = getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST_ID)
 
         while (moveToNext()) {
 
@@ -173,6 +174,7 @@ class AbstractTracksScanner(
             val folder = filePath.substringBeforeLast('/')
             val trackNumber = getInt(trackNbColumn)
             val albumId = getLong(albumIdColumn)
+            val artistId = getLong(artistIdColumn)
             val uri = ContentUris.withAppendedId(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 id
@@ -194,7 +196,8 @@ class AbstractTracksScanner(
                     folder = folder,
                     path = filePath,
                     isSaf = false,
-                    albumId = albumId
+                    albumId = albumId,
+                    artistId = artistId
                 )
             )
         }
@@ -245,7 +248,8 @@ class AbstractTracksScanner(
             MediaStore.Audio.Media.ALBUM,
             MediaStore.Audio.Media.DATA,
             MediaStore.Audio.Media.TRACK,
-            MediaStore.Audio.Media.ALBUM_ID
+            MediaStore.Audio.Media.ALBUM_ID,
+            MediaStore.Audio.Media.ARTIST_ID
         )
     }
 

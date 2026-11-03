@@ -2,6 +2,11 @@
 
 package com.sosauce.chocola.feature.bakery.presentation.story.pages
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -13,21 +18,28 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -37,7 +49,10 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.sosauce.chocola.R
 import com.sosauce.chocola.core.designsystem.components.CuteListItem
+import com.sosauce.chocola.core.designsystem.theme.sansFlexCustomWidth
 import com.sosauce.chocola.core.presentation.util.getCuteItemShape
+import com.sosauce.chocola.feature.bakery.presentation.components.InfoPill
+import com.sosauce.chocola.feature.bakery.presentation.components.MiniArtwork
 import com.sosauce.chocola.feature.bakery.presentation.model.AlbumStatUi
 import com.sosauce.chocola.feature.bakery.presentation.model.ArtistStatUi
 import com.sosauce.chocola.feature.bakery.presentation.model.PeriodId
@@ -46,80 +61,108 @@ import com.sosauce.chocola.feature.bakery.presentation.model.StoryPageUi
 import com.sosauce.chocola.feature.bakery.presentation.model.StreakUi
 import com.sosauce.chocola.feature.bakery.presentation.model.TopDayUi
 import com.sosauce.chocola.feature.bakery.presentation.model.TrackStatUi
+import com.sosauce.nekobites.components.Spacer
 import sv.lib.squircleshape.CornerSmoothing
 import sv.lib.squircleshape.SquircleShape
 
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SummaryPage(
     summary: StoryPageUi.Summary,
     modifier: Modifier = Modifier
 ) {
+    val colors = MaterialTheme.colorScheme
+
+    val transition = rememberInfiniteTransition(label = "cookies")
+    val spinA by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(tween(48_000, easing = LinearEasing)),
+        label = "spinA"
+    )
+    val spinB by transition.animateFloat(
+        initialValue = 360f,
+        targetValue = 0f,
+        animationSpec = infiniteRepeatable(tween(36_000, easing = LinearEasing)),
+        label = "spinB"
+    )
 
     Box(
-        modifier = modifier
-            .padding(top = 15.dp)
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.55f),
-                        MaterialTheme.colorScheme.background,
-                        MaterialTheme.colorScheme.background
-                    )
-                ),
-                RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp)
-            )
+        modifier = modifier,
+        contentAlignment = Alignment.Center
     ) {
-        Icon(
-            painter = painterResource(R.drawable.cookie),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.06f),
+        Box(
             modifier = Modifier
-                .size(260.dp)
-                .align(Alignment.TopEnd)
+                .size(280.dp)
+                .align(Alignment.Center)
+                .offset(x = 90.dp, y = (-40).dp)
+                .graphicsLayer { rotationZ = spinA }
+                .background(
+                    color = colors.primary.copy(alpha = 0.10f),
+                    shape = MaterialShapes.Cookie12Sided.toShape()
+                )
+        )
+
+        Box(
+            modifier = Modifier
+                .size(220.dp)
+                .align(Alignment.Center)
+                .offset(x = (-80).dp, y = 70.dp)
+                .graphicsLayer { rotationZ = spinB }
+                .background(
+                    color = colors.tertiary.copy(alpha = 0.12f),
+                    shape = MaterialShapes.Cookie9Sided.toShape()
+                )
         )
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(26.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Column {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+            // ── header
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Surface(
+                    shape = CircleShape,
+                    color = colors.primary,
+                    contentColor = colors.onPrimary
                 ) {
                     Text(
                         text = stringResource(R.string.bakery_summary_title),
                         style = MaterialTheme.typography.labelLargeEmphasized,
-                        color = MaterialTheme.colorScheme.primary
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
                     )
                 }
-
                 Text(
                     text = summary.title,
                     style = MaterialTheme.typography.displaySmallEmphasized,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
+            }
 
-                Spacer(Modifier.height(16.dp))
-
-                Row(verticalAlignment = Alignment.Bottom) {
+            // ── big number
+            Column {
+                Row(
+                    verticalAlignment = Alignment.Bottom,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     Text(
                         text = summary.totalListens.toString(),
-                        style = MaterialTheme.typography.displayMediumEmphasized,
-                        color = MaterialTheme.colorScheme.primary
+                        style = MaterialTheme.typography.displayMediumEmphasized.copy(
+                            color = colors.primary,
+                            fontFamily = sansFlexCustomWidth(300f)
+                        ),
+                        maxLines = 1,
+                        modifier = Modifier.weight(1f, fill = false)
                     )
-                    Spacer(Modifier.width(8.dp))
                     Text(
                         text = stringResource(R.string.listens),
                         style = MaterialTheme.typography.titleMediumEmphasized,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = 5.dp)
+                        color = colors.onSurfaceVariant,
+                        modifier = Modifier.padding(bottom = 6.dp)
                     )
                 }
                 Text(
@@ -128,46 +171,60 @@ fun SummaryPage(
                         formatListeningTime(summary.totalListenedMillis)
                     ),
                     style = MaterialTheme.typography.bodyMediumEmphasized,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = colors.onSurfaceVariant
                 )
+            }
 
-                Spacer(Modifier.height(18.dp))
+            summary.topTrack?.let { track ->
+                TopTrackCard(track = track)
+            }
 
-                summary.topTrack?.let { track ->
-                    TopTrackCard(track = track)
-                }
-
-                Spacer(Modifier.height(12.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(5.dp)
-                ) {
-                    SummaryStat(
+            // ── pills grid
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    InfoPill(
                         label = stringResource(R.string.top_artist),
+                        icon = {
+                            Icon(
+                                painter = painterResource(R.drawable.artists_filled),
+                                contentDescription = null
+                            )
+                        },
                         value = summary.topArtist?.name ?: "-",
                         modifier = Modifier.weight(1f)
                     )
-                    SummaryStat(
+                    InfoPill(
                         label = stringResource(R.string.current_streak),
+                        icon = {
+                            Icon(
+                                painter = painterResource(R.drawable.streak_filled),
+                                contentDescription = null
+                            )
+                        },
                         value = summary.streak.current.toString(),
                         modifier = Modifier.weight(1f)
                     )
                 }
-
-                Spacer(Modifier.height(5.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(5.dp)
-                ) {
-                    SummaryStat(
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    InfoPill(
                         label = stringResource(R.string.album),
+                        icon = {
+                            Icon(
+                                painter = painterResource(R.drawable.album_filled),
+                                contentDescription = null
+                            )
+                        },
                         value = summary.topAlbum?.name ?: "-",
                         modifier = Modifier.weight(1f)
                     )
-                    SummaryStat(
+                    InfoPill(
                         label = stringResource(R.string.bakery_top_day),
+                        icon = {
+                            Icon(
+                                painter = painterResource(R.drawable.calendar_filled),
+                                contentDescription = null
+                            )
+                        },
                         value = summary.topDay?.label ?: "-",
                         modifier = Modifier.weight(1f)
                     )
@@ -179,151 +236,70 @@ fun SummaryPage(
 
 @Composable
 private fun TopTrackCard(track: TrackStatUi) {
-
-
-    Column {
-
-        CuteListItem(
-            onClick = null,
-            shape = RoundedCornerShape(24.dp),
-            backgroundColor =  MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.85f),
-            leadingContent = {
-                Box(
-                    modifier = Modifier
-                        .padding(start = 10.dp)
-                        .size(50.dp)
-                        .clip(SquircleShape(smoothing = CornerSmoothing.Full))
-                        .background(MaterialTheme.colorScheme.surfaceContainerHigh),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.music_note),
-                        contentDescription = null
-                    )
-                    AsyncImage(
-                        model = track.artworkUri,
-                        contentDescription = stringResource(R.string.artwork),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            },
-            trailingContent = {
-                Text(
-                    text = stringResource(R.string.listens_count_value, track.listenCount),
-                    style = MaterialTheme.typography.labelMediumEmphasized.copy(
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    ),
-                    modifier = Modifier.padding(end = 10.dp)
-                )
-            }
-        ) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+    ) {
+        Column(Modifier.padding(horizontal = 14.dp, vertical = 12.dp)) {
             Text(
-                text = track.title,
-                maxLines = 1,
-                style = MaterialTheme.typography.titleMediumEmphasized,
-                modifier = Modifier.basicMarquee()
-            )
-            Text(
-                text = track.artist,
-                maxLines = 1,
-                style = MaterialTheme.typography.bodyLargeEmphasized.copy(
+                text = stringResource(R.string.top_track),
+                style = MaterialTheme.typography.labelSmallEmphasized.copy(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 ),
-                modifier = Modifier.basicMarquee()
             )
+            Spacer(10.dp)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                MiniArtwork(artworkUri = track.artworkUri)
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = track.title,
+                        style = MaterialTheme.typography.titleSmallEmphasized.copy(
+                            color = MaterialTheme.colorScheme.onSurface
+                        ),
+                        maxLines = 1,
+                        modifier = Modifier.basicMarquee()
+                    )
+                    Text(
+                        text = track.artist,
+                        style = MaterialTheme.typography.bodySmallEmphasized.copy(
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        ),
+                        maxLines = 1,
+                        modifier = Modifier.basicMarquee()
+                    )
+                }
+
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.music_note),
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(4.dp)
+                        Text(
+                            text = track.listenCount.toString(),
+                            style = MaterialTheme.typography.labelMediumEmphasized
+                        )
+                    }
+                }
+            }
         }
     }
-//    Surface(
-//        shape = MaterialTheme.shapes.extraLarge,
-//        color = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.85f)
-//    ) {
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(12.dp),
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            Box(
-//                modifier = Modifier
-//                    .size(50.dp)
-//                    .clip(RoundedCornerShape(12.dp))
-//                    .background(MaterialTheme.colorScheme.surfaceContainerHighest),
-//                contentAlignment = Alignment.Center
-//            ) {
-//                Icon(
-//                    painter = painterResource(R.drawable.music_note),
-//                    contentDescription = null,
-//                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-//                    modifier = Modifier.size(22.dp)
-//                )
-//                if (track.artworkUri != null) {
-//                    AsyncImage(
-//                        model = track.artworkUri,
-//                        contentDescription = stringResource(R.string.artwork),
-//                        contentScale = ContentScale.Crop,
-//                        modifier = Modifier.matchParentSize()
-//                    )
-//                }
-//            }
-//
-//            Spacer(Modifier.width(12.dp))
-//
-//            Column(modifier = Modifier.weight(1f)) {
-//                Text(
-//                    text = stringResource(R.string.top_track),
-//                    style = MaterialTheme.typography.labelSmallEmphasized,
-//                    color = MaterialTheme.colorScheme.onSurfaceVariant
-//                )
-//                Text(
-//                    text = track.title,
-//                    style = MaterialTheme.typography.titleSmallEmphasized,
-//                    maxLines = 1,
-//                    overflow = TextOverflow.Ellipsis
-//                )
-//                Text(
-//                    text = track.artist,
-//                    style = MaterialTheme.typography.bodySmallEmphasized,
-//                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-//                    maxLines = 1,
-//                    overflow = TextOverflow.Ellipsis
-//                )
-//            }
-//
-//            Text(
-//                text = stringResource(R.string.listens_count_value, track.listenCount),
-//                style = MaterialTheme.typography.labelMediumEmphasized,
-//                color = MaterialTheme.colorScheme.onSurfaceVariant
-//            )
-//        }
-//    }
 }
 
-@Composable
-private fun SummaryStat(
-    label: String,
-    value: String,
-    modifier: Modifier = Modifier
-) {
-    Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.7f)
-    ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelSmallEmphasized,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                text = value,
-                style = MaterialTheme.typography.titleSmallEmphasized,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-    }
-}
 
 @Composable
 private fun formatListeningTime(millis: Long): String {

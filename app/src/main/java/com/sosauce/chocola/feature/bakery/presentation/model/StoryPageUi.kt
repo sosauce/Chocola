@@ -7,6 +7,7 @@ sealed interface StoryPageUi {
 
     @Immutable
     data class Totals(
+        val periodTitle: String,
         val totalListens: Int,
         val totalListenedMillis: Long
     ) : StoryPageUi

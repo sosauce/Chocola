@@ -56,6 +56,9 @@ sealed interface PlayerActions {
     data class LoadLyrics(
         val uri: Uri
     ) : PlayerActions
+    data class ToggleFavorite(val mediaId: Long) : PlayerActions
+    data class ToggleAlbumFavorite(val mediaId: Long) : PlayerActions
+    data class ToggleArtistFavorite(val mediaId: Long) : PlayerActions
 }
 
 sealed interface PlaySource {

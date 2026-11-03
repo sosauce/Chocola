@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="add_favorite">Add to favorites</string>
+    <string name="remove_favorite">Remove from favorites</string>
+    <string name="favorite_playlists">Favorites</string>
+    <string name="other_playlists">Playlists</string>
     <string name="app_name" translatable="false">Chocola</string>
     <string name="theme">Theme</string>
     <string name="settings">Settings</string>

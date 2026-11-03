@@ -9,6 +9,7 @@ import androidx.compose.ui.util.fastFilter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sosauce.chocola.core.data.library.AbstractTracksScanner
+import com.sosauce.chocola.core.data.local.FavoritesDao
 import com.sosauce.chocola.core.data.datastore.UserPreferences
 import com.sosauce.chocola.core.domain.model.Album
 import com.sosauce.chocola.core.domain.model.Artist
@@ -27,7 +28,8 @@ import kotlin.time.Duration.Companion.milliseconds
 class ArtistDetailsViewModel(
     private val artistName: String,
     private val userPreferences: UserPreferences,
-    private val abstractTracksScanner: AbstractTracksScanner
+    private val abstractTracksScanner: AbstractTracksScanner,
+    private val favoritesDao: FavoritesDao
 ) : ViewModel() {
 
     val textFieldState = TextFieldState()
@@ -36,13 +38,14 @@ class ArtistDetailsViewModel(
 
 
     val state = combine(
-        abstractTracksScanner.latestTracks(),
+        combine(abstractTracksScanner.latestTracks(), favoritesDao.observeArtistIds()) { tracks, ids -> tracks to ids },
         userPreferences.searchSettings(),
         searchQuery
-    ) { tracks, settings, query ->
+    ) { (tracks, favoriteIds), settings, query ->
         val searched = tracks
             .fastFilter { it.artist == artistName }
             .search(query.toString(), settings)
+        val artistId = searched.firstOrNull()?.artistId ?: tracks.firstOrNull { it.artist == artistName }?.artistId ?: -1L
 
         val albums = searched
             .groupBy { it.album }
@@ -50,6 +53,7 @@ class ArtistDetailsViewModel(
                 val lastTrack = tracks.last()
 
                 Album(
+                    id = lastTrack.albumId,
                     name = albumName,
                     artist = artistName,
                     tracks = tracks,
@@ -62,7 +66,10 @@ class ArtistDetailsViewModel(
         ArtistDetailsState(
             isLoading = false,
             artist = Artist(
-                name = artistName
+                name = artistName,
+                id = artistId,
+                isFavorite = artistId in favoriteIds,
+                albumId = searched.firstOrNull()?.albumId ?: 0L
             ),
             tracks = searched,
             albums = albums

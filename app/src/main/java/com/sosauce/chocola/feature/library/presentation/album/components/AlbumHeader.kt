@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,6 +29,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import coil3.compose.AsyncImage
 import com.sosauce.chocola.R
@@ -92,6 +96,14 @@ fun SharedTransitionScope.AlbumHeader(
                 )
             }
 
+            IconButton(onClick = { onHandlePlayerActions(PlayerActions.ToggleAlbumFavorite(album.id)) }) {
+                Icon(
+                    painter = painterResource(R.drawable.favorite_filled),
+                    contentDescription = stringResource(if (album.isFavorite) R.string.remove_favorite else R.string.add_favorite),
+                    tint = if (album.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
             AnimatedFab(
                 onClick = { onHandlePlayerActions(PlayerActions.AddToQueue(album.tracks)) },
                 icon = R.drawable.add_to_queue,
@@ -112,4 +124,3 @@ fun SharedTransitionScope.AlbumHeader(
         }
     }
 }
-

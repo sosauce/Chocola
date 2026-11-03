@@ -33,6 +33,10 @@ import coil3.toUri
 import com.google.common.util.concurrent.MoreExecutors
 import com.sosauce.chocola.app.PlaybackService
 import com.sosauce.chocola.core.data.library.AbstractTracksScanner
+import com.sosauce.chocola.core.data.local.FavoritesDao
+import com.sosauce.chocola.core.data.local.FavoriteTrackEntity
+import com.sosauce.chocola.core.data.local.FavoriteAlbumEntity
+import com.sosauce.chocola.core.data.local.FavoriteArtistEntity
 import com.sosauce.chocola.core.data.lyrics.LyricsParser
 import com.sosauce.chocola.core.data.datastore.UserPreferences
 import com.sosauce.chocola.core.data.mapper.toMediaItem
@@ -52,6 +56,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -62,7 +67,8 @@ class MusicViewModel(
     private val application: Application,
     private val userPreferences: UserPreferences,
     private val lyricsParser: LyricsParser,
-    private val abstractTracksScanner: AbstractTracksScanner
+    private val abstractTracksScanner: AbstractTracksScanner,
+    private val favoritesDao: FavoritesDao
 ) : AndroidViewModel(application) {
 
     private var mediaController: MediaController? = null
@@ -70,6 +76,7 @@ class MusicViewModel(
     val musicState = _musicState.asStateFlow()
 
     private val tracks = abstractTracksScanner.latestTracks()
+    @Volatile private var favoriteTrackIds: Set<Long> = emptySet()
 
     var artworkImageBitmap by mutableStateOf<ImageBitmap?>(null)
         private set
@@ -88,13 +95,14 @@ class MusicViewModel(
                 tracks.value.fastFirstOrNull { track ->
                     track.mediaId == mediaItem.mediaId
                 }?.also { track ->
+                    val trackWithFavorite = track.copy(isFavorite = track.mediaId.toLongOrNull() in favoriteTrackIds)
                     _musicState.update {
                         it.copy(
-                            track = track
+                            track = trackWithFavorite
                         )
                     }
-                    loadNewArt(track.artUri?.toUri())
-                    parseLyrics(track.path)
+                    loadNewArt(trackWithFavorite.artUri?.toUri())
+                    parseLyrics(trackWithFavorite.path)
 
                 }
             }
@@ -282,6 +290,14 @@ class MusicViewModel(
     }
 
     init {
+        viewModelScope.launch {
+            favoritesDao.observeTrackIds().collect { ids ->
+                favoriteTrackIds = ids.toSet()
+                _musicState.update { state ->
+                    state.copy(track = state.track.copy(isFavorite = state.track.mediaId.toLongOrNull() in ids))
+                }
+            }
+        }
         MediaController
             .Builder(
                 application,
@@ -358,7 +374,8 @@ class MusicViewModel(
             tracks.value.fastFirstOrNull { it.mediaId == mediaId }
         }
         liveTrack?.let { track ->
-            _musicState.update { it.copy(track = track) }
+            val trackWithFavorite = track.copy(isFavorite = track.mediaId.toLongOrNull() in favoriteTrackIds)
+            _musicState.update { it.copy(track = trackWithFavorite) }
         }
         updateLoadedMedias(controller.currentTimeline)
 
@@ -602,6 +619,21 @@ class MusicViewModel(
                         )
                     }
                 }
+            }
+
+            is PlayerActions.ToggleFavorite -> viewModelScope.launch {
+                if (favoritesDao.isTrackFavorite(action.mediaId)) favoritesDao.removeTrack(action.mediaId)
+                else favoritesDao.addTrack(FavoriteTrackEntity(action.mediaId, System.currentTimeMillis()))
+            }
+
+            is PlayerActions.ToggleAlbumFavorite -> viewModelScope.launch {
+                if (favoritesDao.isAlbumFavorite(action.mediaId)) favoritesDao.removeAlbum(action.mediaId)
+                else favoritesDao.addAlbum(FavoriteAlbumEntity(action.mediaId, System.currentTimeMillis()))
+            }
+
+            is PlayerActions.ToggleArtistFavorite -> viewModelScope.launch {
+                if (favoritesDao.isArtistFavorite(action.mediaId)) favoritesDao.removeArtist(action.mediaId)
+                else favoritesDao.addArtist(FavoriteArtistEntity(action.mediaId, System.currentTimeMillis()))
             }
 
             is PlayerActions.StartPlaylist -> {
