@@ -2,6 +2,7 @@
 
 package com.sosauce.chocola.feature.settings.presentation.components
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
@@ -112,7 +113,8 @@ fun SettingsSwitch(
     bottomDp: Dp,
     text: String,
     onCheckedChange: () -> Unit,
-    @StringRes optionalDescription: Int? = null
+    @StringRes optionalDescription: Int? = null,
+    @DrawableRes icon: Int? = null
 ) {
     Card(
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
@@ -135,6 +137,13 @@ fun SettingsSwitch(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.weight(1f)
             ) {
+                icon?.let {
+                    Icon(
+                        painter = painterResource(it),
+                        contentDescription = null
+                    )
+                    Spacer(15.dp)
+                }
                 Column {
                     Text(text)
                     optionalDescription?.let {

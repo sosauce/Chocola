@@ -16,6 +16,9 @@ sealed class SettingsScreen : NavKey {
     data object NowPlaying : SettingsScreen()
 
     @Serializable
+    data object NowPlayingButtons : SettingsScreen()
+
+    @Serializable
     data object Playback : SettingsScreen()
 
     @Serializable

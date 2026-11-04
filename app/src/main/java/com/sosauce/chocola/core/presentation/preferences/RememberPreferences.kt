@@ -3,6 +3,8 @@
 package com.sosauce.chocola.core.presentation.preferences
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.ALBUM_SORT
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.AOD_ENABLE_GESTURES
@@ -50,12 +52,15 @@ import com.sosauce.chocola.core.data.datastore.PreferencesKeys.USE_ART_THEME
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.USE_SYSTEM_FONT
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.WHITELISTED_FOLDERS
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.NEW_FOLDER_POLICY
+import com.sosauce.chocola.core.data.datastore.PreferencesKeys.NOW_PLAYING_HIDDEN_BUTTONS
 import com.sosauce.chocola.core.data.datastore.dataStore
 import com.sosauce.chocola.core.designsystem.ArtworkShape
 import com.sosauce.chocola.core.designsystem.CutePaletteStyle
 import com.sosauce.chocola.core.designsystem.CuteTheme
 import com.sosauce.chocola.core.designsystem.LyricsAlignment
 import com.sosauce.chocola.core.designsystem.NewFolderPolicy
+import com.sosauce.chocola.core.designsystem.NowPlayingButton
+import com.sosauce.chocola.core.designsystem.toHiddenNowPlayingButtons
 import com.sosauce.chocola.core.designsystem.ThumbStyle
 import com.sosauce.chocola.core.designsystem.TrackStyle
 import com.sosauce.chocola.core.presentation.navigation.Screen
@@ -246,6 +251,13 @@ fun rememberAutoAddSubfolders() =
 @Composable
 fun rememberNewFolderPolicy() =
     rememberPreference(key = NEW_FOLDER_POLICY, defaultValue = NewFolderPolicy.BLACKLIST)
+
+/** Read-only: hidden now playing buttons, unknown stored names are ignored. */
+@Composable
+fun rememberHiddenNowPlayingButtons(): Set<NowPlayingButton> {
+    val stored by rememberPreference(key = NOW_PLAYING_HIDDEN_BUTTONS, defaultValue = emptySet())
+    return remember(stored) { stored.toHiddenNowPlayingButtons() }
+}
 
 @Composable
 fun rememberInitialScreenBlocking(): Screen {

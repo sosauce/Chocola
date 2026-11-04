@@ -246,4 +246,16 @@
     <string name="whitelist_folder_tree_desc">Wybierz folder. Zostanie on dodany do białej listy wraz z obecnymi i nowo dodawanymi podfolderami</string>
     <string name="no_folder_picker">Na tym urządzeniu nie znaleziono narzędzia do wyboru folderów</string>
     <string name="folder_tree_unsupported">Można wybierać tylko foldery znajdujące się w pamięci urządzenia</string>
+    <string name="now_playing_buttons">Przyciski odtwarzacza</string>
+    <string name="now_playing_buttons_desc">Wybierz, które przyciski są widoczne na ekranie odtwarzania</string>
+    <string name="now_playing_preview">Podgląd ekranu odtwarzania</string>
+    <string name="queue">Kolejka</string>
+    <string name="more_options">Więcej opcji</string>
+    <string name="next_song">Następny utwór</string>
+    <string name="rewind">Przewiń do tyłu</string>
+    <string name="fast_forward">Przewiń do przodu</string>
+    <string name="shuffle">Losowo</string>
+    <string name="repeat">Powtarzaj</string>
+    <string name="favorite">Ulubione</string>
+    <string name="sleep_timer">Wyłącznik czasowy</string>
 </resources>

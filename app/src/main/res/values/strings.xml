@@ -274,4 +274,16 @@
     <string name="listens_count_value">%1$d listens</string>
     <string name="monthly_bakeries">Monthly bakeries</string>
     <string name="yearly_bakeries">Yearly bakeries</string>
+    <string name="now_playing_buttons">Now playing buttons</string>
+    <string name="now_playing_buttons_desc">Choose which buttons are shown on the now playing screen</string>
+    <string name="now_playing_preview">Now playing screen preview</string>
+    <string name="queue">Queue</string>
+    <string name="more_options">More options</string>
+    <string name="next_song">Next Song</string>
+    <string name="rewind">Rewind</string>
+    <string name="fast_forward">Fast forward</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="repeat">Repeat</string>
+    <string name="favorite">Favorite</string>
+    <string name="sleep_timer">Sleep timer</string>
 </resources>
