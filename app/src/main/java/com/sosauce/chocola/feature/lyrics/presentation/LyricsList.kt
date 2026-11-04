@@ -85,7 +85,7 @@ fun LyricsList(
 
     LaunchedEffect(currentLyricIndex) {
         if (currentLyricIndex != -1) {
-            lazyListState.animateScrollToItem(currentLyricIndex, lyricsFontSize*-1)
+            lazyListState.animateScrollToItem(currentLyricIndex)
         }
     }
 

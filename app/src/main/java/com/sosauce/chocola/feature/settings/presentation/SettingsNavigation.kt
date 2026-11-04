@@ -5,9 +5,6 @@ package com.sosauce.chocola.feature.settings.presentation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -16,7 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
@@ -30,7 +26,6 @@ import com.sosauce.nekobites.components.LazyRowWithScrollButton
 fun SettingsNavigation() {
 
     var initialScreen by rememberInitialScreen()
-    val lazyListState = rememberLazyListState()
 
     val screenItems = listOf(
         ScreenItem(
@@ -58,7 +53,7 @@ fun SettingsNavigation() {
             text = R.string.playlists,
             isSelected = initialScreen == Screen.Playlists.toString()
         )
-    ).toMutableStateList()
+    )
 
     Column {
         SettingsWithTitle(
@@ -72,19 +67,15 @@ fun SettingsNavigation() {
                 shape = RoundedCornerShape(24.dp)
             ) {
                 Column {
-                    LazyRow(
-                        state = lazyListState
-                    ) {
-                        items(
-                            items = screenItems
-                        ) { screen ->
-                            SettingsSelector(
-                                onClick = screen.onClick,
-                                icon = screen.icon,
-                                text = screen.text,
-                                isSelected = screen.isSelected
-                            )
-                        }
+                    LazyRowWithScrollButton(
+                        items = screenItems
+                    ) { screen ->
+                        SettingsSelector(
+                            onClick = screen.onClick,
+                            icon = screen.icon,
+                            text = screen.text,
+                            isSelected = screen.isSelected
+                        )
                     }
                 }
             }

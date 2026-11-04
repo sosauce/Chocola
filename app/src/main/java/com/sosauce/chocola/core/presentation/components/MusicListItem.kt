@@ -87,7 +87,7 @@ fun MusicListItem(
     )
 
     val background by animateColorAsState(
-        targetValue = if (isActive) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f) else backgroundColor
+        targetValue = if (isActive) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f) else backgroundColor
     )
 
     CuteListItem(

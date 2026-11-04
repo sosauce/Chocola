@@ -50,7 +50,7 @@ class ArtistsViewModel(
                 }
                 var numberAlbums = 0
                 Artist(
-                    id = Random.nextLong(),
+                    id = tracks.firstOrNull()?.artistId ?: -1L,
                     tracks = tracks,
                     numberAlbums = numberAlbums,
                     name = artist,
