@@ -83,6 +83,7 @@ data object PreferencesKeys {
     val AOD_SHOW_CONTROLS = booleanPreferencesKey("AOD_SHOW_CONTROLS")
     val AUTO_ADD_SUBFOLDERS = booleanPreferencesKey("AUTO_ADD_SUBFOLDERS")
     val NEW_FOLDER_POLICY = stringPreferencesKey("NEW_FOLDER_POLICY")
+    val HIDE_SINGLE_ALBUM = booleanPreferencesKey("HIDE_SINGLE_ALBUM")
 
 }
 

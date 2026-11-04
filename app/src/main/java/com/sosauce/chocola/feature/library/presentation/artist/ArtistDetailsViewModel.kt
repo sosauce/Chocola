@@ -40,8 +40,9 @@ class ArtistDetailsViewModel(
     val state = combine(
         combine(abstractTracksScanner.latestTracks(), favoritesDao.observeArtistIds()) { tracks, ids -> tracks to ids },
         userPreferences.searchSettings(),
+        userPreferences.getHideSingleAlbums(),
         searchQuery
-    ) { (tracks, favoriteIds), settings, query ->
+    ) { (tracks, favoriteIds), settings, hideSingleAlbums, query ->
         val searched = tracks
             .fastFilter { it.artist == artistName }
             .search(query.toString(), settings)
@@ -59,6 +60,9 @@ class ArtistDetailsViewModel(
                     art = ImageUtils.getAlbumArt(lastTrack.albumId)
                 )
             }
+        if (hideSingleAlbums) {
+            albums = albums.filter { it.tracks.size > 1 }
+        }
 
 
 

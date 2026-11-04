@@ -41,8 +41,9 @@ class AlbumsViewModel(
         userPreferences.getRegexFilter,
         userPreferences.getMatchCaseFilter,
         userPreferences.sortAlbumsAscending,
+        userPreferences.getHideSingleAlbums(),
         searchQuery
-    ) { (tracks, favAlbumIds), sort, regex, matchCase, ascending, query ->
+    ) { (tracks, favAlbumIds), sort, regex, matchCase, ascending, hideSingleAlbums, query ->
         var albums = tracks
             .groupBy { it.album }
             .map { (album, albumTracks) ->
@@ -61,6 +62,8 @@ class AlbumsViewModel(
             }
             .ordered(sort, regex, matchCase, ascending, query.toString())
             .sortedByDescending { it.isFavorite }
+
+        if (hideSingleAlbums) albums = albums.filter { it.tracks.size > 1 }
 
         AlbumsState(
             isLoading = false,

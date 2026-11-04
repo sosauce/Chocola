@@ -21,6 +21,7 @@ import com.sosauce.chocola.core.data.datastore.PreferencesKeys.HAS_BEEN_THROUGH_
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.HAS_SEEN_TIP
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.HIDDEN_FOLDERS
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.HIDDEN_TRACKS
+import com.sosauce.chocola.core.data.datastore.PreferencesKeys.HIDE_SINGLE_ALBUM
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.INITIAL_SCREEN
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.KEEP_ALIVE
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.LYRICS_ALIGNMENT
@@ -248,6 +249,10 @@ fun rememberNewFolderPolicy() =
     rememberPreference(key = NEW_FOLDER_POLICY, defaultValue = NewFolderPolicy.BLACKLIST)
 
 @Composable
+fun rememberHideSingleAlbums() =
+    rememberPreference(key = HIDE_SINGLE_ALBUM, defaultValue = false)
+
+@Composable
 fun rememberInitialScreenBlocking(): Screen {
     val context = LocalContext.current
 
@@ -272,4 +277,3 @@ fun rememberInitialScreenBlocking(): Screen {
 //        defaultValue = LastPlayed("", 0L),
 //        context = context
 //    )
-

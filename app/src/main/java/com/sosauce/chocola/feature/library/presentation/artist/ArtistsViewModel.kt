@@ -39,8 +39,9 @@ class ArtistsViewModel(
         userPreferences.getRegexFilter,
         userPreferences.getMatchCaseFilter,
         userPreferences.sortArtistsAscending,
+        userPreferences.getHideSingleAlbums(),
         searchQuery
-    ) { (tracks, favoriteIds), sort, regex, matchCase, ascending, query ->
+    ) { (tracks, favoriteIds), sort, regex, matchCase, ascending, hideSingleAlbums, query ->
         val artists = tracks.groupBy { it.artist }
             .map { (artist, tracks) ->
                 val albums = mutableMapOf<String, Int>()
@@ -49,8 +50,11 @@ class ArtistsViewModel(
                     else albums[track.album] = albums[track.album]!! + 1
                 }
                 var numberAlbums = 0
+                if (hideSingleAlbums) {
+                    for ((album, size) in albums) if (size > 1) numberAlbums++
+                } else numberAlbums = albums.size
                 Artist(
-                    id = tracks.firstOrNull()?.artistId ?: -1L,
+                    id = Random.nextLong(),
                     tracks = tracks,
                     numberAlbums = numberAlbums,
                     name = artist,
