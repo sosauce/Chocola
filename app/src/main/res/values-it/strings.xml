@@ -167,4 +167,16 @@
     <string name="rate_error">L\'intervallo deve essere tra %1$.1f e %2$d.</string>
     <string name="play_next">Riproduci come successivo</string>
     <string name="art_lyrics_desc">Mostra i testi direttamente sulla copertina invece che su una pagina separata. Clicca sulla copertina per visualizzare i testi.</string>
+    <string name="now_playing_buttons">Pulsanti della riproduzione</string>
+    <string name="now_playing_buttons_desc">Scegli quali pulsanti mostrare nella schermata di riproduzione</string>
+    <string name="now_playing_preview">Anteprima della schermata di riproduzione</string>
+    <string name="queue">Coda</string>
+    <string name="more_options">Altre opzioni</string>
+    <string name="next_song">Brano successivo</string>
+    <string name="rewind">Riavvolgi</string>
+    <string name="fast_forward">Avanti veloce</string>
+    <string name="shuffle">Casuale</string>
+    <string name="repeat">Ripeti</string>
+    <string name="favorite">Preferito</string>
+    <string name="sleep_timer">Timer di spegnimento</string>
 </resources>

@@ -148,4 +148,16 @@
     <string name="artwork">Arte</string>
     <string name="playlist">Lista de reprodução</string>
     <string name="playlists">Listas de reprodução</string>
+    <string name="now_playing_buttons">Botões de reprodução</string>
+    <string name="now_playing_buttons_desc">Escolha que botões são mostrados no ecrã de reprodução</string>
+    <string name="now_playing_preview">Pré-visualização do ecrã de reprodução</string>
+    <string name="queue">Fila</string>
+    <string name="more_options">Mais opções</string>
+    <string name="next_song">Música seguinte</string>
+    <string name="rewind">Recuar</string>
+    <string name="fast_forward">Avançar</string>
+    <string name="shuffle">Aleatório</string>
+    <string name="repeat">Repetir</string>
+    <string name="favorite">Favorito</string>
+    <string name="sleep_timer">Temporizador de suspensão</string>
 </resources>

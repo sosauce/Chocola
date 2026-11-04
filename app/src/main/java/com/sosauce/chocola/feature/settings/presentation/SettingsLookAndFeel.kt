@@ -4,6 +4,8 @@ package com.sosauce.chocola.feature.settings.presentation
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,6 +28,7 @@ import com.sosauce.chocola.core.presentation.preferences.rememberUseArtTheme
 import com.sosauce.chocola.core.presentation.preferences.rememberUseSystemFont
 import com.sosauce.chocola.feature.settings.presentation.components.PaletteSelector
 import com.sosauce.chocola.feature.settings.presentation.components.SettingsCardHeader
+import com.sosauce.chocola.feature.settings.presentation.components.SettingsCategoryCard
 import com.sosauce.chocola.feature.settings.presentation.components.SettingsSelector
 import com.sosauce.chocola.feature.settings.presentation.components.SettingsSwitch
 import com.sosauce.chocola.feature.settings.presentation.components.SettingsWithTitle
@@ -36,7 +39,9 @@ import com.sosauce.chocola.core.designsystem.CuteTheme
 import com.sosauce.nekobites.components.LazyRowWithScrollButton
 
 @Composable
-fun SettingsLookAndFeel() {
+fun SettingsLookAndFeel(
+    onNavigateToNowPlayingButtons: () -> Unit
+) {
     var theme by rememberAppTheme()
     var useSystemFont by rememberUseSystemFont()
     var showShuffleButton by rememberShowShuffleButton()
@@ -191,6 +196,15 @@ fun SettingsLookAndFeel() {
         SettingsWithTitle(
             title = R.string.now_playing
         ) {
+            SettingsCategoryCard(
+                icon = R.drawable.unhide,
+                name = stringResource(R.string.now_playing_buttons),
+                description = stringResource(R.string.now_playing_buttons_desc),
+                topDp = 24.dp,
+                bottomDp = 24.dp,
+                onNavigate = onNavigateToNowPlayingButtons
+            )
+            Spacer(Modifier.height(8.dp))
             SettingsNowPlaying()
         }
     }

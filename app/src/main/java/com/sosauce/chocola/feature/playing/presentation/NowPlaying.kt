@@ -1,5 +1,12 @@
 package com.sosauce.chocola.feature.playing.presentation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,6 +37,9 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.skydoves.cloudy.cloudy
 import com.sosauce.chocola.R
+import com.sosauce.chocola.core.designsystem.NowPlayingButton
+import com.sosauce.chocola.core.presentation.preferences.rememberHiddenNowPlayingButtons
+import com.sosauce.chocola.feature.playing.presentation.components.hasVisibleQuickActions
 import com.sosauce.chocola.core.presentation.preferences.rememberIsLandscape
 import com.sosauce.chocola.core.presentation.preferences.rememberSnapSpeedAndPitch
 import com.sosauce.chocola.core.presentation.preferences.rememberUseArtAsBackground
@@ -54,10 +64,34 @@ fun NowPlaying(
     onNavigate: (Screen) -> Unit,
     onShrinkToSearchbar: () -> Unit = {}
 ) {
+    NowPlayingLayout(
+        modifier = modifier,
+        musicState = musicState,
+        hiddenButtons = rememberHiddenNowPlayingButtons(),
+        onHandlePlayerActions = onHandlePlayerActions,
+        onNavigate = onNavigate,
+        onShrinkToSearchbar = onShrinkToSearchbar
+    )
+}
+
+/**
+ * The now playing UI without reading which buttons are hidden, so the settings preview can render
+ * the exact same layout from its own state.
+ */
+@Composable
+fun NowPlayingLayout(
+    modifier: Modifier = Modifier,
+    musicState: MusicState,
+    hiddenButtons: Set<NowPlayingButton>,
+    onHandlePlayerActions: (PlayerActions) -> Unit,
+    onNavigate: (Screen) -> Unit,
+    onShrinkToSearchbar: () -> Unit = {}
+) {
     val isLandscape = rememberIsLandscape()
     if (isLandscape) {
         NowPlayingLandscape(
             musicState = musicState,
+            hiddenButtons = hiddenButtons,
             onHandlePlayerActions = onHandlePlayerActions,
             onNavigate = onNavigate,
             onShrinkToSearchbar = onShrinkToSearchbar
@@ -66,6 +100,7 @@ fun NowPlaying(
         NowPlayingContent(
             modifier = modifier,
             musicState = musicState,
+            hiddenButtons = hiddenButtons,
             onHandlePlayerActions = onHandlePlayerActions,
             onNavigate = onNavigate,
             onShrinkToSearchbar = onShrinkToSearchbar
@@ -78,6 +113,7 @@ fun NowPlaying(
 private fun NowPlayingContent(
     modifier: Modifier = Modifier,
     musicState: MusicState,
+    hiddenButtons: Set<NowPlayingButton>,
     onHandlePlayerActions: (PlayerActions) -> Unit,
     onNavigate: (Screen) -> Unit,
     onShrinkToSearchbar: () -> Unit
@@ -122,23 +158,29 @@ private fun NowPlayingContent(
                     containerColor = Color.Transparent
                 ),
                 navigationIcon = {
-                    IconButton(
-                        onClick = onShrinkToSearchbar,
-                        shapes = IconButtonDefaults.shapes(),
-                        colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                            contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
-                        ),
-                        modifier = Modifier
-                            .padding(start = 15.dp)
-                            .size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
-
+                    AnimatedVisibility(
+                        visible = NowPlayingButton.CLOSE !in hiddenButtons,
+                        enter = fadeIn() + expandHorizontally(),
+                        exit = fadeOut() + shrinkHorizontally()
                     ) {
-                        Icon(
-                            painter = painterResource(R.drawable.arrow_down),
-                            contentDescription = null,
-                            modifier = Modifier.size(28.dp)
-                        )
+                        IconButton(
+                            onClick = onShrinkToSearchbar,
+                            shapes = IconButtonDefaults.shapes(),
+                            colors = IconButtonDefaults.filledIconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                                contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
+                            ),
+                            modifier = Modifier
+                                .padding(start = 15.dp)
+                                .size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
+
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.arrow_down),
+                                contentDescription = null,
+                                modifier = Modifier.size(28.dp)
+                            )
+                        }
                     }
                 },
                 actions = {
@@ -147,20 +189,28 @@ private fun NowPlayingContent(
                         musicState = musicState,
                         onNavigate = onNavigate,
                         onShrinkToSearchbar = onShrinkToSearchbar,
-                        onHandlePlayerActions = onHandlePlayerActions
+                        onHandlePlayerActions = onHandlePlayerActions,
+                        hiddenButtons = hiddenButtons
                     )
                 }
             )
         },
         bottomBar = {
-            BottomAppBar(
-                containerColor = Color.Transparent
+            AnimatedVisibility(
+                visible = hasVisibleQuickActions(hiddenButtons),
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
             ) {
-                QuickActionsRow(
-                    musicState = musicState,
-                    onShowSpeedCard = { showSpeedCard = true },
-                    onHandlePlayerActions = onHandlePlayerActions
-                )
+                BottomAppBar(
+                    containerColor = Color.Transparent
+                ) {
+                    QuickActionsRow(
+                        musicState = musicState,
+                        onShowSpeedCard = { showSpeedCard = true },
+                        onHandlePlayerActions = onHandlePlayerActions,
+                        hiddenButtons = hiddenButtons
+                    )
+                }
             }
         }
     ) { paddingValues ->
@@ -199,7 +249,10 @@ private fun NowPlayingContent(
             TitleAndArtist(
                 title = musicState.track.title,
                 artist = musicState.track.artist,
-                album = musicState.track.album
+                album = musicState.track.album,
+                isFavorite = musicState.track.isFavorite,
+                onToggleFavorite = { musicState.track.mediaId.toLongOrNull()?.let { onHandlePlayerActions(PlayerActions.ToggleFavorite(it)) } },
+                hiddenButtons = hiddenButtons
             )
             CuteSlider(
                 musicState = musicState,
@@ -207,7 +260,8 @@ private fun NowPlayingContent(
             )
             ActionButtonsRow(
                 musicState = musicState,
-                onHandlePlayerActions = onHandlePlayerActions
+                onHandlePlayerActions = onHandlePlayerActions,
+                hiddenButtons = hiddenButtons
             )
         }
     }

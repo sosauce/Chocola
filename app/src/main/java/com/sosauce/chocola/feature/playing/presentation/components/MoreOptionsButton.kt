@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.DropdownMenuGroup
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.DropdownMenuPopup
@@ -39,6 +37,11 @@ import androidx.compose.ui.util.fastForEachIndexed
 import androidx.core.app.ShareCompat
 import androidx.core.net.toUri
 import com.sosauce.chocola.R
+import com.sosauce.chocola.core.designsystem.NowPlayingButton
+import com.sosauce.chocola.core.designsystem.components.AnimatedButtonGroup
+import com.sosauce.chocola.core.designsystem.components.animatedGroupItemShape
+import com.sosauce.chocola.core.designsystem.components.collapseHorizontally
+import com.sosauce.chocola.core.designsystem.components.rememberAnimatedGroupItems
 import com.sosauce.chocola.core.domain.model.CuteTrack
 import com.sosauce.chocola.core.domain.player.MusicState
 import com.sosauce.chocola.core.domain.player.PlayerActions
@@ -62,6 +65,7 @@ fun MoreOptionsButton(
     onNavigate: (Screen) -> Unit,
     onShrinkToSearchbar: () -> Unit = {},
     onHandlePlayerActions: (PlayerActions) -> Unit,
+    hiddenButtons: Set<NowPlayingButton> = emptySet(),
 ) {
 
     var showDetailsDialog by remember { mutableStateOf(false) }
@@ -99,100 +103,79 @@ fun MoreOptionsButton(
         onHandlePlayerActions = onHandlePlayerActions
     )
 
-    ButtonGroup(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(1.dp),
-        overflowIndicator = {}
-    ) {
-        customItem(
-            buttonGroupContent = {
-                IconButton(
-                    onClick = { onNavigate(Screen.Lyrics) },
-                    shape = RoundedCornerShape(
-                        topStart = 50.dp,
-                        bottomStart = 50.dp,
-                        topEnd = 2.dp,
-                        bottomEnd = 2.dp
-                    ),
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                        contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
-                    ),
-                    interactionSource = interactionSources[0],
-                    modifier = Modifier
-                        .size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
-                        .animateWidth(interactionSources[0])
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.lyrics_filled),
-                        contentDescription = null
-                    )
-                }
-            },
-            menuContent = {}
+    val items = rememberAnimatedGroupItems(keys = moreOptionsGroup, hidden = hiddenButtons)
+    // Hoisted out of the group so they survive items being added/removed around them
+    val shapes = items.associate { it.key to animatedGroupItemShape(it.position) }
+
+    AnimatedButtonGroup(
+        items = items,
+        spacing = 1.dp,
+        modifier = modifier
+    ) { item ->
+        val index = moreOptionsGroup.indexOf(item.key)
+        val shape = shapes.getValue(item.key)
+        val buttonModifier = Modifier
+            .collapseHorizontally(item)
+            .size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
+            .animateWidth(interactionSources[index])
+        val colors = IconButtonDefaults.filledIconButtonColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
         )
 
-        customItem(
-            buttonGroupContent = {
-                IconButton(
-                    onClick = {
-                        onShrinkToSearchbar()
-                        onNavigate(Screen.Queue)
-                    },
-                    shape = RoundedCornerShape(
-                        topStart = 2.dp,
-                        bottomStart = 2.dp,
-                        topEnd = 2.dp,
-                        bottomEnd = 2.dp
-                    ),
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                        contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
-                    ),
-                    interactionSource = interactionSources[1],
-                    modifier = Modifier
-                        .size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
-                        .animateWidth(interactionSources[1])
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.queue),
-                        contentDescription = null
-                    )
-                }
-            },
-            menuContent = {}
-        )
-        customItem(
-            buttonGroupContent = {
-                IconButton(
-                    onClick = {
-                        showMoreDialog = !showMoreDialog
-                    },
-                    shape = RoundedCornerShape(
-                        topStart = 2.dp,
-                        bottomStart = 2.dp,
-                        topEnd = 50.dp,
-                        bottomEnd = 50.dp
-                    ),
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                        contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
-                    ),
-                    interactionSource = interactionSources[2],
-                    modifier = Modifier
-                        .size(IconButtonDefaults.smallContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide))
-                        .animateWidth(interactionSources[2])
-                ) {
-                    AnimatedDrawable(
-                        drawable = AnimatedDrawableFile.MORE_HOR,
-                        atEnd = showMoreDialog
-                    )
-                }
-            },
-            menuContent = {}
-        )
+        when (item.key) {
+            NowPlayingButton.LYRICS -> IconButton(
+                onClick = { onNavigate(Screen.Lyrics) },
+                shape = shape,
+                colors = colors,
+                interactionSource = interactionSources[index],
+                modifier = buttonModifier
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.lyrics_filled),
+                    contentDescription = null
+                )
+            }
+
+            NowPlayingButton.QUEUE -> IconButton(
+                onClick = {
+                    onShrinkToSearchbar()
+                    onNavigate(Screen.Queue)
+                },
+                shape = shape,
+                colors = colors,
+                interactionSource = interactionSources[index],
+                modifier = buttonModifier
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.queue),
+                    contentDescription = null
+                )
+            }
+
+            else -> IconButton(
+                onClick = {
+                    showMoreDialog = !showMoreDialog
+                },
+                shape = shape,
+                colors = colors,
+                interactionSource = interactionSources[index],
+                modifier = buttonModifier
+            ) {
+                AnimatedDrawable(
+                    drawable = AnimatedDrawableFile.MORE_HOR,
+                    atEnd = showMoreDialog
+                )
+            }
+        }
     }
 }
+
+private val moreOptionsGroup = listOf(
+    NowPlayingButton.LYRICS,
+    NowPlayingButton.QUEUE,
+    NowPlayingButton.MORE_OPTIONS
+)
 
 @Composable
 private fun NowPlayingTrackDropdownMenu(

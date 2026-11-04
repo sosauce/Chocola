@@ -38,4 +38,16 @@
     <string name="error_saving">خطأ أثناء حفظ التغييرات.</string>
     <string name="cancel">الغاء</string>
     <string name="play_pause_button">زرار تشغيل / طفى الأغاني</string>
+    <string name="now_playing_buttons">زراير شاشة التشغيل</string>
+    <string name="now_playing_buttons_desc">اختار الزراير اللي تظهر في شاشة التشغيل</string>
+    <string name="now_playing_preview">معاينة شاشة التشغيل</string>
+    <string name="queue">قايمة الانتظار</string>
+    <string name="more_options">اختيارات تانية</string>
+    <string name="next_song">الأغنية الجاية</string>
+    <string name="rewind">رجوع</string>
+    <string name="fast_forward">تقديم سريع</string>
+    <string name="shuffle">عشوائي</string>
+    <string name="repeat">تكرار</string>
+    <string name="favorite">المفضلة</string>
+    <string name="sleep_timer">مؤقت النوم</string>
 </resources>

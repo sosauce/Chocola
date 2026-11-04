@@ -211,4 +211,16 @@
     <string name="art_lyrics">كلمات الأغاني الفنية</string>
     <string name="art_lyrics_desc">يعرض كلمات الأغنية مباشرةً على غلاف الألبوم بدلاً من صفحة منفصلة. انقر على غلاف الألبوم لعرض الكلمات.</string>
     <string name="play_next">تشغيل التالي</string>
+    <string name="now_playing_buttons">أزرار شاشة التشغيل</string>
+    <string name="now_playing_buttons_desc">اختر الأزرار التي تظهر في شاشة التشغيل الحالي</string>
+    <string name="now_playing_preview">معاينة شاشة التشغيل الحالي</string>
+    <string name="queue">قائمة الانتظار</string>
+    <string name="more_options">خيارات إضافية</string>
+    <string name="next_song">الأغنية التالية</string>
+    <string name="rewind">ترجيع</string>
+    <string name="fast_forward">تقديم سريع</string>
+    <string name="shuffle">ترتيب عشوائي</string>
+    <string name="repeat">تكرار</string>
+    <string name="favorite">المفضلة</string>
+    <string name="sleep_timer">مؤقت النوم</string>
 </resources>

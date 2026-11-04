@@ -31,6 +31,7 @@ import com.sosauce.chocola.feature.quickplay.presentation.QuickPlayViewModel
 import com.sosauce.chocola.feature.settings.presentation.BackupViewModel
 import com.sosauce.chocola.feature.setup.presentation.SetupViewModel
 import com.sosauce.chocola.feature.settings.presentation.PlaybackSettingsViewModel
+import com.sosauce.chocola.feature.settings.presentation.nowplayingbuttons.NowPlayingButtonsViewModel
 import com.sosauce.chocola.feature.settings.presentation.SettingsLibraryViewModel
 import com.sosauce.chocola.feature.transformer.presentation.TransformerViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -86,6 +87,7 @@ val appModule = module {
     viewModelOf(::AlbumDetailsViewModel)
     viewModelOf(::MainViewModel)
     viewModelOf(::PlaybackSettingsViewModel)
+    viewModelOf(::NowPlayingButtonsViewModel)
     viewModelOf(::TransformerViewModel)
     viewModelOf(::DeletionViewModel)
     viewModelOf(::LyricsEditorViewModel)
