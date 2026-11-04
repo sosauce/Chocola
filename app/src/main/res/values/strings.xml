@@ -286,4 +286,6 @@
     <string name="repeat">Repeat</string>
     <string name="favorite">Favorite</string>
     <string name="sleep_timer">Sleep timer</string>
+    <string name="hide_single_album">Hide single album</string>
+    <string name="hide_single_album_desc">Only show albums with more than 1 song in album lists</string>
 </resources>

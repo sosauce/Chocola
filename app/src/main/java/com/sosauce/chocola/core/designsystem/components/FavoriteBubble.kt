@@ -26,20 +26,9 @@ import com.sosauce.chocola.R
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun FavoriteBubble(modifier: Modifier = Modifier) {
-    val infinite = rememberInfiniteTransition()
-    val bounce by infinite.animateFloat(
-        initialValue = 0f,
-        targetValue = -8f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(2500),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
+
     Box(
         modifier = modifier
-            .graphicsLayer {
-                translationY = bounce
-            }
             .offset(x = (-6).dp, y = (-6).dp)
     ) {
         Box(
