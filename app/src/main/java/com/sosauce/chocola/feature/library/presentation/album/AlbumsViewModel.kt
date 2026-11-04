@@ -9,7 +9,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sosauce.chocola.core.data.library.AbstractTracksScanner
-import com.sosauce.chocola.core.data.local.FavoritesDao
 import com.sosauce.chocola.core.data.datastore.UserPreferences
 import com.sosauce.chocola.core.domain.model.Album
 import com.sosauce.chocola.core.domain.util.combine
@@ -22,6 +21,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlin.time.Duration.Companion.milliseconds
 import androidx.core.net.toUri
+import com.sosauce.chocola.core.data.local.FavoritesDao
 import com.sosauce.chocola.feature.library.presentation.util.ImageUtils
 
 class AlbumsViewModel(
@@ -41,9 +41,10 @@ class AlbumsViewModel(
         userPreferences.getRegexFilter,
         userPreferences.getMatchCaseFilter,
         userPreferences.sortAlbumsAscending,
+        userPreferences.getHideSingleAlbums(),
         searchQuery
-    ) { (tracks, favAlbumIds), sort, regex, matchCase, ascending, query ->
-        val albums = tracks
+    ) { (tracks, favAlbumIds), sort, regex, matchCase, ascending, hideSingleAlbums, query ->
+        var albums = tracks
             .groupBy { it.album }
             .map { (album, albumTracks) ->
 
@@ -61,6 +62,8 @@ class AlbumsViewModel(
             }
             .ordered(sort, regex, matchCase, ascending, query.toString())
             .sortedByDescending { it.isFavorite }
+
+        if (hideSingleAlbums) albums = albums.filter { it.tracks.size > 1 }
 
         AlbumsState(
             isLoading = false,

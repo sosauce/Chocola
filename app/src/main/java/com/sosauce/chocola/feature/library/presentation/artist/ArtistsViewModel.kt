@@ -8,8 +8,8 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sosauce.chocola.core.data.library.AbstractTracksScanner
-import com.sosauce.chocola.core.data.local.FavoritesDao
 import com.sosauce.chocola.core.data.datastore.UserPreferences
+import com.sosauce.chocola.core.data.local.FavoritesDao
 import com.sosauce.chocola.core.domain.model.Artist
 import com.sosauce.chocola.core.domain.util.combine
 import com.sosauce.chocola.core.domain.library.ordered
@@ -17,8 +17,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
+import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
 
 class ArtistsViewModel(
@@ -37,13 +39,24 @@ class ArtistsViewModel(
         userPreferences.getRegexFilter,
         userPreferences.getMatchCaseFilter,
         userPreferences.sortArtistsAscending,
+        userPreferences.getHideSingleAlbums(),
         searchQuery
-    ) { (tracks, favoriteIds), sort, regex, matchCase, ascending, query ->
+    ) { (tracks, favoriteIds), sort, regex, matchCase, ascending, hideSingleAlbums, query ->
         val artists = tracks.groupBy { it.artist }
             .map { (artist, tracks) ->
+                val albums = mutableMapOf<String, Int>()
+                for (track in tracks) {
+                    if (track.album !in albums) albums[track.album] = 1
+                    else albums[track.album] = albums[track.album]!! + 1
+                }
+                var numberAlbums = 0
+                if (hideSingleAlbums) {
+                    for ((album, size) in albums) if (size > 1) numberAlbums++
+                } else numberAlbums = albums.size
                 Artist(
-                    id = tracks.firstOrNull()?.artistId ?: -1L,
+                    id = Random.nextLong(),
                     tracks = tracks,
+                    numberAlbums = numberAlbums,
                     name = artist,
                     isFavorite = tracks.firstOrNull()?.artistId in favoriteIds
                 )

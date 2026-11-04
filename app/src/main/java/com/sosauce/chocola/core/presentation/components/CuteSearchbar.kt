@@ -112,6 +112,9 @@ import com.sosauce.chocola.feature.playing.presentation.NowPlaying
 import com.sosauce.chocola.core.designsystem.components.PlayPauseButton
 import com.sosauce.chocola.core.presentation.navigation.LocalScreen
 import com.sosauce.chocola.core.designsystem.SharedTransitionKeys
+import com.sosauce.chocola.core.presentation.preferences.rememberPlaylistSort
+import com.sosauce.chocola.core.presentation.preferences.rememberSortArtistsAscending
+import com.sosauce.chocola.core.presentation.preferences.rememberSortPlaylistsAscending
 import com.sosauce.nekobites.animations.bouncySpec
 import com.sosauce.chocola.core.presentation.util.rememberInteractionSource
 import com.sosauce.nekobites.animations.AnimatedDrawable
@@ -855,7 +858,7 @@ object CuteSearchbarDefaults {
     @Composable
     fun ArtistSortPopupContent() {
 
-        var isSortedByASC by rememberSortAlbumsAscending()
+        var isSortedByASC by rememberSortArtistsAscending()
         var artistSort by rememberArtistSort()
 
         DropdownMenuGroup(

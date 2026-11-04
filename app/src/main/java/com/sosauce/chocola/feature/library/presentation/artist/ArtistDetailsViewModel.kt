@@ -9,8 +9,8 @@ import androidx.compose.ui.util.fastFilter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sosauce.chocola.core.data.library.AbstractTracksScanner
-import com.sosauce.chocola.core.data.local.FavoritesDao
 import com.sosauce.chocola.core.data.datastore.UserPreferences
+import com.sosauce.chocola.core.data.local.FavoritesDao
 import com.sosauce.chocola.core.domain.model.Album
 import com.sosauce.chocola.core.domain.model.Artist
 import com.sosauce.chocola.core.domain.model.CuteTrack
@@ -40,26 +40,29 @@ class ArtistDetailsViewModel(
     val state = combine(
         combine(abstractTracksScanner.latestTracks(), favoritesDao.observeArtistIds()) { tracks, ids -> tracks to ids },
         userPreferences.searchSettings(),
+        userPreferences.getHideSingleAlbums(),
         searchQuery
-    ) { (tracks, favoriteIds), settings, query ->
+    ) { (tracks, favoriteIds), settings, hideSingleAlbums, query ->
         val searched = tracks
             .fastFilter { it.artist == artistName }
             .search(query.toString(), settings)
         val artistId = searched.firstOrNull()?.artistId ?: tracks.firstOrNull { it.artist == artistName }?.artistId ?: -1L
 
-        val albums = searched
+        var albums = searched
             .groupBy { it.album }
             .map { (albumName, tracks) ->
                 val lastTrack = tracks.last()
 
                 Album(
-                    id = lastTrack.albumId,
                     name = albumName,
                     artist = artistName,
                     tracks = tracks,
                     art = ImageUtils.getAlbumArt(lastTrack.albumId)
                 )
             }
+        if (hideSingleAlbums) {
+            albums = albums.filter { it.tracks.size > 1 }
+        }
 
 
 

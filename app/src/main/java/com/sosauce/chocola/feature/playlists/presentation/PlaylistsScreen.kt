@@ -54,6 +54,7 @@ import com.sosauce.chocola.core.domain.player.MusicState
 import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.core.presentation.components.CuteSearchbar
 import com.sosauce.chocola.core.designsystem.components.NoResult
+import com.sosauce.chocola.core.presentation.components.CuteSearchbarDefaults
 import com.sosauce.chocola.core.presentation.components.SelectedBarSurface
 import com.sosauce.chocola.core.presentation.components.dialogs.PlaylistDeletionDialog
 import com.sosauce.chocola.core.presentation.navigation.Screen
@@ -197,8 +198,7 @@ fun SharedTransitionScope.PlaylistsScreen(
 
                         },
                         sortMenu = {
-                            // TODO: PLAYLISTSSORTMENU
-                            //CuteSearchbarDefaults.TrackSortPopupContent()
+
                         }
                     )
                 }

@@ -85,6 +85,7 @@ data object PreferencesKeys {
     val NEW_FOLDER_POLICY = stringPreferencesKey("NEW_FOLDER_POLICY")
     // names of NowPlayingButton entries the user chose to hide
     val NOW_PLAYING_HIDDEN_BUTTONS = stringSetPreferencesKey("NOW_PLAYING_HIDDEN_BUTTONS")
+    val HIDE_SINGLE_ALBUM = booleanPreferencesKey("HIDE_SINGLE_ALBUM")
 
 }
 

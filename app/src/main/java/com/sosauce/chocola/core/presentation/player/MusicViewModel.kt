@@ -6,6 +6,7 @@ import android.app.Application
 import android.content.ComponentName
 import android.net.Uri
 import android.os.CountDownTimer
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -418,9 +419,15 @@ class MusicViewModel(
             is PlayerActions.RewindTo -> mediaController!!.seekTo(mediaController!!.currentPosition - action.position)
             is PlayerActions.PlayTrack -> {
                 val targetMediaId = action.track.mediaId
-                val index = _musicState.value.loadedMedias.indexOfFirst { it.mediaId == targetMediaId }.takeIf { it != -1 }
+                var index = 0
+                for (i in 0..mediaController!!.mediaItemCount) {
+                    if (mediaController!!.getMediaItemAt(i).mediaId == targetMediaId) {
+                        index = i
+                        break
+                    }
+                }
 
-                index?.let { index ->
+                index.let { index ->
                     mediaController!!.seekTo(index, 0)
                     mediaController!!.play()
                 }
@@ -440,8 +447,7 @@ class MusicViewModel(
                 }
             }
 
-            is PlayerActions.Shuffle -> mediaController!!.shuffleModeEnabled =
-                !mediaController!!.shuffleModeEnabled
+            is PlayerActions.Shuffle -> mediaController!!.shuffleModeEnabled = !mediaController!!.shuffleModeEnabled
 
             is PlayerActions.ChangeRepeatMode -> mediaController!!.changeRepeatMode()
             is PlayerActions.SetSpeed -> mediaController!!.playbackParameters =
@@ -473,7 +479,7 @@ class MusicViewModel(
                     is PlaySource.Artist -> currentTracks.fastFilter { it.artist == source.name }
                     is PlaySource.ExplicitTracks -> source.tracks
                 }
-                
+
                 if (random) {
                     mediaController!!.setMediaItems(targetTracks.fastMap { it.toMediaItem() })
                     mediaController!!.playRandom()
@@ -488,7 +494,7 @@ class MusicViewModel(
                         }
 
 
-                if (sameQueue) {
+                if (!mediaController!!.shuffleModeEnabled && sameQueue) {
                     val playerIndex = targetTracks.indexOfFirst { it.mediaId == action.mediaId }
                     mediaController!!.seekTo(playerIndex, 0)
                     mediaController!!.play()
@@ -637,7 +643,7 @@ class MusicViewModel(
             }
 
             is PlayerActions.StartPlaylist -> {
-                mediaController!!.shuffleModeEnabled = !mediaController!!.shuffleModeEnabled
+                mediaController!!.shuffleModeEnabled = false
                 val currentTracks = tracks.value
 
 

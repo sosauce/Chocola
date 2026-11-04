@@ -94,23 +94,15 @@ fun List<Artist>.ordered(
         }
     }
 
-    return filtered
-        .sortedBy {
-            when (sort) {
-                ArtistSort.NAME -> it.name
-                ArtistSort.NB_ALBUMS -> it.numberAlbums.toString()
-                ArtistSort.NB_TRACKS -> it.tracks.size.toString()
-            }
-        }.thenIf(!ascending) { asReversed() }
+    return when (sort) {
+        ArtistSort.NAME -> filtered.sortedBy { it.name }
+        ArtistSort.NB_ALBUMS -> filtered.sortedBy { it.numberAlbums }
+        ArtistSort.NB_TRACKS -> filtered.sortedBy { it.tracks.size }
+    }.thenIf(!ascending) { asReversed() }
 }
 
 fun List<CuteTrack>.orderAlbumTrackNumber(): List<CuteTrack> {
-    return sortedWith(
-        compareBy(
-            { it.trackNumber == 0 },
-            { it.trackNumber }
-        )
-    )
+    return sortedBy { it.trackNumber }
 }
 
 fun List<CuteTrack>.sortByAlbum(): List<CuteTrack> {

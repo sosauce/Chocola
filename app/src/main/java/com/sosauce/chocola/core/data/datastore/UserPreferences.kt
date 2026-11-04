@@ -25,6 +25,7 @@ import com.sosauce.chocola.core.data.datastore.PreferencesKeys.EQUALIZER_GAINS
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.GROUP_BY_FOLDERS
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.HIDDEN_FOLDERS
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.HIDDEN_TRACKS
+import com.sosauce.chocola.core.data.datastore.PreferencesKeys.HIDE_SINGLE_ALBUM
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.LAST_MUSIC_STATE
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.MATCH_CASE_FILTER
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.MIN_TRACK_DURATION
@@ -164,13 +165,17 @@ class UserPreferences(
         it[AUTO_ADD_SUBFOLDERS] ?: false
     }
 
+    fun getHideSingleAlbums() = context.dataStore.data.map {
+        it[HIDE_SINGLE_ALBUM] ?: false
+    }
+
     val getHiddenFolders = context.dataStore.data.map {
-            it[HIDDEN_FOLDERS] ?: emptySet()
-        }
+        it[HIDDEN_FOLDERS] ?: emptySet()
+    }
 
     val getGroupByFolders = context.dataStore.data.map {
-            it[GROUP_BY_FOLDERS] ?: false
-        }
+        it[GROUP_BY_FOLDERS] ?: false
+    }
 
     val getHiddenNowPlayingButtons = context.dataStore.data.map {
         (it[NOW_PLAYING_HIDDEN_BUTTONS] ?: emptySet()).toHiddenNowPlayingButtons()

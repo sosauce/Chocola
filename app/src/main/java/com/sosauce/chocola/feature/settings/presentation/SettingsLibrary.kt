@@ -45,6 +45,7 @@ import com.sosauce.chocola.feature.settings.presentation.components.SliderSettin
 import com.sosauce.chocola.feature.settings.presentation.components.foldersView
 import com.sosauce.chocola.core.domain.util.copyMutate
 import com.sosauce.chocola.core.presentation.preferences.rememberAutoAddSubfolders
+import com.sosauce.chocola.core.presentation.preferences.rememberHideSingleAlbums
 import com.sosauce.chocola.core.presentation.preferences.rememberNewFolderPolicy
 import com.sosauce.chocola.feature.settings.presentation.components.SettingOption
 import com.sosauce.chocola.feature.settings.presentation.components.SettingsMultipleChoice
@@ -62,6 +63,7 @@ fun SettingsLibrary(
     var minTrackDuration by rememberMinTrackDuration()
     var autoAddSub by rememberAutoAddSubfolders()
     var newFolderPolicy by rememberNewFolderPolicy()
+    var showSingleAlbums by rememberHideSingleAlbums()
 
     val policies = listOf(
         SettingOption(
@@ -152,6 +154,14 @@ fun SettingsLibrary(
                     bottomDp = 2.dp,
                     text = stringResource(R.string.auto_whitelist_sub),
                     optionalDescription = R.string.auto_whitelist_sub_desc
+                )
+                SettingsSwitch(
+                    checked = showSingleAlbums,
+                    onCheckedChange = { showSingleAlbums = !showSingleAlbums },
+                    topDp = 2.dp,
+                    bottomDp = 2.dp,
+                    text = stringResource(R.string.hide_single_album),
+                    optionalDescription = R.string.hide_single_album_desc
                 )
                 SettingsMultipleChoice(
                     active = newFolderPolicy,

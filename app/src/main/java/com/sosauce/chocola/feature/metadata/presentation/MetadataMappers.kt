@@ -47,7 +47,7 @@ fun Map<String, String?>.toAudioFileMetadata(): AudioFileMetadata {
 fun AudioFileMetadata.toPropertyMap(): PropertyMap {
     return hashMapOf(
         "TITLE" to arrayOf(title ?: ""),
-        "ARTIST" to artist.formatForField(),
+        "ARTIST" to arrayOf(artist ?: ""),
         "ALBUM" to arrayOf(album ?: ""),
         "TRACKNUMBER" to arrayOf(trackNumber ?: ""),
         "DISCNUMBER" to arrayOf(discNumber ?: ""),
