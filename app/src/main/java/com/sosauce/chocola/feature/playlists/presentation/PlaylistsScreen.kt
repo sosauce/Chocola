@@ -8,10 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -21,7 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -37,26 +33,21 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButtonMenu
 import androidx.compose.material3.FloatingActionButtonMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
-import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.sosauce.chocola.R
 import com.sosauce.chocola.core.data.local.Playlist
 import com.sosauce.chocola.core.domain.player.MusicState
@@ -67,11 +58,11 @@ import com.sosauce.chocola.core.presentation.components.SelectedBarSurface
 import com.sosauce.chocola.core.presentation.components.dialogs.PlaylistDeletionDialog
 import com.sosauce.chocola.core.presentation.navigation.Screen
 import com.sosauce.chocola.feature.playlists.presentation.components.CreatePlaylistDialog
+import com.sosauce.chocola.feature.playlists.presentation.components.FavoritePlaylistItem
 import com.sosauce.chocola.feature.playlists.presentation.components.PlaylistItem
 import com.sosauce.chocola.core.presentation.util.barsContentTransform
 import com.sosauce.chocola.core.presentation.util.selfAlignHorizontally
 import com.sosauce.nekobites.animations.ToggleAnimatedFab
-import com.sosauce.nekobites.components.AnimatedSelectedIcon
 import com.sosauce.nekobites.components.LoadingBox
 import com.sosauce.nekobites.components.NoXFound
 import com.sosauce.sweetselect.rememberSweetSelectState
@@ -238,37 +229,20 @@ fun SharedTransitionScope.PlaylistsScreen(
                             ) { playlist ->
                                 val isSelected by multiSelectState.isSelectedAsState(playlist)
 
-                                Column(
-                                    modifier = Modifier.animateItem()
-                                ) {
-                                    AnimatedSelectedIcon(
-                                        isSelected = isSelected,
-                                    ) {
-                                        Box(
-                                            modifier = Modifier
-                                                .size(70.dp)
-                                                .clip(MaterialShapes.Cookie9Sided.toShape())
-                                                .background(MaterialTheme.colorScheme.surfaceContainer),
-                                            contentAlignment = Alignment.Center
-                                        ) {
-                                            if (playlist.emoji.isNotBlank()) {
-                                                Text(
-                                                    text = playlist.emoji,
-                                                    fontSize = 25.sp
-                                                )
-                                            } else {
-                                                Icon(
-                                                    painter = painterResource(R.drawable.queue_music_rounded),
-                                                    contentDescription = null,
-                                                    modifier = Modifier.size(25.dp)
-                                                )
-                                            }
+                                FavoritePlaylistItem(
+                                    modifier = Modifier.animateItem(),
+                                    playlist = playlist,
+                                    isSelected = isSelected,
+                                    isInSelectionMode = multiSelectState.isInSelectionMode,
+                                    onClick = {
+                                        if (multiSelectState.isInSelectionMode) {
+                                            multiSelectState.toggle(playlist)
+                                        } else {
+                                            onNavigate(Screen.PlaylistDetails(playlist.id))
                                         }
-                                    }
-                                }
-
-
-
+                                    },
+                                    onLongClick = { multiSelectState.toggle(playlist) }
+                                )
                             }
                         }
                     }

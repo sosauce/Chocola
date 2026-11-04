@@ -147,4 +147,16 @@
     </plurals>
     <string name="use_art">Dùng ảnh bìa nghệ thuật</string>
     <string name="saf">S.A.F</string>
+    <string name="now_playing_buttons">Nút màn hình phát nhạc</string>
+    <string name="now_playing_buttons_desc">Chọn các nút hiển thị trên màn hình đang phát</string>
+    <string name="now_playing_preview">Xem trước màn hình đang phát</string>
+    <string name="queue">Hàng chờ</string>
+    <string name="more_options">Tùy chọn khác</string>
+    <string name="next_song">Bài tiếp theo</string>
+    <string name="rewind">Tua lại</string>
+    <string name="fast_forward">Tua nhanh</string>
+    <string name="shuffle">Phát ngẫu nhiên</string>
+    <string name="repeat">Lặp lại</string>
+    <string name="favorite">Yêu thích</string>
+    <string name="sleep_timer">Hẹn giờ ngủ</string>
 </resources>

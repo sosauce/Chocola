@@ -204,4 +204,16 @@
     <string name="enter_value_between_range">%1$d ila %2$d arasında bir değer gir</string>
     <string name="widget_2_1_description">Sadece kontroller</string>
     <string name="widget_4_1_description">Tam geniş klasik widget</string>
+    <string name="now_playing_buttons">Oynatma ekranı düğmeleri</string>
+    <string name="now_playing_buttons_desc">Oynatma ekranında hangi düğmelerin gösterileceğini seçin</string>
+    <string name="now_playing_preview">Oynatma ekranı önizlemesi</string>
+    <string name="queue">Sıra</string>
+    <string name="more_options">Diğer seçenekler</string>
+    <string name="next_song">Sonraki şarkı</string>
+    <string name="rewind">Geri sar</string>
+    <string name="fast_forward">İleri sar</string>
+    <string name="shuffle">Karıştır</string>
+    <string name="repeat">Tekrarla</string>
+    <string name="favorite">Favori</string>
+    <string name="sleep_timer">Uyku zamanlayıcısı</string>
 </resources>

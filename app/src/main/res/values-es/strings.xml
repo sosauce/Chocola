@@ -151,4 +151,16 @@
     <string name="new_rate">Ingresa una nueva tasa entre %1$.1f y %2$d</string>
     <string name="rate_error">La tasa debe estar en el rango de %1$.1f y %2$d.</string>
     <string name="seek_buttons_duration">Tiempo de salto de los botones</string>
+    <string name="now_playing_buttons">Botones de reproducción</string>
+    <string name="now_playing_buttons_desc">Elige qué botones se muestran en la pantalla de reproducción</string>
+    <string name="now_playing_preview">Vista previa de la pantalla de reproducción</string>
+    <string name="queue">Cola</string>
+    <string name="more_options">Más opciones</string>
+    <string name="next_song">Canción siguiente</string>
+    <string name="rewind">Retroceder</string>
+    <string name="fast_forward">Avanzar</string>
+    <string name="shuffle">Aleatorio</string>
+    <string name="repeat">Repetir</string>
+    <string name="favorite">Favorito</string>
+    <string name="sleep_timer">Temporizador de apagado</string>
 </resources>

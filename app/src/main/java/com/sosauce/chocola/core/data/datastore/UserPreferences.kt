@@ -29,6 +29,7 @@ import com.sosauce.chocola.core.data.datastore.PreferencesKeys.LAST_MUSIC_STATE
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.MATCH_CASE_FILTER
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.MIN_TRACK_DURATION
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.NEW_FOLDER_POLICY
+import com.sosauce.chocola.core.data.datastore.PreferencesKeys.NOW_PLAYING_HIDDEN_BUTTONS
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.PAUSE_ON_MUTE
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.PLAYLIST_SORT
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.REGEX_FILTER
@@ -41,6 +42,8 @@ import com.sosauce.chocola.core.data.datastore.PreferencesKeys.TRACK_SORT
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.WHITELISTED_FOLDERS
 import com.sosauce.chocola.core.data.mapper.toJsonMap
 import com.sosauce.chocola.core.designsystem.NewFolderPolicy
+import com.sosauce.chocola.core.designsystem.NowPlayingButton
+import com.sosauce.chocola.core.designsystem.toHiddenNowPlayingButtons
 import com.sosauce.chocola.core.domain.player.MusicState
 import com.sosauce.chocola.core.domain.model.AlbumSort
 import com.sosauce.chocola.core.domain.model.ArtistSort
@@ -52,6 +55,7 @@ import com.sosauce.chocola.core.domain.util.addOrRemove
 import com.sosauce.chocola.core.domain.util.copyMutate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -167,6 +171,18 @@ class UserPreferences(
     val getGroupByFolders = context.dataStore.data.map {
             it[GROUP_BY_FOLDERS] ?: false
         }
+
+    val getHiddenNowPlayingButtons = context.dataStore.data.map {
+        (it[NOW_PLAYING_HIDDEN_BUTTONS] ?: emptySet()).toHiddenNowPlayingButtons()
+    }.distinctUntilChanged()
+
+    suspend fun setNowPlayingButtonHidden(button: NowPlayingButton, hidden: Boolean) {
+        if (!button.isHideable) return
+        context.dataStore.edit {
+            val current = it[NOW_PLAYING_HIDDEN_BUTTONS] ?: emptySet()
+            it[NOW_PLAYING_HIDDEN_BUTTONS] = if (hidden) current + button.name else current - button.name
+        }
+    }
 
     suspend fun toggleHiddenFolder(folder: String) =
         context.dataStore.edit {

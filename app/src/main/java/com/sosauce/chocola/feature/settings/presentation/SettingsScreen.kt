@@ -56,6 +56,7 @@ import com.sosauce.chocola.app.navigation.navigateBack
 import com.sosauce.chocola.feature.playing.presentation.aod.AlwaysOnDisplay
 import com.sosauce.chocola.feature.bakery.presentation.BakeryRoot
 import com.sosauce.chocola.feature.settings.presentation.components.AboutCard
+import com.sosauce.chocola.feature.settings.presentation.nowplayingbuttons.NowPlayingButtonsRoot
 import com.sosauce.chocola.feature.settings.presentation.components.SettingsCategoryCard
 import com.sosauce.chocola.feature.settings.presentation.components.SettingsScreen
 import com.sosauce.chocola.core.presentation.util.selfAlignHorizontally
@@ -215,7 +216,11 @@ fun SettingsScreen(
                             .verticalScroll(scrollState)
                             .padding(paddingValues)
                     ) {
-                        SettingsLookAndFeel()
+                        SettingsLookAndFeel(
+                            onNavigateToNowPlayingButtons = {
+                                backstack.navigate(SettingsScreen.NowPlayingButtons)
+                            }
+                        )
                     }
                 }
 
@@ -237,6 +242,12 @@ fun SettingsScreen(
                     ) {
                         SettingsNowPlaying()
                     }
+                }
+
+                entry<SettingsScreen.NowPlayingButtons> {
+                    NowPlayingButtonsRoot(
+                        contentPadding = paddingValues
+                    )
                 }
 
                 entry<SettingsScreen.Lyrics> {

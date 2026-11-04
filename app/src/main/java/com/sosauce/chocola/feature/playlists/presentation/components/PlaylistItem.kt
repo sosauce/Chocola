@@ -95,7 +95,7 @@ fun PlaylistItem(
                 isDropdownExpanded = false
                 onHandlePlaylistActions(PlaylistActions.SetFavorite(playlist.id, !playlist.isFavorite))
             },
-            icon = R.drawable.favorite_filled
+            icon = R.drawable.favorite
         ),
         MoreOptions(
             text = { stringResource(R.string.edit_playlist) },

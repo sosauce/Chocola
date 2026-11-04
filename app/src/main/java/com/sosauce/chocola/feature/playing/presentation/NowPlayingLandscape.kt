@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.core.presentation.preferences.rememberSnapSpeedAndPitch
+import com.sosauce.chocola.core.designsystem.NowPlayingButton
 import com.sosauce.chocola.core.domain.player.MusicState
 import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.core.presentation.components.dialogs.tracksDetails.TracksDetailsDialog
@@ -43,6 +44,7 @@ import com.sosauce.chocola.core.presentation.components.PlaylistPicker
 fun NowPlayingLandscape(
     onHandlePlayerActions: (PlayerActions) -> Unit,
     musicState: MusicState,
+    hiddenButtons: Set<NowPlayingButton>,
     onNavigate: (Screen) -> Unit,
     onShrinkToSearchbar: () -> Unit
 ) {
@@ -105,12 +107,16 @@ fun NowPlayingLandscape(
                     musicState = musicState,
                     onNavigate = onNavigate,
                     onShrinkToSearchbar = onShrinkToSearchbar,
-                    onHandlePlayerActions = onHandlePlayerActions
+                    onHandlePlayerActions = onHandlePlayerActions,
+                    hiddenButtons = hiddenButtons
                 )
                 TitleAndArtist(
                     title = musicState.track.title,
                     artist = musicState.track.artist,
-                    album = musicState.track.album
+                    album = musicState.track.album,
+                    isFavorite = musicState.track.isFavorite,
+                    onToggleFavorite = { musicState.track.mediaId.toLongOrNull()?.let { onHandlePlayerActions(PlayerActions.ToggleFavorite(it)) } },
+                    hiddenButtons = hiddenButtons
                 )
                 Spacer(Modifier.height(24.dp))
                 CuteSlider(
@@ -119,13 +125,15 @@ fun NowPlayingLandscape(
                 )
                 ActionButtonsRow(
                     musicState = musicState,
-                    onHandlePlayerActions = onHandlePlayerActions
+                    onHandlePlayerActions = onHandlePlayerActions,
+                    hiddenButtons = hiddenButtons
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 QuickActionsRow(
                     musicState = musicState,
                     onShowSpeedCard = { showSpeedCard = true },
-                    onHandlePlayerActions = onHandlePlayerActions
+                    onHandlePlayerActions = onHandlePlayerActions,
+                    hiddenButtons = hiddenButtons
                 )
             }
 

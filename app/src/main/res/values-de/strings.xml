@@ -188,4 +188,16 @@
     <string name="navigation_desc">Dafür brauchst du keine Karte!</string>
     <string name="music_and_audio_perm"><![CDATA[Berechtigung für Musik &amp; Audio]]></string>
     <string name="audio_perm_desc">Diese Berechtigung ist erforderlich, um auf deine Songs zuzugreifen.</string>
+    <string name="now_playing_buttons">Wiedergabe-Schaltflächen</string>
+    <string name="now_playing_buttons_desc">Wähle, welche Schaltflächen auf dem Wiedergabebildschirm angezeigt werden</string>
+    <string name="now_playing_preview">Vorschau des Wiedergabebildschirms</string>
+    <string name="queue">Warteschlange</string>
+    <string name="more_options">Weitere Optionen</string>
+    <string name="next_song">Nächster Song</string>
+    <string name="rewind">Zurückspulen</string>
+    <string name="fast_forward">Vorspulen</string>
+    <string name="shuffle">Zufallswiedergabe</string>
+    <string name="repeat">Wiederholen</string>
+    <string name="favorite">Favorit</string>
+    <string name="sleep_timer">Schlaf-Timer</string>
 </resources>
