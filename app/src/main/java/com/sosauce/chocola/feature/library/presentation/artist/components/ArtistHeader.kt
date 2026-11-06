@@ -75,7 +75,8 @@ fun SharedTransitionScope.ArtistHeader(
                     .basicMarquee()
             )
             androidx.compose.material3.IconButton(
-                onClick = { onHandlePlayerActions(PlayerActions.ToggleArtistFavorite(artist.id)) }
+                onClick = { onHandlePlayerActions(PlayerActions.ToggleArtistFavorite(artist.id)) },
+                shapes = androidx.compose.material3.IconButtonDefaults.shapes()
             ) {
                 androidx.compose.material3.Icon(
                     painter = androidx.compose.ui.res.painterResource(R.drawable.favorite_filled),

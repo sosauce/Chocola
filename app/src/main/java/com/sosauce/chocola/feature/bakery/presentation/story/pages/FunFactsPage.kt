@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
 import com.sosauce.chocola.core.designsystem.components.CuteListItem
-import com.sosauce.chocola.core.presentation.util.getCuteItemShape
+import com.sosauce.chocola.core.designsystem.groupedShape
 import com.sosauce.chocola.feature.bakery.presentation.model.FunFactUi
 import com.sosauce.chocola.feature.bakery.presentation.model.StoryPageUi
 
@@ -84,7 +84,7 @@ private fun FunFactRow(
 
     CuteListItem(
         onClick = null,
-        shape = getCuteItemShape(index, count),
+        shape = groupedShape(isFirst = index == 0, isLast = index == count - 1),
         backgroundColor = containerColor,
         leadingContent = {
             Icon(

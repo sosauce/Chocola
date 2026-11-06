@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
+import com.sosauce.chocola.core.designsystem.groupedShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -199,7 +199,7 @@ fun SettingsLibrary(
                             .padding(horizontal = 16.dp)
                             .background(
                                 color = MaterialTheme.colorScheme.surfaceContainer,
-                                shape = RoundedCornerShape(24.dp)
+                                shape = groupedShape(isFirst = true, isLast = true)
                             )
                             .fillMaxWidth()
                             .padding(15.dp)
@@ -229,11 +229,9 @@ fun SettingsLibrary(
                 isActive = false,
                 onShortClick = {},
                 backgroundColor = MaterialTheme.colorScheme.surfaceContainer,
-                shape = RoundedCornerShape(
-                    topStart = if (index == 0) 24.dp else 2.dp,
-                    topEnd = if (index == 0) 24.dp else 2.dp,
-                    bottomStart = if (index == state.hiddenTracks.lastIndex) 24.dp else 2.dp,
-                    bottomEnd = if (index == state.hiddenTracks.lastIndex) 24.dp else 2.dp,
+                shape = groupedShape(
+                    isFirst = index == 0,
+                    isLast = index == state.hiddenTracks.lastIndex
                 ),
                 trailingContent = {
                     IconButton(
@@ -265,12 +263,7 @@ fun SettingsLibrary(
                         .padding(horizontal = 11.dp),
                     onClick = { safAudioPicker.launch(arrayOf("audio/*")) },
                     backgroundColor = MaterialTheme.colorScheme.surfaceContainer,
-                    shape = RoundedCornerShape(
-                        topStart = 24.dp,
-                        topEnd = 24.dp,
-                        bottomStart = 2.dp,
-                        bottomEnd = 2.dp
-                    ),
+                    shape = groupedShape(isFirst = true, isLast = false),
                     leadingContent = {
                         Icon(
                             painter = painterResource(R.drawable.open),
@@ -294,12 +287,7 @@ fun SettingsLibrary(
                         .padding(horizontal = 16.dp)
                         .background(
                             color = MaterialTheme.colorScheme.surfaceContainer,
-                            shape = RoundedCornerShape(
-                                topStart = 2.dp,
-                                topEnd = 2.dp,
-                                bottomStart = 24.dp,
-                                bottomEnd = 24.dp
-                            )
+                            shape = groupedShape(isFirst = false, isLast = true)
                         )
                         .fillMaxWidth()
                         .padding(15.dp)
@@ -329,11 +317,9 @@ fun SettingsLibrary(
                     .padding(horizontal = 11.dp),
                 track = track,
                 backgroundColor = MaterialTheme.colorScheme.surfaceContainer,
-                shape = RoundedCornerShape(
-                    topStart = 2.dp,
-                    topEnd = 2.dp,
-                    bottomStart = if (index == state.safTracks.lastIndex) 24.dp else 2.dp,
-                    bottomEnd = if (index == state.safTracks.lastIndex) 24.dp else 2.dp
+                shape = groupedShape(
+                    isFirst = false,
+                    isLast = index == state.safTracks.lastIndex
                 ),
                 isActive = false,
                 onShortClick = {

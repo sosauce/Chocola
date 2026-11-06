@@ -4,16 +4,22 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.skydoves.cloudy.cloudy
 import com.sosauce.chocola.core.data.local.PlaylistCleanup
 import com.sosauce.chocola.core.presentation.player.MusicViewModel
 import com.sosauce.chocola.app.navigation.Nav
@@ -21,6 +27,8 @@ import com.sosauce.chocola.core.data.datastore.dataStore
 import com.sosauce.chocola.core.data.library.FoldersClassifier
 import com.sosauce.chocola.feature.setup.presentation.SetupScreen
 import com.sosauce.chocola.core.designsystem.theme.ChocolaTheme
+import com.sosauce.chocola.core.designsystem.components.SelectOverlayHost
+import com.sosauce.chocola.core.designsystem.components.rememberSelectOverlayState
 import com.sosauce.chocola.core.presentation.util.hasMusicPermission
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -64,9 +72,11 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    Nav(
-                        musicViewModel = musicViewModel
-                    )
+                    SelectOverlayHost(state = rememberSelectOverlayState()) {
+                        Nav(
+                            musicViewModel = musicViewModel
+                        )
+                    }
                 } else {
                     SetupScreen { canProceedToApp = true }
                 }

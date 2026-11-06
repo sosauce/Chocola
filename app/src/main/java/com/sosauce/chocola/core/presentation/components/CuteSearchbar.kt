@@ -116,7 +116,7 @@ import com.sosauce.chocola.core.presentation.preferences.rememberPlaylistSort
 import com.sosauce.chocola.core.presentation.preferences.rememberSortArtistsAscending
 import com.sosauce.chocola.core.presentation.preferences.rememberSortPlaylistsAscending
 import com.sosauce.nekobites.animations.bouncySpec
-import com.sosauce.chocola.core.presentation.util.rememberInteractionSource
+import com.sosauce.nekobites.helpers.rememberInteractionSource
 import com.sosauce.nekobites.animations.AnimatedDrawable
 import com.sosauce.nekobites.animations.AnimatedDrawableFile
 import com.sosauce.nekobites.animations.AnimatedFab

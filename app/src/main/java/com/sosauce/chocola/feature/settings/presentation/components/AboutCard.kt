@@ -42,7 +42,7 @@ fun AboutCard() {
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 2.dp),
+            .padding(horizontal = 16.dp, vertical = 1.dp),
         shape = RoundedCornerShape(24.dp)
     ) {
         Row(

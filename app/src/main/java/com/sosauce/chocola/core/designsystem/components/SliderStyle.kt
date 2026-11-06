@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.sosauce.chocola.core.presentation.util.rememberInteractionSource
+import com.sosauce.nekobites.helpers.rememberInteractionSource
 
 
 @Composable

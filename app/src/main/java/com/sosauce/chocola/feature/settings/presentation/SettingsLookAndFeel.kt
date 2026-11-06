@@ -8,9 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -27,6 +24,7 @@ import com.sosauce.chocola.core.presentation.preferences.rememberShowShuffleButt
 import com.sosauce.chocola.core.presentation.preferences.rememberUseArtTheme
 import com.sosauce.chocola.core.presentation.preferences.rememberUseSystemFont
 import com.sosauce.chocola.feature.settings.presentation.components.PaletteSelector
+import com.sosauce.chocola.feature.settings.presentation.components.SettingsCard
 import com.sosauce.chocola.feature.settings.presentation.components.SettingsCardHeader
 import com.sosauce.chocola.feature.settings.presentation.components.SettingsCategoryCard
 import com.sosauce.chocola.feature.settings.presentation.components.SettingsSelector
@@ -115,17 +113,9 @@ fun SettingsLookAndFeel(
         SettingsWithTitle(
             title = R.string.appearance
         ) {
-            Card(
-                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 1.dp),
-                shape = RoundedCornerShape(
-                    topStart = 24.dp,
-                    topEnd = 24.dp,
-                    bottomStart = 2.dp,
-                    bottomEnd = 2.dp
-                )
+            SettingsCard(
+                topDp = 24.dp,
+                bottomDp = 2.dp
             ) {
                 SettingsCardHeader(R.string.theme)
                 LazyRowWithScrollButton(
@@ -141,12 +131,9 @@ fun SettingsLookAndFeel(
                     )
                 }
             }
-            Card(
-                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 1.dp),
-                shape = RoundedCornerShape(2.dp)
+            SettingsCard(
+                topDp = 2.dp,
+                bottomDp = 2.dp
             ) {
                 SettingsCardHeader(R.string.palette)
                 LazyRowWithScrollButton(
@@ -159,12 +146,9 @@ fun SettingsLookAndFeel(
                     )
                 }
             }
-            Card(
-                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 1.dp),
-                shape = RoundedCornerShape(2.dp)
+            SettingsCard(
+                topDp = 2.dp,
+                bottomDp = 2.dp
             ) {
                 SettingsCardHeader(R.string.font)
                 LazyRowWithScrollButton(
@@ -204,7 +188,7 @@ fun SettingsLookAndFeel(
                 bottomDp = 24.dp,
                 onNavigate = onNavigateToNowPlayingButtons
             )
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(10.dp))
             SettingsNowPlaying()
         }
     }

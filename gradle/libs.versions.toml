@@ -1,5 +1,5 @@
 [versions]
-agp = "9.5.0"
+agp = "9.5.1"
 cloudy = "0.7.1"
 emoji2Emojipicker = "1.7.0"
 glance = "1.2.0"
@@ -27,7 +27,6 @@ media3Effect = "1.11.1"
 media3Exoplayer = "1.11.1"
 media3Session = "1.11.1"
 media3Transformer = "1.11.1"
-nekobites = "1.0.10"
 reorderable = "3.1.0" # https://github.com/Calvin-LL/Reorderable
 serialization = "2.4.21"
 squircleShape = "5.4.0"
@@ -37,8 +36,8 @@ roomCompiler = "2.8.5"
 roomKtx = "2.8.5"
 ksp = "2.3.6"
 kmpalette = "3.1.0"
-material3 = "1.5.0-beta02"
-nav3Core = "1.2.0"
+material3 = "1.5.0-rc01"
+nav3Core = "1.2.1"
 lifecycleViewmodelNav3 = "2.11.0"
 foundation = "1.12.1"
 
@@ -80,7 +79,6 @@ koin-androidx-startup = { module = "io.insert-koin:koin-androidx-startup", versi
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 lyrics-core = { module = "com.mocharealm.accompanist:lyrics-core", version.ref = "lyricsCore" }
 material-kolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
-nekobites = { module = "com.github.sosauce:NekoBites", version.ref = "nekobites" }
 reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 squircle-shape = { module = "com.stoyanvuchev:squircle-shape", version.ref = "squircleShape" }
 sweetselect-compose = { module = "io.github.sosauce:sweetselect-compose", version.ref = "sweetselectCompose" }

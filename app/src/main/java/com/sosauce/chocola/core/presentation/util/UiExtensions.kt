@@ -17,15 +17,12 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.media3.common.Player
 import com.materialkolor.PaletteStyle
 import com.sosauce.chocola.core.designsystem.CutePaletteStyle
@@ -102,11 +99,6 @@ fun Player.changeRepeatMode() {
 }
 
 @Composable
-fun rememberInteractionSource(): MutableInteractionSource {
-    return remember { MutableInteractionSource() }
-}
-
-@Composable
 fun rememberFocusRequester(): FocusRequester {
     return remember { FocusRequester() }
 }
@@ -158,17 +150,5 @@ fun Int.toLyricDuration(): String {
     return duration.toComponents { _, minutes, seconds, nanoseconds ->
         val millis = nanoseconds / 1_000_000
         String.format(Locale.getDefault(), "%d:%02d.%03d", minutes, seconds, millis)
-    }
-}
-
-@Composable
-fun getCuteItemShape(index: Int, count: Int): Shape {
-
-    if (count == 1) return RoundedCornerShape(24.dp)
-
-    return when (index) {
-        0 -> RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp, bottomStart = 2.dp, bottomEnd = 2.dp)
-        count - 1 -> RoundedCornerShape(topStart = 2.dp, topEnd = 2.dp, bottomStart = 24.dp, bottomEnd = 24.dp)
-        else -> RoundedCornerShape(2.dp)
     }
 }

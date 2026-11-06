@@ -63,10 +63,13 @@ class ArtistsViewModel(
             }
             .ordered(sort, regex, matchCase, ascending, query.toString())
             .sortedByDescending { it.isFavorite }
+        val (favoriteArtists, nonFavoriteArtists) = artists.partition { it.isFavorite }
 
         ArtistsState(
             isLoading = false,
-            artists = artists
+            artists = artists,
+            favoriteArtists = favoriteArtists,
+            nonFavoriteArtists = nonFavoriteArtists
         )
     }.flowOn(Dispatchers.Default).stateIn(
         viewModelScope,
@@ -80,5 +83,7 @@ class ArtistsViewModel(
 @Stable
 data class ArtistsState(
     val isLoading: Boolean = true,
-    val artists: List<Artist> = emptyList()
+    val artists: List<Artist> = emptyList(),
+    val favoriteArtists: List<Artist> = emptyList(),
+    val nonFavoriteArtists: List<Artist> = emptyList()
 )

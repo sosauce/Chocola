@@ -23,6 +23,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -57,7 +58,7 @@ import androidx.compose.ui.unit.sp
 import com.sosauce.chocola.R
 import com.sosauce.chocola.core.data.local.Playlist
 import com.sosauce.chocola.core.designsystem.components.FavoriteBubble
-import com.sosauce.chocola.core.presentation.util.rememberInteractionSource
+import com.sosauce.chocola.core.designsystem.components.FavoriteItem
 import com.sosauce.nekobites.animations.bouncySpec
 import com.sosauce.nekobites.animations.rememberAnimatedShape
 import com.sosauce.nekobites.components.AnimatedSelectedIcon
@@ -71,15 +72,41 @@ fun FavoritePlaylistItem(
     onClick: () -> Unit,
     onLongClick: () -> Unit
 ) {
-    val interactionSource = rememberInteractionSource()
-    val isPressed by interactionSource.collectIsPressedAsState()
+    FavoriteItem(
+        modifier = modifier,
+        title = playlist.name,
+        subtitle = pluralStringResource(
+            R.plurals.tracks_plural,
+            playlist.musics.size,
+            playlist.musics.size
+        ),
+        isSelected = isSelected,
+        isInSelectionMode = isInSelectionMode,
+        onClick = onClick,
+        onLongClick = onLongClick
+    ) { isPressed ->
+        PlaylistVisual(playlist = playlist, isPressed = isPressed)
+    }
+}
 
-    val hasColor = playlist.color != -1
-    val accent = if (hasColor) Color(playlist.color) else MaterialTheme.colorScheme.surfaceContainerHigh
-    val cardScale by animateFloatAsState(
-        targetValue = if (isPressed || isSelected) 0.95f else 1f,
-        animationSpec = bouncySpec()
-    )
+@Composable
+private fun BoxScope.PlaylistVisual(
+    playlist: Playlist,
+    isPressed: Boolean
+) {
+    if (playlist.emoji.isNotBlank()) {
+        Text(
+            text = playlist.emoji,
+            fontSize = 55.sp
+        )
+        return
+    }
+
+    val accent = if (playlist.color != -1) {
+        Color(playlist.color)
+    } else {
+        MaterialTheme.colorScheme.surfaceContainerHigh
+    }
     val shapeRotation by animateFloatAsState(
         targetValue = if (isPressed) 40f else 0f,
         animationSpec = bouncySpec()
@@ -91,136 +118,16 @@ fun FavoritePlaylistItem(
     )
 
     Box(
-        modifier = modifier
-            .width(128.dp)
-            .graphicsLayer {
-                scaleX = cardScale
-                scaleY = cardScale
-            }
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(28.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainer)
-                .combinedClickable(
-                    interactionSource = interactionSource,
-                    onClick = onClick,
-                    onLongClick = onLongClick
-                )
-                .padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Box(
-                modifier = Modifier.size(90.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                if (playlist.emoji.isNotBlank()) {
-                    Text(
-                        text = playlist.emoji,
-                        fontSize = 55.sp
-                    )
-                } else {
-                    Box(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .graphicsLayer { rotationZ = shapeRotation }
-                            .clip(shape)
-                            .background(accent)
-                    )
-                    Icon(
-                        painter = painterResource(R.drawable.queue_music_rounded),
-                        contentDescription = null,
-                        tint = contentColorFor(accent),
-                        modifier = Modifier.size(40.dp)
-                    )
-                }
-            }
-            Spacer(Modifier.height(10.dp))
-            Text(
-                text = playlist.name,
-                style = MaterialTheme.typography.titleSmallEmphasized,
-                textAlign = TextAlign.Center,
-                maxLines = 1,
-                modifier = Modifier.basicMarquee()
-            )
-            Text(
-                text = pluralStringResource(
-                    R.plurals.tracks_plural,
-                    playlist.musics.size,
-                    playlist.musics.size
-                ),
-                style = MaterialTheme.typography.labelMediumEmphasized,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                maxLines = 1
-            )
-        }
-
-        SelectionCheckbox(
-            visible = isInSelectionMode,
-            checked = isSelected,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .offset(x = 6.dp, y = (-6).dp)
-        )
-        AnimatedVisibility(
-            visible = !isInSelectionMode,
-            enter = scaleIn(bouncySpec()),
-            exit = scaleOut(bouncySpec()),
-            modifier = Modifier.align(Alignment.TopStart)
-        ) { FavoriteBubble() }
-    }
-}
-
-@Composable
-private fun SelectionCheckbox(
-    visible: Boolean,
-    checked: Boolean,
-    modifier: Modifier = Modifier
-) {
-    val spatialSpec = MaterialTheme.motionScheme.fastSpatialSpec<Float>()
-    val boxShape = RoundedCornerShape(7.dp)
-    val fillColor by animateColorAsState(
-        if (checked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHighest
+        modifier = Modifier
+            .matchParentSize()
+            .graphicsLayer { rotationZ = shapeRotation }
+            .clip(shape)
+            .background(accent)
     )
-    val borderColor by animateColorAsState(
-        if (checked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
+    Icon(
+        painter = painterResource(R.drawable.queue_music_rounded),
+        contentDescription = null,
+        tint = contentColorFor(accent),
+        modifier = Modifier.size(40.dp)
     )
-
-    AnimatedVisibility(
-        visible = visible,
-        enter = scaleIn(spatialSpec) + fadeIn(),
-        exit = scaleOut(spatialSpec) + fadeOut(),
-        modifier = modifier
-    ) {
-        Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(11.dp))
-                .background(MaterialTheme.colorScheme.background)
-                .padding(3.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(24.dp)
-                    .clip(boxShape)
-                    .background(fillColor)
-                    .border(1.5.dp, borderColor, boxShape),
-                contentAlignment = Alignment.Center
-            ) {
-                AnimatedVisibility(
-                    visible = checked,
-                    enter = scaleIn(spatialSpec),
-                    exit = scaleOut(spatialSpec)
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.check),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
-            }
-        }
-    }
 }

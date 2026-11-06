@@ -50,7 +50,6 @@ import coil3.compose.AsyncImage
 import com.sosauce.chocola.R
 import com.sosauce.chocola.core.designsystem.components.CuteListItem
 import com.sosauce.chocola.core.designsystem.theme.sansFlexCustomWidth
-import com.sosauce.chocola.core.presentation.util.getCuteItemShape
 import com.sosauce.chocola.feature.bakery.presentation.components.InfoPill
 import com.sosauce.chocola.feature.bakery.presentation.components.MiniArtwork
 import com.sosauce.chocola.feature.bakery.presentation.model.AlbumStatUi

@@ -42,7 +42,7 @@ import com.sosauce.chocola.core.designsystem.components.collapseHorizontally
 import com.sosauce.chocola.core.designsystem.components.rememberAnimatedGroupItems
 import com.sosauce.chocola.core.domain.player.MusicState
 import com.sosauce.chocola.core.domain.player.PlayerActions
-import com.sosauce.chocola.core.presentation.util.rememberInteractionSource
+import com.sosauce.nekobites.helpers.rememberInteractionSource
 
 
 @Composable

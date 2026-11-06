@@ -21,6 +21,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
 import com.sosauce.chocola.core.domain.model.CuteTrack
 import com.sosauce.chocola.core.domain.player.MusicState
@@ -99,9 +100,12 @@ fun SharedTransitionScope.AlbumDetailsScreen(
         }
     ) { paddingValues ->
 
+
+
         LoadingBox(
             isLoading = state.isLoading
         ) {
+
             LazyColumn(
                 state = lazyState,
                 contentPadding = PaddingValues(bottom = paddingValues.calculateBottomPadding())

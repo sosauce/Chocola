@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -35,6 +36,10 @@ import com.sosauce.chocola.feature.library.presentation.album.components.AlbumCa
 import com.sosauce.chocola.core.presentation.util.selfAlignHorizontally
 import com.sosauce.nekobites.components.LoadingBox
 import com.sosauce.nekobites.components.NoXFound
+import com.sosauce.chocola.feature.library.presentation.album.components.FavoriteAlbumItem
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Arrangement
 
 @Composable
 fun SharedTransitionScope.AlbumsScreen(
@@ -71,6 +76,31 @@ fun SharedTransitionScope.AlbumsScreen(
                 contentPadding = paddingValues + PaddingValues(horizontal = 5.dp),
                 state = lazyState,
             ) {
+                if (state.favoriteAlbums.isNotEmpty()) {
+                    item(
+                        key = "favorites",
+                        span = { GridItemSpan(maxLineSpan) }
+                    ) {
+                        LazyRow(
+                            modifier = Modifier
+                                .animateItem()
+                                .fillMaxWidth(),
+                            contentPadding = PaddingValues(horizontal = 5.dp, vertical = 10.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(
+                                items = state.favoriteAlbums,
+                                key = { it.id }
+                            ) { album ->
+                                FavoriteAlbumItem(
+                                    modifier = Modifier.animateItem(),
+                                    album = album,
+                                    onClick = { onNavigate(Screen.AlbumsDetails(album.name)) }
+                                )
+                            }
+                        }
+                    }
+                }
 
                 if (state.albums.isEmpty()) {
                     item(
@@ -93,7 +123,7 @@ fun SharedTransitionScope.AlbumsScreen(
                 }
 
                 items(
-                    items = state.albums,
+                    items = state.nonFavoriteAlbums,
                     key = { it.id }
                 ) { album ->
                     AlbumCard(

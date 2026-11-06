@@ -30,9 +30,9 @@ import com.sosauce.chocola.core.designsystem.NowPlayingButton
 import com.sosauce.chocola.core.presentation.preferences.rememberSeekButtonsDuration
 import com.sosauce.chocola.core.domain.player.MusicState
 import com.sosauce.chocola.core.domain.player.PlayerActions
-import com.sosauce.chocola.core.presentation.util.rememberInteractionSource
 import com.sosauce.nekobites.animations.AnimatedDrawable
 import com.sosauce.nekobites.animations.AnimatedDrawableFile
+import com.sosauce.nekobites.helpers.rememberInteractionSource
 
 @Composable
 fun PlayPauseButton(
@@ -102,7 +102,7 @@ fun ActionButtonsRow(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.skip_previous),
-                    contentDescription = stringResource(androidx.media3.session.R.string.media3_controls_seek_forward_description)
+                    contentDescription = stringResource(androidx.media3.session.R.string.media3_controls_seek_to_previous_description)
                 )
             }
 
@@ -118,7 +118,7 @@ fun ActionButtonsRow(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.fast_rewind),
-                    contentDescription = stringResource(androidx.media3.session.R.string.media3_controls_seek_forward_description)
+                    contentDescription = stringResource(androidx.media3.session.R.string.media3_controls_seek_back_description)
                 )
             }
 
@@ -166,7 +166,7 @@ fun ActionButtonsRow(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.skip_next),
-                    contentDescription = stringResource(androidx.media3.session.R.string.media3_controls_seek_forward_description)
+                    contentDescription = stringResource(androidx.media3.session.R.string.media3_controls_seek_to_next_description)
                 )
             }
         }

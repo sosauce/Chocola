@@ -8,9 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,7 +17,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.sosauce.chocola.R
 import java.io.File
 
@@ -32,18 +28,10 @@ fun FolderItem(
     bottomDp: Dp,
     actionButton: @Composable () -> Unit
 ) {
-    Card(
-        modifier = modifier
-            .padding(horizontal = 16.dp, vertical = 1.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
-        ),
-        shape = RoundedCornerShape(
-            topStart = topDp,
-            topEnd = topDp,
-            bottomStart = bottomDp,
-            bottomEnd = bottomDp
-        ),
+    SettingsCard(
+        modifier = modifier,
+        topDp = topDp,
+        bottomDp = bottomDp
     ) {
         Row(
             modifier = Modifier
@@ -64,14 +52,13 @@ fun FolderItem(
                     .padding(start = 10.dp),
                 horizontalAlignment = Alignment.Start
             ) {
-                Text(
-                    text = File(folder).name,
-                    fontSize = 18.sp
-                )
+                Text(File(folder).name)
                 Text(
                     text = folder,
-                    fontSize = 13.sp,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                    style = MaterialTheme.typography.labelSmallEmphasized.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    ),
+                    maxLines = 1,
                     modifier = Modifier.basicMarquee()
                 )
             }

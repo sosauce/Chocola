@@ -53,7 +53,7 @@ import com.sosauce.chocola.core.presentation.components.dialogs.tracksDetails.Tr
 import com.sosauce.chocola.core.presentation.navigation.Screen
 import com.sosauce.chocola.core.presentation.components.PlaylistPicker
 import com.sosauce.chocola.core.presentation.preferences.rememberHiddenTracks
-import com.sosauce.chocola.core.presentation.util.rememberInteractionSource
+import com.sosauce.nekobites.helpers.rememberInteractionSource
 import com.sosauce.chocola.feature.settings.presentation.components.SettingsScreen
 import com.sosauce.nekobites.animations.AnimatedDrawable
 import com.sosauce.nekobites.animations.AnimatedDrawableFile

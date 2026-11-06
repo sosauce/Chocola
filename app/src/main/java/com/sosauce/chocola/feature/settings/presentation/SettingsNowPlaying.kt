@@ -5,9 +5,6 @@ package com.sosauce.chocola.feature.settings.presentation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,6 +25,7 @@ import com.sosauce.chocola.core.presentation.preferences.rememberShowAlbumName
 import com.sosauce.chocola.core.presentation.preferences.rememberThumbStyle
 import com.sosauce.chocola.core.presentation.preferences.rememberTrackStyle
 import com.sosauce.chocola.core.presentation.preferences.rememberUseArtAsBackground
+import com.sosauce.chocola.feature.settings.presentation.components.SettingsCard
 import com.sosauce.chocola.feature.settings.presentation.components.SettingsCardHeader
 import com.sosauce.chocola.feature.settings.presentation.components.SettingsSwitch
 import com.sosauce.chocola.feature.settings.presentation.components.SettingsWithTitle
@@ -76,17 +74,9 @@ fun SettingsNowPlaying() {
     )
 
     Column {
-        Card(
-            colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 1.dp),
-            shape = RoundedCornerShape(
-                topStart = 24.dp,
-                topEnd = 24.dp,
-                bottomStart = 2.dp,
-                bottomEnd = 2.dp
-            )
+        SettingsCard(
+            topDp = 24.dp,
+            bottomDp = 2.dp
         ) {
             SettingsCardHeader(R.string.artwork_shape)
             LazyRowWithScrollButton(
@@ -99,12 +89,9 @@ fun SettingsNowPlaying() {
                 )
             }
         }
-        Card(
-            colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 1.dp),
-            shape = RoundedCornerShape(2.dp)
+        SettingsCard(
+            topDp = 2.dp,
+            bottomDp = 2.dp
         ) {
             SettingsCardHeader(R.string.slider_thumb)
             LazyRowWithScrollButton(
@@ -116,12 +103,9 @@ fun SettingsNowPlaying() {
                 ) { ThumbStyle.toThumb(thumb, false) }
             }
         }
-        Card(
-            colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 1.dp),
-            shape = RoundedCornerShape(2.dp)
+        SettingsCard(
+            topDp = 2.dp,
+            bottomDp = 2.dp
         ) {
             SettingsCardHeader(R.string.slider_track)
             LazyRowWithScrollButton(

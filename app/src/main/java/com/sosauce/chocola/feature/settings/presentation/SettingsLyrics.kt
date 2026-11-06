@@ -5,9 +5,6 @@ package com.sosauce.chocola.feature.settings.presentation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -17,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
+import com.sosauce.chocola.feature.settings.presentation.components.SettingsCard
 import com.sosauce.chocola.core.presentation.preferences.rememberArtLyrics
 import com.sosauce.chocola.core.presentation.preferences.rememberLyricsAlignment
 import com.sosauce.chocola.core.presentation.preferences.rememberLyricsFontSize
@@ -60,17 +58,9 @@ fun SettingsLyrics() {
         ) {
 
 
-            Card(
-                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 1.dp),
-                shape = RoundedCornerShape(
-                    topStart = 24.dp,
-                    topEnd = 24.dp,
-                    bottomEnd = 2.dp,
-                    bottomStart = 2.dp
-                )
+            SettingsCard(
+                topDp = 24.dp,
+                bottomDp = 2.dp
             ) {
                 Column {
                     LazyRowWithScrollButton(

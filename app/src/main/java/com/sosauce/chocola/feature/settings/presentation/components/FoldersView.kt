@@ -38,7 +38,8 @@ fun LazyListScope.foldersView(
                     )
                 },
                 text = R.string.whitelisted,
-                icon = R.drawable.remove_all_filled
+                icon = R.drawable.remove_all_filled,
+                actionDescription = R.string.blacklist
             )
         }
     }
@@ -59,7 +60,7 @@ fun LazyListScope.foldersView(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.close),
-                        contentDescription = null
+                        contentDescription = stringResource(R.string.blacklist)
                     )
                 }
             }
@@ -75,7 +76,8 @@ fun LazyListScope.foldersView(
                     )
                 },
                 text = R.string.blacklisted,
-                icon = R.drawable.add_all_filled
+                icon = R.drawable.add_all_filled,
+                actionDescription = R.string.whitelist
             )
         }
     }
@@ -94,7 +96,7 @@ fun LazyListScope.foldersView(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.add),
-                        contentDescription = null
+                        contentDescription = stringResource(R.string.whitelist)
                     )
                 }
             }
@@ -107,7 +109,8 @@ private fun FolderHeader(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     icon: Int,
-    text: Int
+    text: Int,
+    actionDescription: Int
 ) {
     Row(
         modifier = modifier
@@ -129,7 +132,7 @@ private fun FolderHeader(
         ) {
             Icon(
                 painter = painterResource(icon),
-                contentDescription = null
+                contentDescription = stringResource(actionDescription)
             )
         }
     }

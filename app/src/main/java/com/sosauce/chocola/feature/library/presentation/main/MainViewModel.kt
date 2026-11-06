@@ -46,11 +46,14 @@ class MainViewModel(
         val prioritizedTracks = tracks.map { it.copy(isFavorite = it.mediaId.toLongOrNull() in favoriteIds) }
             .sortedByDescending { it.isFavorite }
         val filteredTracks = prioritizedTracks.search(query.toString(), searchSettings)
+        val (favoriteTracks, nonFavoriteTracks) = filteredTracks.partition { it.isFavorite }
         MainState(
             isLoading = false,
             tracks = filteredTracks,
+            favoriteTracks = favoriteTracks,
+            nonFavoriteTracks = nonFavoriteTracks,
             categories = if (groupByFolders) {
-                filteredTracks
+                nonFavoriteTracks
                     .groupBy { it.folder }
                     .toSortedMap()
                     .map { (folder, folderTracks) ->
@@ -83,6 +86,8 @@ class MainViewModel(
 data class MainState(
     val isLoading: Boolean = true,
     val tracks: List<CuteTrack> = emptyList(),
+    val favoriteTracks: List<CuteTrack> = emptyList(),
+    val nonFavoriteTracks: List<CuteTrack> = emptyList(),
     val categories: List<Category> = emptyList(),
     val groupByFolders: Boolean = false
 )

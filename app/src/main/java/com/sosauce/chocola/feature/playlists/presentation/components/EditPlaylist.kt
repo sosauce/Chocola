@@ -65,11 +65,11 @@ import com.sosauce.chocola.core.designsystem.components.EmojiPicker
 import com.sosauce.chocola.feature.playlists.presentation.PlaylistActions
 import com.sosauce.chocola.feature.playlists.presentation.PlaylistViewModel
 import com.sosauce.chocola.core.domain.util.copyMutate
-import com.sosauce.chocola.core.presentation.util.rememberInteractionSource
 import com.sosauce.nekobites.animations.Icon
 import com.sosauce.nekobites.animations.rememberClipboardIconController
 import com.sosauce.nekobites.components.ColorPickerDialog
 import com.sosauce.nekobites.components.Spacer
+import com.sosauce.nekobites.helpers.rememberInteractionSource
 import com.sosauce.nekobites.utils.ColorUtils
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
@@ -134,7 +134,8 @@ fun EditPlaylist(
             title = { Text(stringResource(R.string.color_picker)) },
             dismissButton = {
                 TextButton(
-                    onClick = onDismissRequest
+                    onClick = onDismissRequest,
+                    shapes = ButtonDefaults.shapes()
                 ) {
                     Text(stringResource(R.string.cancel))
                 }
@@ -146,7 +147,8 @@ fun EditPlaylist(
                             color = newColor.toArgb()
                         )
                         showColorPicker = false
-                    }
+                    },
+                    shapes = ButtonDefaults.shapes()
                 ) {
                     Text(stringResource(R.string.save))
                 }

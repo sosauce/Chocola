@@ -20,6 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -47,6 +48,11 @@ import com.sosauce.nekobites.components.LoadingBox
 import com.sosauce.nekobites.components.NoXFound
 import sv.lib.squircleshape.CornerSmoothing
 import sv.lib.squircleshape.SquircleShape
+import com.sosauce.chocola.feature.library.presentation.artist.components.FavoriteArtistItem
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Arrangement
 
 @Composable
 fun SharedTransitionScope.ArtistsScreen(
@@ -82,6 +88,28 @@ fun SharedTransitionScope.ArtistsScreen(
                 contentPadding = paddingValues,
                 state = lazyState
             ) {
+                if (state.favoriteArtists.isNotEmpty()) {
+                    item(key = "favorites") {
+                        LazyRow(
+                            modifier = Modifier
+                                .animateItem()
+                                .fillMaxWidth(),
+                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 10.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(
+                                items = state.favoriteArtists,
+                                key = { it.id }
+                            ) { artist ->
+                                FavoriteArtistItem(
+                                    modifier = Modifier.animateItem(),
+                                    artist = artist,
+                                    onClick = { onNavigate(Screen.ArtistsDetails(artist.name)) }
+                                )
+                            }
+                        }
+                    }
+                }
                 if (state.artists.isEmpty()) {
                     item(
                         key = "empty"
@@ -100,7 +128,7 @@ fun SharedTransitionScope.ArtistsScreen(
                     }
                 }
                 items(
-                    items = state.artists,
+                    items = state.nonFavoriteArtists,
                     key = { it.id }
                 ) { artist ->
                     ArtistItem(
@@ -150,7 +178,10 @@ fun SharedTransitionScope.ArtistItem(
             }
         },
         trailingContent = {
-            IconButton(onClick = onToggleFavorite) {
+            IconButton(
+                onClick = onToggleFavorite,
+                shapes = IconButtonDefaults.shapes()
+            ) {
                 Icon(
                     painter = painterResource(R.drawable.favorite_filled),
                     contentDescription = stringResource(if (artist.isFavorite) R.string.remove_favorite else R.string.add_favorite),
@@ -191,7 +222,7 @@ fun SharedTransitionScope.ArtistItem(
                 }
             },
             maxLines = 1,
-            style = MaterialTheme.typography.bodyLargeEmphasized.copy(
+            style = MaterialTheme.typography.bodyMediumEmphasized.copy(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             ),
             modifier = Modifier.basicMarquee()

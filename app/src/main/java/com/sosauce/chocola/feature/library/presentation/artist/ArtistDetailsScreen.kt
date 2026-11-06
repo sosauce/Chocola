@@ -127,7 +127,6 @@ fun SharedTransitionScope.ArtistDetailsScreen(
             }
         }
     ) { paddingValues ->
-
         LoadingBox(
             isLoading = state.isLoading
         ) {

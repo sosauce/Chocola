@@ -49,8 +49,7 @@ class AlbumDetailsViewModel(
             .orderAlbumTrackNumber()
 
 
-        val lastTrack = filtered.lastOrNull()
-        if (lastTrack == null) return@combine AlbumDetailsState(isLoading = false)
+        val lastTrack = filtered.lastOrNull() ?: return@combine AlbumDetailsState(isLoading = false)
         val albumId = lastTrack.albumId
 
         val album = Album(

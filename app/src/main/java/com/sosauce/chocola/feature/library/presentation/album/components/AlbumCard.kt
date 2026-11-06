@@ -22,12 +22,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.DropdownMenuGroup
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.DropdownMenuPopup
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Text
@@ -47,6 +50,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastForEachIndexed
 import androidx.core.app.ShareCompat
 import androidx.core.net.toUri
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
@@ -56,6 +60,7 @@ import com.sosauce.chocola.core.domain.model.Album
 import com.sosauce.chocola.feature.library.presentation.util.ImageUtils
 import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.core.presentation.components.MoreOptions
+import com.sosauce.chocola.core.presentation.components.dialogs.DeletionDialog
 import com.sosauce.nekobites.animations.AnimatedDrawable
 import com.sosauce.nekobites.animations.AnimatedDrawableFile
 import com.sosauce.nekobites.animations.bouncySpec
@@ -69,73 +74,6 @@ fun SharedTransitionScope.AlbumCard(
 ) {
 
     var showMoreMenu by remember { mutableStateOf(false) }
-    var showDeletionDialog by remember { mutableStateOf(false) }
-//    val options = listOf(
-//    )
-
-    DropdownMenuPopup(
-        expanded = showMoreMenu,
-        onDismissRequest = { showMoreMenu = false }
-    ) {
-        DropdownMenuGroup(
-            shapes = MenuDefaults.groupShapes()
-        ) {
-
-        }
-        Spacer(Modifier.height(MenuDefaults.GroupSpacing))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally),
-        ) {
-            FilledIconButton(
-                onClick = { onToggleFavorite?.invoke() },
-                modifier = Modifier
-                    .weight(1f)
-                    .size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide)),
-                shape = IconButtonDefaults.mediumSquareShape,
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
-                )
-            ) {
-                val scale by animateFloatAsState(
-                    targetValue = if (album.isFavorite) 1f else 0.9f,
-                    animationSpec = bouncySpec(),
-                    label = "scale"
-                )
-
-                Icon(
-                    painter = painterResource(if (album.isFavorite) R.drawable.favorite_filled else R.drawable.favorite_filled),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(IconButtonDefaults.mediumIconSize)
-                        .scale(scale)
-                )
-                Icon(
-                    painter = painterResource(R.drawable.info_filled),
-                    contentDescription = null,
-                    modifier = Modifier.size(IconButtonDefaults.mediumIconSize)
-                )
-            }
-            FilledIconButton(
-                onClick = { showDeletionDialog = true },
-                modifier = Modifier
-                    .weight(1f)
-                    .size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide)),
-                shape = IconButtonDefaults.mediumSquareShape,
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    contentColor = MaterialTheme.colorScheme.error
-                )
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.trash_rounded_filled),
-                    contentDescription = null,
-                    modifier = Modifier.size(IconButtonDefaults.mediumIconSize)
-                )
-            }
-        }
-    }
 
     Box(
         modifier = modifier
@@ -166,6 +104,13 @@ fun SharedTransitionScope.AlbumCard(
                 drawable = AnimatedDrawableFile.MORE_VERT,
                 atEnd = showMoreMenu
             )
+
+            AlbumDropdownMenu(
+                album = album,
+                expanded = showMoreMenu,
+                onDismissRequest = { showMoreMenu = false },
+                onToggleFavorite = onToggleFavorite
+            )
         }
         Column(
             modifier = Modifier
@@ -191,7 +136,7 @@ fun SharedTransitionScope.AlbumCard(
             )
             Text(
                 text = album.artist,
-                style = MaterialTheme.typography.bodyLargeEmphasized,
+                style = MaterialTheme.typography.bodyMediumEmphasized,
                 modifier = Modifier
                     .sharedElement(
                         sharedContentState = rememberSharedContentState(album.artist + album.id),
@@ -204,8 +149,91 @@ fun SharedTransitionScope.AlbumCard(
     }
 }
 
+@Composable
+private fun AlbumDropdownMenu(
+    album: Album,
+    expanded: Boolean,
+    onDismissRequest: () -> Unit,
+    onToggleFavorite: (() -> Unit)?
+) {
+
+    var showDeletionDialog by remember { mutableStateOf(false) }
+
+    if (showDeletionDialog) {
+        DeletionDialog(
+            tracks = album.tracks,
+            onDismissRequest = { showDeletionDialog = false }
+        )
+    }
+
+    val options = mutableListOf(
+        AlbumMore(
+            onClick = {},
+            icon = R.drawable.add_to_queue,
+            text = R.string.add_queue,
+        ),
+        AlbumMore(
+            onClick = { showDeletionDialog = true },
+            icon = R.drawable.trash_rounded,
+            text = R.string.delete,
+            isDestructive = true
+        )
+    ).apply {
+        onToggleFavorite?.let {
+            add(
+                index = 0,
+                element = AlbumMore(
+                    onClick = it,
+                    icon = R.drawable.favorite,
+                    text = R.string.add_favorite
+                )
+            )
+        }
+    }
+
+    DropdownMenuPopup(
+        expanded = expanded,
+        onDismissRequest = onDismissRequest
+    ) {
+        DropdownMenuGroup(
+            shapes = MenuDefaults.groupShapes()
+        ) {
+            options.fastForEachIndexed { index, option ->
+
+                val tint = if (option.isDestructive) {
+                    MaterialTheme.colorScheme.error
+                } else LocalContentColor.current
+
+                DropdownMenuItem(
+                    onClick = {
+                        onDismissRequest()
+                        option.onClick()
+                    },
+                    shape = when (index) {
+                        0 -> MenuDefaults.leadingItemShape
+                        options.lastIndex -> MenuDefaults.trailingItemShape
+                        else -> MenuDefaults.middleItemShape
+                    },
+                    text = { Text(stringResource(option.text)) },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(option.icon),
+                            contentDescription = null
+                        )
+                    },
+                    colors = MenuDefaults.itemColors(
+                        leadingIconColor = tint,
+                        textColor = tint
+                    )
+                )
+            }
+        }
+    }
+}
+
 private data class AlbumMore(
     val onClick: () -> Unit,
     @StringRes val text: Int,
-    @DrawableRes val icon: Int
+    @DrawableRes val icon: Int,
+    val isDestructive: Boolean = false
 )

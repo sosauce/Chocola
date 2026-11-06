@@ -38,7 +38,7 @@ import coil3.compose.AsyncImage
 import com.sosauce.chocola.R
 import com.sosauce.chocola.core.designsystem.components.CuteListItem
 import com.sosauce.chocola.core.designsystem.theme.ChocolaTheme
-import com.sosauce.chocola.core.presentation.util.getCuteItemShape
+import com.sosauce.chocola.core.designsystem.groupedShape
 import com.sosauce.chocola.feature.bakery.presentation.model.StoryPageUi
 import com.sosauce.chocola.feature.bakery.presentation.model.TrackStatUi
 import sv.lib.squircleshape.CornerSmoothing
@@ -98,7 +98,7 @@ fun TopTracksPage(
 
                     CuteListItem(
                         onClick = null,
-                        shape = getCuteItemShape(index, items.count()),
+                        shape = groupedShape(isFirst = index == 0, isLast = index == items.lastIndex),
                         backgroundColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f),
                         leadingContent = {
                             Box(
@@ -139,7 +139,7 @@ fun TopTracksPage(
                         Text(
                             text = track.artist,
                             maxLines = 1,
-                            style = MaterialTheme.typography.bodyLargeEmphasized.copy(
+                            style = MaterialTheme.typography.bodyMediumEmphasized.copy(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             ),
                             modifier = Modifier.basicMarquee()

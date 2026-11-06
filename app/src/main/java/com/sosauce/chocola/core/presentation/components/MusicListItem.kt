@@ -204,11 +204,6 @@ fun TrackDropdownMenu(
     var hiddenTracks by rememberHiddenTracks()
     val trackOptions = listOf(
         MoreOptions(
-            text = { stringResource(if (track.isFavorite) R.string.remove_favorite else R.string.add_favorite) },
-            onClick = { track.mediaId.toLongOrNull()?.let { onHandlePlayerActions(PlayerActions.ToggleFavorite(it)) } },
-            icon = R.drawable.favorite_filled
-        ),
-        MoreOptions(
             text = { stringResource(R.string.edit) },
             onClick = { onNavigate(Screen.MetadataEditor(track.path, track.uri.toString())) },
             icon = R.drawable.edit_rounded,
@@ -331,7 +326,26 @@ fun TrackDropdownMenu(
                 )
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.info_filled),
+                    painter = painterResource(R.drawable.info_rounded),
+                    contentDescription = null,
+                    modifier = Modifier.size(IconButtonDefaults.mediumIconSize)
+                )
+            }
+            FilledIconButton(
+                onClick = {
+                    track.mediaId.toLongOrNull()?.let { onHandlePlayerActions(PlayerActions.ToggleFavorite(it)) }
+                },
+                modifier = Modifier
+                    .weight(1f)
+                    .size(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide)),
+                shape = IconButtonDefaults.mediumSquareShape,
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainer)
+                )
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.favorite),
                     contentDescription = null,
                     modifier = Modifier.size(IconButtonDefaults.mediumIconSize)
                 )
@@ -354,7 +368,7 @@ fun TrackDropdownMenu(
                 )
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.share_filled),
+                    painter = painterResource(androidx.media3.session.R.drawable.media3_icon_share),
                     contentDescription = null,
                     modifier = Modifier.size(IconButtonDefaults.mediumIconSize)
                 )
@@ -371,7 +385,7 @@ fun TrackDropdownMenu(
                 )
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.trash_rounded_filled),
+                    painter = painterResource(R.drawable.trash_rounded),
                     contentDescription = null,
                     modifier = Modifier.size(IconButtonDefaults.mediumIconSize)
                 )

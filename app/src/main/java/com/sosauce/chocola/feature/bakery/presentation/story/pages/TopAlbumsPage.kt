@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.sosauce.chocola.R
 import com.sosauce.chocola.core.designsystem.components.CuteListItem
-import com.sosauce.chocola.core.presentation.util.getCuteItemShape
+import com.sosauce.chocola.core.designsystem.groupedShape
 import com.sosauce.chocola.feature.bakery.presentation.model.AlbumStatUi
 import com.sosauce.chocola.feature.bakery.presentation.model.StoryPageUi
 import sv.lib.squircleshape.CornerSmoothing
@@ -86,7 +86,7 @@ fun TopAlbumsPage(
 
                     CuteListItem(
                         onClick = null,
-                        shape = getCuteItemShape(index, albums.count()),
+                        shape = groupedShape(isFirst = index == 0, isLast = index == albums.lastIndex),
                         backgroundColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f),
                         leadingContent = {
                             Box(
@@ -132,7 +132,7 @@ fun TopAlbumsPage(
                         Text(
                             text = album.artist,
                             maxLines = 1,
-                            style = MaterialTheme.typography.bodyLargeEmphasized.copy(
+                            style = MaterialTheme.typography.bodyMediumEmphasized.copy(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             ),
                             modifier = Modifier.basicMarquee()

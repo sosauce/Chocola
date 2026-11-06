@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
 import com.sosauce.chocola.core.designsystem.components.CuteListItem
-import com.sosauce.chocola.core.presentation.util.getCuteItemShape
+import com.sosauce.chocola.core.designsystem.groupedShape
 import com.sosauce.chocola.feature.bakery.presentation.model.ArtistStatUi
 import com.sosauce.chocola.feature.bakery.presentation.model.StoryPageUi
 
@@ -83,7 +83,7 @@ fun TopArtistsPage(
 
                     CuteListItem(
                         onClick = null,
-                        shape = getCuteItemShape(index, artists.count()),
+                        shape = groupedShape(isFirst = index == 0, isLast = index == artists.lastIndex),
                         backgroundColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f),
                         leadingContent = {
                             Box(

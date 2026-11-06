@@ -34,7 +34,7 @@ import com.sosauce.chocola.R
 import com.sosauce.chocola.core.domain.model.CuteTrack
 import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.core.presentation.components.dialogs.DeletionDialog
-import com.sosauce.chocola.core.presentation.util.rememberInteractionSource
+import com.sosauce.nekobites.helpers.rememberInteractionSource
 import com.sosauce.sweetselect.SweetSelectState
 
 @Composable

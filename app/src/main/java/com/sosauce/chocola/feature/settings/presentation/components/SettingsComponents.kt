@@ -71,7 +71,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastMap
 import coil3.compose.AsyncImage
 import com.materialkolor.DynamicMaterialExpressiveTheme
@@ -83,6 +82,8 @@ import com.sosauce.chocola.core.domain.model.EqualizerPreset
 import com.sosauce.chocola.core.designsystem.components.WavySlider
 import com.sosauce.chocola.core.designsystem.ArtworkShape
 import com.sosauce.chocola.core.designsystem.CuteTheme
+import com.sosauce.chocola.core.designsystem.GroupedShapeDefaults
+import com.sosauce.chocola.core.designsystem.groupedShape
 import com.sosauce.chocola.core.designsystem.components.CuteListItem
 import com.sosauce.chocola.core.presentation.util.rememberFocusRequester
 import com.sosauce.chocola.core.presentation.util.toPaletteStyle
@@ -105,6 +106,66 @@ fun SettingsCardHeader(
         )
     )
 }
+
+/**
+ * Base surface shared by every settings card: container color, outer padding and grouped shape.
+ * @param topDp corner radius of both top corners, see [GroupedShapeDefaults]
+ * @param bottomDp corner radius of both bottom corners, see [GroupedShapeDefaults]
+ * @param onClick makes the whole card clickable when not null
+ */
+@Composable
+fun SettingsCard(
+    modifier: Modifier = Modifier,
+    topDp: Dp,
+    bottomDp: Dp,
+    onClick: (() -> Unit)? = null,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    val cardModifier = modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp, vertical = 1.dp)
+    val shape = groupedShape(top = topDp, bottom = bottomDp)
+    val colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer)
+
+    if (onClick != null) {
+        Card(
+            onClick = onClick,
+            modifier = cardModifier,
+            shape = shape,
+            colors = colors,
+            content = content
+        )
+    } else {
+        Card(
+            modifier = cardModifier,
+            shape = shape,
+            colors = colors,
+            content = content
+        )
+    }
+}
+
+/**
+ * Title and optional description shown inside a settings card.
+ */
+@Composable
+fun SettingsCardText(
+    text: String,
+    @StringRes description: Int? = null
+) {
+    Column {
+        Text(text)
+        description?.let {
+            Text(
+                text = stringResource(it),
+                style = MaterialTheme.typography.labelSmallEmphasized.copy(
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            )
+        }
+    }
+}
+
 @Composable
 fun SettingsSwitch(
     modifier: Modifier = Modifier,
@@ -116,16 +177,10 @@ fun SettingsSwitch(
     @StringRes optionalDescription: Int? = null,
     @DrawableRes icon: Int? = null
 ) {
-    Card(
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
-        modifier = modifier
-            .padding(horizontal = 16.dp, vertical = 1.dp),
-        shape = RoundedCornerShape(
-            topStart = topDp,
-            topEnd = topDp,
-            bottomStart = bottomDp,
-            bottomEnd = bottomDp
-        ),
+    SettingsCard(
+        modifier = modifier,
+        topDp = topDp,
+        bottomDp = bottomDp,
         onClick = onCheckedChange
     ) {
         Row(
@@ -144,17 +199,10 @@ fun SettingsSwitch(
                     )
                     Spacer(15.dp)
                 }
-                Column {
-                    Text(text)
-                    optionalDescription?.let {
-                        Text(
-                            text = stringResource(it),
-                            style = MaterialTheme.typography.labelSmallEmphasized.copy(
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        )
-                    }
-                }
+                SettingsCardText(
+                    text = text,
+                    description = optionalDescription
+                )
             }
             Spacer(5.dp)
             Switch(
@@ -223,15 +271,10 @@ fun <T> SettingsMultipleChoice(
         )
     }
 
-    Card(
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
-        modifier = modifier.padding(horizontal = 16.dp, vertical = 1.dp),
-        shape = RoundedCornerShape(
-            topStart = topDp,
-            topEnd = topDp,
-            bottomStart = bottomDp,
-            bottomEnd = bottomDp
-        ),
+    SettingsCard(
+        modifier = modifier,
+        topDp = topDp,
+        bottomDp = bottomDp,
         onClick = { showDialog = true }
     ) {
         Row(
@@ -243,20 +286,16 @@ fun <T> SettingsMultipleChoice(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.weight(1f)
             ) {
-                Column {
-                    Text(stringResource(text))
-                    optionalDescription?.let {
-                        Text(
-                            text = stringResource(it),
-                            style = MaterialTheme.typography.labelSmallEmphasized.copy(
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        )
-                    }
-                }
+                SettingsCardText(
+                    text = stringResource(text),
+                    description = optionalDescription
+                )
             }
             Spacer(5.dp)
-            TextButton(onClick = { showDialog = true }) {
+            TextButton(
+                onClick = { showDialog = true },
+                shapes = ButtonDefaults.shapes()
+            ) {
                 Text(activeLabel)
             }
         }
@@ -278,17 +317,10 @@ fun ClickableSettingsCard(
     text: String,
     @StringRes optionalDescription: Int? = null
 ) {
-    Card(
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 1.dp),
-        shape = RoundedCornerShape(
-            topStart = topDp,
-            topEnd = topDp,
-            bottomStart = bottomDp,
-            bottomEnd = bottomDp
-        ),
+    SettingsCard(
+        modifier = modifier,
+        topDp = topDp,
+        bottomDp = bottomDp,
         onClick = onClick
     ) {
         Row(
@@ -296,21 +328,10 @@ fun ClickableSettingsCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.padding(15.dp)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Column {
-                    Text(text)
-                    optionalDescription?.let {
-                        Text(
-                            text = stringResource(it),
-                            style = MaterialTheme.typography.labelSmallEmphasized.copy(
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        )
-                    }
-                }
-            }
+            SettingsCardText(
+                text = text,
+                description = optionalDescription
+            )
         }
     }
 }
@@ -398,16 +419,9 @@ fun SettingsInput(
 
 
 
-    Card(
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
-        modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 1.dp),
-        shape = RoundedCornerShape(
-            topStart = topDp,
-            topEnd = topDp,
-            bottomStart = bottomDp,
-            bottomEnd = bottomDp
-        )
+    SettingsCard(
+        topDp = topDp,
+        bottomDp = bottomDp
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -420,16 +434,10 @@ fun SettingsInput(
                 modifier = Modifier
                     .weight(1f)
             ) {
-                Column {
-                    Text(stringResource(text))
-                    optionalDescription?.let {
-                        Text(
-                            text = stringResource(it),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            fontSize = 12.sp
-                        )
-                    }
-                }
+                SettingsCardText(
+                    text = stringResource(text),
+                    description = optionalDescription
+                )
             }
             TextButton(
                 onClick = { showDialog = true },
@@ -472,16 +480,9 @@ fun SliderSettingsCards(
         sliderState.value = animatedValue.toFloat()
     }
 
-    Card(
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
-        modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 1.dp),
-        shape = RoundedCornerShape(
-            topStart = topDp,
-            topEnd = topDp,
-            bottomStart = bottomDp,
-            bottomEnd = bottomDp
-        )
+    SettingsCard(
+        topDp = topDp,
+        bottomDp = bottomDp
     ) {
         Column(
             modifier = Modifier.padding(15.dp)

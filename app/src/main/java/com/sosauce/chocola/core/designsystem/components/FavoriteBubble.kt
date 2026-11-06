@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialShapes
@@ -27,20 +28,16 @@ import com.sosauce.chocola.R
 @Composable
 fun FavoriteBubble(modifier: Modifier = Modifier) {
 
-    Box(
-        modifier = modifier
-            .offset(x = (-6).dp, y = (-6).dp)
-    ) {
+    Box(modifier = modifier) {
         Box(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .offset(x = 3.dp, y = 3.dp)
-                .size(15.dp)
+                .size(12.dp)
                 .background(
                     color = MaterialTheme.colorScheme.primary,
                     shape = MaterialShapes.Circle.toShape()
                 )
-
         )
         Box(
             modifier = Modifier

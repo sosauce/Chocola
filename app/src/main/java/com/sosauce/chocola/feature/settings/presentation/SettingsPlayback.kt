@@ -13,9 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
@@ -36,6 +33,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
+import com.sosauce.chocola.feature.settings.presentation.components.SettingsCard
 import com.sosauce.chocola.core.presentation.preferences.rememberEnableEqualizer
 import com.sosauce.chocola.core.presentation.preferences.rememberKeepAlive
 import com.sosauce.chocola.core.presentation.preferences.rememberPauseOnMute
@@ -106,17 +104,9 @@ fun SettingsPlayback(
                 visible = enableEqualizer
             ) {
                 Column {
-                    Card(
-                        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 1.dp),
-                        shape = RoundedCornerShape(
-                            topStart = 24.dp,
-                            topEnd = 24.dp,
-                            bottomStart = 2.dp,
-                            bottomEnd = 2.dp
-                        )
+                    SettingsCard(
+                        topDp = 24.dp,
+                        bottomDp = 2.dp
                     ) {
                         LazyRowWithScrollButton(
                             items = state.eqPresets
@@ -133,17 +123,9 @@ fun SettingsPlayback(
                             )
                         }
                     }
-                    Card(
-                        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 1.dp),
-                        shape = RoundedCornerShape(
-                            topStart = 2.dp,
-                            topEnd = 2.dp,
-                            bottomStart = 24.dp,
-                            bottomEnd = 24.dp
-                        )
+                    SettingsCard(
+                        topDp = 2.dp,
+                        bottomDp = 24.dp
                     ) {
 
                         LazyRowWithScrollButton(

@@ -64,10 +64,13 @@ class AlbumsViewModel(
             .sortedByDescending { it.isFavorite }
 
         if (hideSingleAlbums) albums = albums.filter { it.tracks.size > 1 }
+        val (favoriteAlbums, nonFavoriteAlbums) = albums.partition { it.isFavorite }
 
         AlbumsState(
             isLoading = false,
-            albums = albums
+            albums = albums,
+            favoriteAlbums = favoriteAlbums,
+            nonFavoriteAlbums = nonFavoriteAlbums
         )
     }.flowOn(Dispatchers.Default).stateIn(
         viewModelScope,
@@ -83,5 +86,7 @@ class AlbumsViewModel(
 @Stable
 data class AlbumsState(
     val isLoading: Boolean = true,
-    val albums: List<Album> = emptyList()
+    val albums: List<Album> = emptyList(),
+    val favoriteAlbums: List<Album> = emptyList(),
+    val nonFavoriteAlbums: List<Album> = emptyList()
 )
