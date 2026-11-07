@@ -54,9 +54,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -80,10 +78,8 @@ import com.sosauce.chocola.core.presentation.components.CuteSearchbarDefaults
 import com.sosauce.chocola.core.presentation.components.DefaultMusicListItemTrailingContent
 import com.sosauce.chocola.core.presentation.components.MusicListItem
 import com.sosauce.chocola.core.designsystem.components.NoResult
-import com.sosauce.chocola.core.designsystem.components.SelectOverlayAction
 import com.sosauce.chocola.core.designsystem.components.SelectOverlayItem
-import com.sosauce.chocola.core.presentation.components.PlaylistPicker
-import com.sosauce.chocola.core.presentation.components.dialogs.DeletionDialog
+import com.sosauce.chocola.core.presentation.components.trackSelectActions
 import com.sosauce.chocola.core.designsystem.components.PlayPauseButton
 import com.sosauce.chocola.core.presentation.components.TracksSelectedBar
 import com.sosauce.chocola.core.presentation.navigation.Screen
@@ -117,21 +113,6 @@ fun SharedTransitionScope.MainScreen(
     val activeTrackId = remember(musicState.track) { musicState.track.mediaId }
 
     val groupByFolders = state.groupByFolders
-    var playlistPickerTrack by remember { mutableStateOf<CuteTrack?>(null) }
-    var deletionTrack by remember { mutableStateOf<CuteTrack?>(null) }
-
-    playlistPickerTrack?.let { track ->
-        PlaylistPicker(
-            mediaId = listOf(track.mediaId),
-            onDismissRequest = { playlistPickerTrack = null }
-        )
-    }
-    deletionTrack?.let { track ->
-        DeletionDialog(
-            tracks = listOf(track),
-            onDismissRequest = { deletionTrack = null }
-        )
-    }
 
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,
@@ -207,12 +188,10 @@ fun SharedTransitionScope.MainScreen(
                                 SelectOverlayItem(
                                     modifier = Modifier.animateItem(),
                                     enabled = !multiSelectState.isInSelectionMode,
-                                    actions = favoriteTrackActions(
+                                    actions = trackSelectActions(
                                         track = track,
                                         onNavigate = onNavigate,
-                                        onHandlePlayerAction = onHandlePlayerAction,
-                                        onAddToPlaylist = { playlistPickerTrack = track },
-                                        onDelete = { deletionTrack = track }
+                                        onHandlePlayerAction = onHandlePlayerAction
                                     )
                                 ) { showOverlay ->
                                     FavoriteTrackItem(
@@ -299,32 +278,47 @@ fun SharedTransitionScope.MainScreen(
 
                                 val isSelected by multiSelectState.isSelectedAsState(track)
 
-                                MusicListItem(
+                                SelectOverlayItem(
                                     modifier = Modifier.animateItem(),
-                                    onShortClick = {
-                                        if (multiSelectState.isInSelectionMode) {
-                                            multiSelectState.toggle(track)
-                                        } else {
-                                            onHandlePlayerAction(
-                                                PlayerActions.PlayFromSource(
-                                                    mediaId = track.mediaId,
-                                                    source = PlaySource.ExplicitTracks(category.tracks)
+                                    enabled = !multiSelectState.isInSelectionMode,
+                                    actions = trackSelectActions(
+                                        track = track,
+                                        onNavigate = onNavigate,
+                                        onHandlePlayerAction = onHandlePlayerAction
+                                    )
+                                ) { showOverlay ->
+                                    MusicListItem(
+                                        onShortClick = {
+                                            if (multiSelectState.isInSelectionMode) {
+                                                multiSelectState.toggle(track)
+                                            } else {
+                                                onHandlePlayerAction(
+                                                    PlayerActions.PlayFromSource(
+                                                        mediaId = track.mediaId,
+                                                        source = PlaySource.ExplicitTracks(category.tracks)
+                                                    )
                                                 )
+                                            }
+                                        },
+                                        onLongClick = {
+                                            if (multiSelectState.isInSelectionMode) {
+                                                multiSelectState.toggle(track)
+                                            } else {
+                                                showOverlay()
+                                            }
+                                        },
+                                        track = track,
+                                        isSelected = isSelected,
+                                        isActive = track.mediaId == activeTrackId,
+                                        trailingContent = {
+                                            DefaultMusicListItemTrailingContent(
+                                                track = track,
+                                                onNavigate = onNavigate,
+                                                onHandlePlayerActions = onHandlePlayerAction
                                             )
                                         }
-                                    },
-                                    onLongClick = { multiSelectState.toggle(track) },
-                                    track = track,
-                                    isSelected = isSelected,
-                                    isActive = track.mediaId == activeTrackId,
-                                    trailingContent = {
-                                        DefaultMusicListItemTrailingContent(
-                                            track = track,
-                                            onNavigate = onNavigate,
-                                            onHandlePlayerActions = onHandlePlayerAction
-                                        )
-                                    }
-                                )
+                                    )
+                                }
                             }
                         }
                     }
@@ -336,84 +330,50 @@ fun SharedTransitionScope.MainScreen(
 
                         val isSelected by multiSelectState.isSelectedAsState(track)
 
-                        MusicListItem(
+                        SelectOverlayItem(
                             modifier = Modifier.animateItem(),
-                            onShortClick = {
-                                if (multiSelectState.isInSelectionMode) {
-                                    multiSelectState.toggle(track)
-                                } else {
-                                    onHandlePlayerAction(
-                                        PlayerActions.PlayFromSource(
-                                            mediaId = track.mediaId,
-                                            source = PlaySource.ExplicitTracks(state.nonFavoriteTracks)
+                            enabled = !multiSelectState.isInSelectionMode,
+                            actions = trackSelectActions(
+                                track = track,
+                                onNavigate = onNavigate,
+                                onHandlePlayerAction = onHandlePlayerAction
+                            )
+                        ) { showOverlay ->
+                            MusicListItem(
+                                onShortClick = {
+                                    if (multiSelectState.isInSelectionMode) {
+                                        multiSelectState.toggle(track)
+                                    } else {
+                                        onHandlePlayerAction(
+                                            PlayerActions.PlayFromSource(
+                                                mediaId = track.mediaId,
+                                                source = PlaySource.ExplicitTracks(state.nonFavoriteTracks)
+                                            )
                                         )
+                                    }
+                                },
+                                onLongClick = {
+                                    if (multiSelectState.isInSelectionMode) {
+                                        multiSelectState.toggle(track)
+                                    } else {
+                                        showOverlay()
+                                    }
+                                },
+                                track = track,
+                                isSelected = isSelected,
+                                isActive = track.mediaId == activeTrackId,
+                                trailingContent = {
+                                    DefaultMusicListItemTrailingContent(
+                                        track = track,
+                                        onNavigate = onNavigate,
+                                        onHandlePlayerActions = onHandlePlayerAction
                                     )
                                 }
-                            },
-                            onLongClick = { multiSelectState.toggle(track) },
-                            track = track,
-                            isSelected = isSelected,
-                            isActive = track.mediaId == activeTrackId,
-                            trailingContent = {
-                                DefaultMusicListItemTrailingContent(
-                                    track = track,
-                                    onNavigate = onNavigate,
-                                    onHandlePlayerActions = onHandlePlayerAction
-                                )
-                            }
-                        )
+                            )
+                        }
                     }
                 }
             }
         }
     }
 }
-
-/**
- * Same actions and handlers as [com.sosauce.chocola.core.presentation.components.TrackDropdownMenu].
- */
-@Composable
-private fun favoriteTrackActions(
-    track: CuteTrack,
-    onNavigate: (Screen) -> Unit,
-    onHandlePlayerAction: (PlayerActions) -> Unit,
-    onAddToPlaylist: () -> Unit,
-    onDelete: () -> Unit
-): List<SelectOverlayAction> = listOf(
-    SelectOverlayAction(
-        label = stringResource(R.string.play_next),
-        icon = R.drawable.fast_forward,
-        onClick = { onHandlePlayerAction(PlayerActions.PlayNext(track)) }
-    ),
-    SelectOverlayAction(
-        label = stringResource(R.string.add_queue),
-        icon = R.drawable.add_to_queue,
-        onClick = { onHandlePlayerAction(PlayerActions.AddToQueue(listOf(track))) }
-    ),
-    SelectOverlayAction(
-        label = stringResource(R.string.add_to_playlist),
-        icon = R.drawable.playlist_add,
-        onClick = onAddToPlaylist
-    ),
-    SelectOverlayAction(
-        label = stringResource(R.string.go_to, track.album),
-        icon = androidx.media3.session.R.drawable.media3_icon_album,
-        onClick = { onNavigate(Screen.AlbumsDetails(track.album)) }
-    ),
-    SelectOverlayAction(
-        label = stringResource(R.string.go_to, track.artist),
-        icon = R.drawable.artist_rounded,
-        onClick = { onNavigate(Screen.ArtistsDetails(track.artist)) }
-    ),
-    SelectOverlayAction(
-        label = stringResource(R.string.remove_favorite),
-        icon = R.drawable.favorite_filled,
-        onClick = { track.mediaId.toLongOrNull()?.let { onHandlePlayerAction(PlayerActions.ToggleFavorite(it)) } }
-    ),
-    SelectOverlayAction(
-        label = stringResource(R.string.delete),
-        icon = R.drawable.trash_rounded_filled,
-        isDestructive = true,
-        onClick = onDelete
-    )
-)

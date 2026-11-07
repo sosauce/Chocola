@@ -56,6 +56,8 @@ import com.sosauce.chocola.core.presentation.components.CuteSearchbarDefaults
 import com.sosauce.chocola.core.presentation.components.DefaultMusicListItemTrailingContent
 import com.sosauce.chocola.core.presentation.components.MusicListItem
 import com.sosauce.chocola.core.designsystem.components.NoResult
+import com.sosauce.chocola.core.designsystem.components.SelectOverlayItem
+import com.sosauce.chocola.core.presentation.components.trackSelectActions
 import com.sosauce.chocola.core.presentation.components.TracksSelectedBar
 import com.sosauce.chocola.core.presentation.navigation.Screen
 import com.sosauce.chocola.core.designsystem.components.NumberOfTracks
@@ -194,32 +196,47 @@ fun SharedTransitionScope.ArtistDetailsScreen(
 
                     val isSelected by multiSelectState.isSelectedAsState(track)
 
-                    MusicListItem(
+                    SelectOverlayItem(
                         modifier = Modifier.animateItem(),
-                        track = track,
-                        onShortClick = {
-                            if (multiSelectState.isInSelectionMode) {
-                                multiSelectState.toggle(track)
-                            } else {
-                                onHandlePlayerAction(
-                                    PlayerActions.PlayFromSource(
-                                        mediaId = track.mediaId,
-                                        source = PlaySource.Artist(state.artist.name)
+                        enabled = !multiSelectState.isInSelectionMode,
+                        actions = trackSelectActions(
+                            track = track,
+                            onNavigate = onNavigate,
+                            onHandlePlayerAction = onHandlePlayerAction
+                        )
+                    ) { showOverlay ->
+                        MusicListItem(
+                            track = track,
+                            onShortClick = {
+                                if (multiSelectState.isInSelectionMode) {
+                                    multiSelectState.toggle(track)
+                                } else {
+                                    onHandlePlayerAction(
+                                        PlayerActions.PlayFromSource(
+                                            mediaId = track.mediaId,
+                                            source = PlaySource.Artist(state.artist.name)
+                                        )
                                     )
+                                }
+                            },
+                            onLongClick = {
+                                if (multiSelectState.isInSelectionMode) {
+                                    multiSelectState.toggle(track)
+                                } else {
+                                    showOverlay()
+                                }
+                            },
+                            isSelected = isSelected,
+                            isActive = track.mediaId == activeTrackId,
+                            trailingContent = {
+                                DefaultMusicListItemTrailingContent(
+                                    track = track,
+                                    onNavigate = onNavigate,
+                                    onHandlePlayerActions = onHandlePlayerAction
                                 )
                             }
-                        },
-                        onLongClick = { multiSelectState.toggle(track) },
-                        isSelected = isSelected,
-                        isActive = track.mediaId == activeTrackId,
-                        trailingContent = {
-                            DefaultMusicListItemTrailingContent(
-                                track = track,
-                                onNavigate = onNavigate,
-                                onHandlePlayerActions = onHandlePlayerAction
-                            )
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }

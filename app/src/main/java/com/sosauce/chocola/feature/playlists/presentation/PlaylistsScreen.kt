@@ -54,11 +54,14 @@ import com.sosauce.chocola.core.domain.player.MusicState
 import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.core.presentation.components.CuteSearchbar
 import com.sosauce.chocola.core.designsystem.components.NoResult
+import com.sosauce.chocola.core.designsystem.components.SelectOverlayAction
+import com.sosauce.chocola.core.designsystem.components.SelectOverlayItem
 import com.sosauce.chocola.core.presentation.components.CuteSearchbarDefaults
 import com.sosauce.chocola.core.presentation.components.SelectedBarSurface
 import com.sosauce.chocola.core.presentation.components.dialogs.PlaylistDeletionDialog
 import com.sosauce.chocola.core.presentation.navigation.Screen
 import com.sosauce.chocola.feature.playlists.presentation.components.CreatePlaylistDialog
+import com.sosauce.chocola.feature.playlists.presentation.components.EditPlaylist
 import com.sosauce.chocola.feature.playlists.presentation.components.FavoritePlaylistItem
 import com.sosauce.chocola.feature.playlists.presentation.components.PlaylistItem
 import com.sosauce.chocola.core.presentation.util.barsContentTransform
@@ -229,20 +232,34 @@ fun SharedTransitionScope.PlaylistsScreen(
                             ) { playlist ->
                                 val isSelected by multiSelectState.isSelectedAsState(playlist)
 
-                                FavoritePlaylistItem(
+                                SelectOverlayItem(
                                     modifier = Modifier.animateItem(),
-                                    playlist = playlist,
-                                    isSelected = isSelected,
-                                    isInSelectionMode = multiSelectState.isInSelectionMode,
-                                    onClick = {
-                                        if (multiSelectState.isInSelectionMode) {
-                                            multiSelectState.toggle(playlist)
-                                        } else {
-                                            onNavigate(Screen.PlaylistDetails(playlist.id))
+                                    enabled = !multiSelectState.isInSelectionMode,
+                                    actions = playlistSelectActions(
+                                        playlist = playlist,
+                                        onHandlePlaylistAction = onHandlePlaylistAction
+                                    )
+                                ) { showOverlay ->
+                                    FavoritePlaylistItem(
+                                        playlist = playlist,
+                                        isSelected = isSelected,
+                                        isInSelectionMode = multiSelectState.isInSelectionMode,
+                                        onClick = {
+                                            if (multiSelectState.isInSelectionMode) {
+                                                multiSelectState.toggle(playlist)
+                                            } else {
+                                                onNavigate(Screen.PlaylistDetails(playlist.id))
+                                            }
+                                        },
+                                        onLongClick = {
+                                            if (multiSelectState.isInSelectionMode) {
+                                                multiSelectState.toggle(playlist)
+                                            } else {
+                                                showOverlay()
+                                            }
                                         }
-                                    },
-                                    onLongClick = { multiSelectState.toggle(playlist) }
-                                )
+                                    )
+                                }
                             }
                         }
                     }
@@ -272,23 +289,103 @@ fun SharedTransitionScope.PlaylistsScreen(
 
                     val isSelected by multiSelectState.isSelectedAsState(playlist)
 
-                    PlaylistItem(
+                    SelectOverlayItem(
                         modifier = Modifier.animateItem(),
-                        playlist = playlist,
-                        isSelected = isSelected,
-                        onHandlePlaylistActions = onHandlePlaylistAction,
-                        onClickPlaylist = {
-                            if (multiSelectState.isInSelectionMode) {
-                                multiSelectState.toggle(playlist)
-                            } else {
-                                onNavigate(Screen.PlaylistDetails(playlist.id))
+                        enabled = !multiSelectState.isInSelectionMode,
+                        actions = playlistSelectActions(
+                            playlist = playlist,
+                            onHandlePlaylistAction = onHandlePlaylistAction
+                        )
+                    ) { showOverlay ->
+                        PlaylistItem(
+                            playlist = playlist,
+                            isSelected = isSelected,
+                            onHandlePlaylistActions = onHandlePlaylistAction,
+                            onClickPlaylist = {
+                                if (multiSelectState.isInSelectionMode) {
+                                    multiSelectState.toggle(playlist)
+                                } else {
+                                    onNavigate(Screen.PlaylistDetails(playlist.id))
+                                }
+                            },
+                            onLongClick = {
+                                if (multiSelectState.isInSelectionMode) {
+                                    multiSelectState.toggle(playlist)
+                                } else {
+                                    showOverlay()
+                                }
                             }
-                        },
-                        onLongClick = { multiSelectState.toggle(playlist) }
-                    )
+                        )
+                    }
                 }
             }
         }
 
     }
+}
+
+/**
+ * Actions shown when [playlist] is lifted into the select overlay, together with the dialogs they open.
+ * Mirrors the options in [PlaylistItem], so both ways of reaching a playlist's actions stay in sync.
+ */
+@Composable
+private fun playlistSelectActions(
+    playlist: Playlist,
+    onHandlePlaylistAction: (PlaylistActions) -> Unit
+): List<SelectOverlayAction> {
+    var showEditDialog by remember { mutableStateOf(false) }
+    var showDeletionDialog by remember { mutableStateOf(false) }
+    val exportPlaylistLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("*/*")) { uri ->
+            uri?.let {
+                onHandlePlaylistAction(
+                    PlaylistActions.ExportM3uPlaylist(
+                        uri = it,
+                        tracks = playlist.musics
+                    )
+                )
+            }
+        }
+
+    if (showEditDialog) {
+        EditPlaylist(
+            playlist = playlist,
+            onDismissRequest = { showEditDialog = false },
+            onHandlePlaylistActions = onHandlePlaylistAction
+        )
+    }
+
+    if (showDeletionDialog) {
+        PlaylistDeletionDialog(
+            playlists = listOf(playlist),
+            onHandlePlaylistAction = onHandlePlaylistAction,
+            onDismissRequest = { showDeletionDialog = false }
+        )
+    }
+
+    return listOf(
+        SelectOverlayAction(
+            label = stringResource(if (playlist.isFavorite) R.string.remove_favorite else R.string.add_favorite),
+            icon = if (playlist.isFavorite) R.drawable.favorite_filled else R.drawable.favorite,
+            onClick = {
+                onHandlePlaylistAction(PlaylistActions.SetFavorite(playlist.id, !playlist.isFavorite))
+            }
+        ),
+        SelectOverlayAction(
+            label = stringResource(R.string.edit_playlist),
+            icon = R.drawable.edit_rounded,
+            onClick = { showEditDialog = true }
+        ),
+        SelectOverlayAction(
+            label = stringResource(R.string.export_playlist),
+            icon = R.drawable.export,
+            onClick = { exportPlaylistLauncher.launch("${playlist.name.ifEmpty { "Playlist" }}.m3u") }
+        ),
+        SelectOverlayAction(
+            label = stringResource(R.string.delete),
+            icon = R.drawable.trash_rounded,
+            isDestructive = true,
+            onClick = { showDeletionDialog = true }
+        )
+    )
 }
