@@ -238,7 +238,8 @@ fun SharedTransitionScope.PlaylistsScreen(
                                     actions = playlistSelectActions(
                                         playlist = playlist,
                                         onHandlePlaylistAction = onHandlePlaylistAction
-                                    )
+                                    ),
+                                    onSelect = { multiSelectState.addAll(listOf(playlist)) }
                                 ) { showOverlay ->
                                     FavoritePlaylistItem(
                                         playlist = playlist,
@@ -295,7 +296,8 @@ fun SharedTransitionScope.PlaylistsScreen(
                         actions = playlistSelectActions(
                             playlist = playlist,
                             onHandlePlaylistAction = onHandlePlaylistAction
-                        )
+                        ),
+                        onSelect = { multiSelectState.addAll(listOf(playlist)) }
                     ) { showOverlay ->
                         PlaylistItem(
                             playlist = playlist,

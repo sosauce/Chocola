@@ -129,6 +129,7 @@
     <string name="hidden_tracks">Hidden tracks</string>
     <string name="show_album_name">Show album name</string>
     <string name="font_size">Font size</string>
+    <string name="select">Select</string>
     <string name="select_all">Select all</string>
     <string name="unselect_all">Unselect all</string>
     <string name="palette">Palette</string>
@@ -283,6 +284,7 @@
     <string name="rewind">Rewind</string>
     <string name="fast_forward">Fast forward</string>
     <string name="shuffle">Shuffle</string>
+    <string name="play">Play</string>
     <string name="repeat">Repeat</string>
     <string name="favorite">Favorite</string>
     <string name="sleep_timer">Sleep timer</string>

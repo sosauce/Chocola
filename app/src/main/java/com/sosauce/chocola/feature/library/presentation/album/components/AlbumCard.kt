@@ -4,12 +4,16 @@ package com.sosauce.chocola.feature.library.presentation.album.components
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,6 +50,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -56,6 +61,7 @@ import androidx.core.net.toUri
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import coil3.compose.AsyncImage
 import com.sosauce.chocola.R
+import com.sosauce.chocola.core.designsystem.components.SelectionCheckbox
 import com.sosauce.chocola.core.domain.model.Album
 import com.sosauce.chocola.feature.library.presentation.util.ImageUtils
 import com.sosauce.chocola.core.domain.player.PlayerActions
@@ -64,24 +70,42 @@ import com.sosauce.chocola.core.presentation.components.dialogs.DeletionDialog
 import com.sosauce.nekobites.animations.AnimatedDrawable
 import com.sosauce.nekobites.animations.AnimatedDrawableFile
 import com.sosauce.nekobites.animations.bouncySpec
+import com.sosauce.nekobites.helpers.rememberInteractionSource
 
 @Composable
 fun SharedTransitionScope.AlbumCard(
     modifier: Modifier = Modifier,
     album: Album,
     onClick: () -> Unit,
+    onLongClick: (() -> Unit)? = null,
+    isSelected: Boolean = false,
+    isInSelectionMode: Boolean = false,
     onToggleFavorite: (() -> Unit)? = null
 ) {
 
     var showMoreMenu by remember { mutableStateOf(false) }
+    val interactionSource = rememberInteractionSource()
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val cardScale by animateFloatAsState(
+        targetValue = if (isPressed || isSelected) 0.95f else 1f,
+        animationSpec = bouncySpec()
+    )
 
     Box(
         modifier = modifier
             .padding(horizontal = 5.dp, vertical = 10.dp)
+            .graphicsLayer {
+                scaleX = cardScale
+                scaleY = cardScale
+            }
             .aspectRatio(1f)
             .clip(MaterialTheme.shapes.extraLarge)
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .clickable(onClick = onClick),
+            .combinedClickable(
+                interactionSource = interactionSource,
+                onClick = onClick,
+                onLongClick = onLongClick
+            ),
         contentAlignment = Alignment.Center
     ) {
         Icon(
@@ -95,23 +119,36 @@ fun SharedTransitionScope.AlbumCard(
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
-        IconButton(
-            onClick = { showMoreMenu = true },
+        AnimatedVisibility(
+            visible = !isInSelectionMode,
             modifier = Modifier.align(Alignment.TopEnd),
-            shapes = IconButtonDefaults.shapes()
+            enter = scaleIn(bouncySpec()),
+            exit = scaleOut(bouncySpec())
         ) {
-            AnimatedDrawable(
-                drawable = AnimatedDrawableFile.MORE_VERT,
-                atEnd = showMoreMenu
-            )
+            IconButton(
+                onClick = { showMoreMenu = true },
+                shapes = IconButtonDefaults.shapes()
+            ) {
+                AnimatedDrawable(
+                    drawable = AnimatedDrawableFile.MORE_VERT,
+                    atEnd = showMoreMenu
+                )
 
-            AlbumDropdownMenu(
-                album = album,
-                expanded = showMoreMenu,
-                onDismissRequest = { showMoreMenu = false },
-                onToggleFavorite = onToggleFavorite
-            )
+                AlbumDropdownMenu(
+                    album = album,
+                    expanded = showMoreMenu,
+                    onDismissRequest = { showMoreMenu = false },
+                    onToggleFavorite = onToggleFavorite
+                )
+            }
         }
+        SelectionCheckbox(
+            visible = isInSelectionMode,
+            checked = isSelected,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(6.dp)
+        )
         Column(
             modifier = Modifier
                 .fillMaxWidth()

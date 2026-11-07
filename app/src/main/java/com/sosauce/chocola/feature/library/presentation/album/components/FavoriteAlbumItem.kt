@@ -11,16 +11,19 @@ import com.sosauce.chocola.core.domain.model.Album
 fun FavoriteAlbumItem(
     modifier: Modifier = Modifier,
     album: Album,
-    onClick: () -> Unit
+    isSelected: Boolean,
+    isInSelectionMode: Boolean,
+    onClick: () -> Unit,
+    onLongClick: () -> Unit
 ) {
     FavoriteItem(
         modifier = modifier,
         title = album.name,
         subtitle = album.artist,
-        isSelected = false,
-        isInSelectionMode = false,
+        isSelected = isSelected,
+        isInSelectionMode = isInSelectionMode,
         onClick = onClick,
-        onLongClick = {}
+        onLongClick = onLongClick
     ) { isPressed ->
         FavoriteArtwork(
             model = album.art,

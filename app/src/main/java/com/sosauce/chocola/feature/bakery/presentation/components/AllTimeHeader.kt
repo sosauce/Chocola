@@ -79,7 +79,6 @@ fun AllTimeHeader(
 ) {
 
 
-    // slow spinning cookies, opposite directions
     val transition = rememberInfiniteTransition(label = "cookies")
     val spinA by transition.animateFloat(
         initialValue = 0f,

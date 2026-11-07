@@ -38,7 +38,6 @@ import com.sosauce.chocola.core.designsystem.components.SelectOverlayAction
 import com.sosauce.chocola.core.presentation.components.trackItems
 import com.sosauce.chocola.core.presentation.components.TracksSelectedBar
 import com.sosauce.chocola.core.presentation.navigation.Screen
-import com.sosauce.chocola.core.designsystem.components.NumberOfTracks
 import com.sosauce.chocola.feature.playlists.presentation.components.EmptyPlaylist
 import com.sosauce.chocola.feature.playlists.presentation.components.PlaylistHeader
 import com.sosauce.chocola.core.designsystem.CuteTheme
@@ -46,11 +45,9 @@ import com.sosauce.chocola.core.presentation.util.barsContentTransform
 import com.sosauce.chocola.core.domain.util.copyMutate
 import com.sosauce.chocola.core.presentation.util.selfAlignHorizontally
 import com.sosauce.chocola.core.presentation.util.toPaletteStyle
-import com.sosauce.nekobites.animations.AnimatedFab
 import com.sosauce.nekobites.components.LoadingBox
 import com.sosauce.nekobites.utils.ColorUtils.toColor
 import com.sosauce.sweetselect.rememberSweetSelectState
-import kotlin.random.Random
 
 @Composable
 fun SharedTransitionScope.PlaylistDetailsScreen(
@@ -105,19 +102,6 @@ fun SharedTransitionScope.PlaylistDetailsScreen(
                             onNavigate = onNavigate,
                             modifier = Modifier.selfAlignHorizontally(),
                             backButton = { CuteSearchbarDefaults.BackButton(onNavigateBack) },
-                            fab = {
-                                AnimatedFab(
-                                    onClick = {
-                                        onHandlePlayerAction(
-                                            PlayerActions.PlayFromSource(
-                                                mediaId = null,
-                                                source = PlaySource.ExplicitTracks(state.playlistTracks)
-                                            )
-                                        )
-                                    },
-                                    icon = R.drawable.shuffle
-                                )
-                            },
                             sortMenu = {
                                 CuteSearchbarDefaults.TrackSortPopupContent()
                             }
@@ -152,9 +136,16 @@ fun SharedTransitionScope.PlaylistDetailsScreen(
                             PlaylistHeader(
                                 playlist = state.playlist,
                                 tracks = state.playlistTracks,
-                                onHandlePlayerActions = onHandlePlayerAction
+                                onHandlePlayerActions = onHandlePlayerAction,
+                                onToggleFavorite = {
+                                    onHandlePlaylistAction(
+                                        PlaylistActions.SetFavorite(
+                                            playlistId = state.playlist.id,
+                                            isFavorite = !state.playlist.isFavorite
+                                        )
+                                    )
+                                }
                             )
-                            NumberOfTracks(size = state.tracks.size)
                         }
                     }
 

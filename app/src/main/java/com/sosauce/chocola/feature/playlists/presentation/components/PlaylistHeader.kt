@@ -1,95 +1,84 @@
-@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3ExpressiveApi::class)
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
 
 package com.sosauce.chocola.feature.playlists.presentation.components
 
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.sp
 import com.sosauce.chocola.R
-import com.sosauce.chocola.core.domain.model.CuteTrack
 import com.sosauce.chocola.core.data.local.Playlist
+import com.sosauce.chocola.core.designsystem.components.DetailsHeader
+import com.sosauce.chocola.core.domain.model.CuteTrack
 import com.sosauce.chocola.core.domain.player.PlaySource
 import com.sosauce.chocola.core.domain.player.PlayerActions
-import com.sosauce.nekobites.animations.AnimatedFab
 
 @Composable
 fun PlaylistHeader(
     playlist: Playlist,
     tracks: List<CuteTrack>,
-    onHandlePlayerActions: (PlayerActions) -> Unit
+    onHandlePlayerActions: (PlayerActions) -> Unit,
+    onToggleFavorite: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(
-                color = MaterialTheme.colorScheme.surfaceContainer,
-                shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+    DetailsHeader(
+        title = playlist.name,
+        subtitle = playlist.tags.joinToString(", ").ifEmpty { null },
+        trackCount = tracks.size,
+        isFavorite = playlist.isFavorite,
+        onShuffle = {
+            onHandlePlayerActions(
+                PlayerActions.PlayFromSource(
+                    mediaId = null,
+                    source = PlaySource.ExplicitTracks(tracks)
+                )
             )
-            .statusBarsPadding()
-            .padding(20.dp),
-        verticalAlignment = Alignment.Bottom
-    ) {
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-
+        },
+        onPlay = {
+            onHandlePlayerActions(
+                PlayerActions.StartPlaylist(PlaySource.ExplicitTracks(tracks))
+            )
+        },
+        onToggleFavorite = onToggleFavorite,
+        artworkColor = if (playlist.emoji.isNotEmpty()) MaterialTheme.colorScheme.surfaceContainerHighest else MaterialTheme.colorScheme.primary,
+        poster = {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.primaryContainer,
+                                MaterialTheme.colorScheme.surface
+                            )
+                        )
+                    )
+            )
+        },
+        artwork = {
             if (playlist.emoji.isNotEmpty()) {
                 Text(
                     text = playlist.emoji,
-                    style = MaterialTheme.typography.displayLargeEmphasized
-                )
-            }
-
-            Text(
-                text = playlist.name,
-                style = MaterialTheme.typography.headlineLargeEmphasized,
-                modifier = Modifier.basicMarquee()
-            )
-            FlowRow(
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-                horizontalArrangement = Arrangement.spacedBy(2.dp)
-            ) {
-                playlist.tags.forEach { tag ->
-                    Button(
-                        onClick = {},
-                        shapes = ButtonDefaults.shapes(),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                            contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainerHigh)
-                        )
-                    ) { Text(tag) }
-                }
-            }
-        }
-
-        AnimatedFab(
-            onClick = {
-                onHandlePlayerActions(
-                    PlayerActions.StartPlaylist(
-                        source = PlaySource.ExplicitTracks(tracks)
+                    style = MaterialTheme.typography.displayLargeEmphasized.copy(
+                        fontSize = 82.sp
                     )
                 )
-            },
-            icon = R.drawable.widget_play,
-            minSize = 90.dp
-        )
-    }
+            } else {
+                Icon(
+                    painter = painterResource(R.drawable.queue_music_rounded),
+                    contentDescription = null,
+                    tint = contentColorFor(MaterialTheme.colorScheme.primary),
+                    modifier = Modifier.fillMaxSize(0.5f)
+                )
+            }
+        }
+    )
 }

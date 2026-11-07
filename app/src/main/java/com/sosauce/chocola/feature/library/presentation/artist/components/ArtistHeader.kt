@@ -4,97 +4,61 @@ package com.sosauce.chocola.feature.library.presentation.artist.components
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.pluralStringResource
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
-import coil3.compose.AsyncImage
 import com.sosauce.chocola.R
+import com.sosauce.chocola.core.designsystem.components.DetailsHeader
+import com.sosauce.chocola.core.designsystem.components.DetailsHeaderArtwork
+import com.sosauce.chocola.core.designsystem.components.DetailsHeaderPoster
 import com.sosauce.chocola.core.domain.model.Artist
 import com.sosauce.chocola.core.domain.model.CuteTrack
 import com.sosauce.chocola.core.domain.player.PlaySource
 import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.feature.library.presentation.util.ImageUtils
-import com.sosauce.nekobites.animations.AnimatedFab
 
 @Composable
 fun SharedTransitionScope.ArtistHeader(
     artist: Artist,
     tracks: List<CuteTrack>,
+    albumCount: Int,
     onHandlePlayerActions: (PlayerActions) -> Unit
 ) {
+    val artUri = ImageUtils.getAlbumArt(artist.albumId)
 
-
-    Box(
-        modifier = Modifier
-            .height(300.dp)
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-    ) {
-        AsyncImage(
-            model = ImageUtils.getAlbumArt(artist.albumId),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
-        Row(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .fillMaxWidth()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, MaterialTheme.colorScheme.background)
-                    )
+    DetailsHeader(
+        title = artist.name,
+        subtitle = null,
+        trackCount = tracks.size,
+        isFavorite = artist.isFavorite,
+        onShuffle = {
+            onHandlePlayerActions(
+                PlayerActions.PlayFromSource(
+                    mediaId = null,
+                    source = PlaySource.Artist(artist.name)
                 )
-                .padding(20.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = artist.name,
-                style = MaterialTheme.typography.headlineLargeEmphasized,
-                modifier = Modifier
-                    .sharedBounds(
-                        sharedContentState = rememberSharedContentState(artist.name + artist.id),
-                        animatedVisibilityScope = LocalNavAnimatedContentScope.current
-                    )
-                    .weight(1f)
-                    .basicMarquee()
             )
-            androidx.compose.material3.IconButton(
-                onClick = { onHandlePlayerActions(PlayerActions.ToggleArtistFavorite(artist.id)) },
-                shapes = androidx.compose.material3.IconButtonDefaults.shapes()
-            ) {
-                androidx.compose.material3.Icon(
-                    painter = androidx.compose.ui.res.painterResource(R.drawable.favorite_filled),
-                    contentDescription = androidx.compose.ui.res.stringResource(
-                        if (artist.isFavorite) R.string.remove_favorite else R.string.add_favorite
-                    ),
-                    tint = if (artist.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            AnimatedFab(
-                onClick = {
-                    onHandlePlayerActions(
-                        PlayerActions.StartPlaylist(PlaySource.Artist(artist.name))
-                    )
-                },
-                icon = R.drawable.widget_play,
-                minSize = 90.dp
+        },
+        onPlay = {
+            onHandlePlayerActions(
+                PlayerActions.StartPlaylist(PlaySource.Artist(artist.name))
+            )
+        },
+        onToggleFavorite = {
+            onHandlePlayerActions(PlayerActions.ToggleArtistFavorite(artist.id))
+        },
+        titleModifier = Modifier.sharedBounds(
+            sharedContentState = rememberSharedContentState(artist.name + artist.id),
+            animatedVisibilityScope = LocalNavAnimatedContentScope.current
+        ),
+        poster = { DetailsHeaderPoster(model = artUri) },
+        artwork = {
+            DetailsHeaderArtwork(
+                model = artUri,
+                placeholderIcon = R.drawable.artists_filled
             )
         }
-    }
+    )
 }

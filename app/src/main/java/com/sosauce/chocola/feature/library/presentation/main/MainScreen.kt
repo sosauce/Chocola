@@ -191,7 +191,8 @@ fun SharedTransitionScope.MainScreen(
                                         track = track,
                                         onNavigate = onNavigate,
                                         onHandlePlayerAction = onHandlePlayerAction
-                                    )
+                                    ),
+                                    onSelect = { multiSelectState.addAll(listOf(track)) }
                                 ) { showOverlay ->
                                     FavoriteTrackItem(
                                         track = track,

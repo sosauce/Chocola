@@ -4,17 +4,13 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -156,7 +152,6 @@ fun FavoriteItem(
                 .fillMaxWidth()
                 .align(Alignment.TopStart)
                 .badgeOffset(x = 6.dp, y = 6.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Top
         ) {
             AnimatedVisibility(
@@ -172,6 +167,7 @@ fun FavoriteItem(
                         ) { onUnfavorite() }
                 )
             }
+            Spacer(Modifier.weight(1f))
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -194,57 +190,5 @@ private fun Modifier.badgeOffset(x: Dp, y: Dp): Modifier = layout { measurable, 
     val placeable = measurable.measure(constraints.copy(minWidth = width, maxWidth = width))
     layout(constraints.maxWidth, placeable.height) {
         placeable.place(x = -x.roundToPx(), y = -y.roundToPx())
-    }
-}
-
-@Composable
-private fun SelectionCheckbox(
-    visible: Boolean,
-    checked: Boolean,
-    modifier: Modifier = Modifier
-) {
-    val spatialSpec = MaterialTheme.motionScheme.fastSpatialSpec<Float>()
-    val boxShape = RoundedCornerShape(7.dp)
-    val fillColor by animateColorAsState(
-        if (checked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHighest
-    )
-    val borderColor by animateColorAsState(
-        if (checked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
-    )
-
-    AnimatedVisibility(
-        visible = visible,
-        enter = scaleIn(spatialSpec) + fadeIn(),
-        exit = scaleOut(spatialSpec) + fadeOut(),
-        modifier = modifier
-    ) {
-        Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(11.dp))
-                .background(MaterialTheme.colorScheme.background)
-                .padding(3.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(24.dp)
-                    .clip(boxShape)
-                    .background(fillColor)
-                    .border(1.5.dp, borderColor, boxShape),
-                contentAlignment = Alignment.Center
-            ) {
-                AnimatedVisibility(
-                    visible = checked,
-                    enter = scaleIn(spatialSpec),
-                    exit = scaleOut(spatialSpec)
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.check),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
-            }
-        }
     }
 }

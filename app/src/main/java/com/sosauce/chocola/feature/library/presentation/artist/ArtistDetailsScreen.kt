@@ -8,43 +8,24 @@ package com.sosauce.chocola.feature.library.presentation.artist
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.carousel.HorizontalMultiBrowseCarousel
 import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation3.ui.LocalNavAnimatedContentScope
-import coil3.compose.AsyncImage
-import com.sosauce.chocola.R
 import com.sosauce.chocola.core.domain.model.CuteTrack
 import com.sosauce.chocola.core.domain.player.MusicState
 import com.sosauce.chocola.core.domain.player.PlaySource
@@ -55,14 +36,11 @@ import com.sosauce.chocola.core.designsystem.components.NoResult
 import com.sosauce.chocola.core.presentation.components.trackItems
 import com.sosauce.chocola.core.presentation.components.TracksSelectedBar
 import com.sosauce.chocola.core.presentation.navigation.Screen
-import com.sosauce.chocola.core.designsystem.components.NumberOfTracks
 import com.sosauce.chocola.feature.library.presentation.artist.components.ArtistHeader
 import com.sosauce.chocola.core.designsystem.components.NumberOfAlbums
-import com.sosauce.chocola.feature.library.presentation.util.ImageUtils
 import com.sosauce.chocola.core.presentation.util.barsContentTransform
 import com.sosauce.chocola.core.presentation.util.selfAlignHorizontally
 import com.sosauce.chocola.feature.library.presentation.album.components.AlbumCard
-import com.sosauce.nekobites.animations.AnimatedFab
 import com.sosauce.nekobites.components.LoadingBox
 import com.sosauce.sweetselect.rememberSweetSelectState
 
@@ -103,19 +81,6 @@ fun SharedTransitionScope.ArtistDetailsScreen(
                         onHandlePlayerActions = onHandlePlayerAction,
                         onNavigate = onNavigate,
                         backButton = { CuteSearchbarDefaults.BackButton(onNavigateBack) },
-                        fab = {
-                            AnimatedFab(
-                                onClick = {
-                                    onHandlePlayerAction(
-                                        PlayerActions.PlayFromSource(
-                                            mediaId = null,
-                                            source = PlaySource.Artist(state.artist.name)
-                                        )
-                                    )
-                                },
-                                icon = R.drawable.shuffle
-                            )
-                        },
                         sortMenu = {
                             CuteSearchbarDefaults.TrackSortPopupContent()
                         }
@@ -138,6 +103,7 @@ fun SharedTransitionScope.ArtistDetailsScreen(
                     ArtistHeader(
                         artist = state.artist,
                         tracks = state.tracks,
+                        albumCount = state.albums.size,
                         onHandlePlayerActions = onHandlePlayerAction
                     )
                 }
@@ -146,9 +112,6 @@ fun SharedTransitionScope.ArtistDetailsScreen(
                     item(
                         key = "Albums"
                     ) {
-                        NumberOfAlbums(state.albums.size)
-
-
                         HorizontalMultiBrowseCarousel(
                             state = rememberCarouselState { state.albums.size },
                             preferredItemWidth = 186.dp,
@@ -179,10 +142,6 @@ fun SharedTransitionScope.ArtistDetailsScreen(
                     }
                 }
 
-
-                item(
-                    key = "NbTracks"
-                ) { NumberOfTracks(size = state.tracks.size) }
 
                 trackItems(
                     tracks = state.tracks,

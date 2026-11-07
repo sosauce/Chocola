@@ -2,6 +2,7 @@
 
 package com.sosauce.chocola.feature.library.presentation.album
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,14 +33,17 @@ import com.sosauce.chocola.core.designsystem.components.NoResult
 import com.sosauce.chocola.core.domain.model.Album
 import com.sosauce.chocola.core.presentation.navigation.Screen
 import com.sosauce.chocola.core.presentation.preferences.rememberHideSingleAlbums
+import com.sosauce.chocola.core.presentation.util.barsContentTransform
 import com.sosauce.chocola.feature.library.presentation.album.components.AlbumCard
 import com.sosauce.chocola.core.presentation.util.selfAlignHorizontally
 import com.sosauce.nekobites.components.LoadingBox
 import com.sosauce.nekobites.components.NoXFound
 import com.sosauce.chocola.feature.library.presentation.album.components.FavoriteAlbumItem
+import com.sosauce.chocola.feature.library.presentation.album.components.SelectedAlbums
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.Arrangement
+import com.sosauce.sweetselect.rememberSweetSelectState
 
 @Composable
 fun SharedTransitionScope.AlbumsScreen(
@@ -51,21 +55,35 @@ fun SharedTransitionScope.AlbumsScreen(
 ) {
     val lazyState = rememberLazyGridState()
     var numberOfAlbumGrids by rememberAlbumGrids()
-    var hideSingleAlbums by rememberHideSingleAlbums()
+    val multiSelectState = rememberSweetSelectState<Album>()
 
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,
         bottomBar = {
-            CuteSearchbar(
-                modifier = Modifier.selfAlignHorizontally(),
-                musicState = musicState,
-                textFieldState = textFieldState,
-                onHandlePlayerActions = onHandlePlayerActions,
-                onNavigate = onNavigate,
-                sortMenu = {
-                    CuteSearchbarDefaults.AlbumSortPopupContent()
+            AnimatedContent(
+                targetState = multiSelectState.isInSelectionMode,
+                transitionSpec = { barsContentTransform }
+            ) { isInSelectionMode ->
+                if (isInSelectionMode) {
+                    SelectedAlbums(
+                        modifier = Modifier.selfAlignHorizontally(),
+                        albums = state.albums,
+                        multiSelectState = multiSelectState,
+                        onHandlePlayerActions = onHandlePlayerActions
+                    )
+                } else {
+                    CuteSearchbar(
+                        modifier = Modifier.selfAlignHorizontally(),
+                        musicState = musicState,
+                        textFieldState = textFieldState,
+                        onHandlePlayerActions = onHandlePlayerActions,
+                        onNavigate = onNavigate,
+                        sortMenu = {
+                            CuteSearchbarDefaults.AlbumSortPopupContent()
+                        }
+                    )
                 }
-            )
+            }
         }
     ) { paddingValues ->
         LoadingBox(
@@ -92,10 +110,21 @@ fun SharedTransitionScope.AlbumsScreen(
                                 items = state.favoriteAlbums,
                                 key = { it.id }
                             ) { album ->
+                                val isSelected by multiSelectState.isSelectedAsState(album)
+
                                 FavoriteAlbumItem(
                                     modifier = Modifier.animateItem(),
                                     album = album,
-                                    onClick = { onNavigate(Screen.AlbumsDetails(album.name)) }
+                                    isSelected = isSelected,
+                                    isInSelectionMode = multiSelectState.isInSelectionMode,
+                                    onClick = {
+                                        if (multiSelectState.isInSelectionMode) {
+                                            multiSelectState.toggle(album)
+                                        } else {
+                                            onNavigate(Screen.AlbumsDetails(album.name))
+                                        }
+                                    },
+                                    onLongClick = { multiSelectState.toggle(album) }
                                 )
                             }
                         }
@@ -126,10 +155,21 @@ fun SharedTransitionScope.AlbumsScreen(
                     items = state.nonFavoriteAlbums,
                     key = { it.id }
                 ) { album ->
+                    val isSelected by multiSelectState.isSelectedAsState(album)
+
                     AlbumCard(
                         modifier = Modifier.animateItem(),
                         album = album,
-                        onClick = { onNavigate(Screen.AlbumsDetails(album.name)) },
+                        isSelected = isSelected,
+                        isInSelectionMode = multiSelectState.isInSelectionMode,
+                        onClick = {
+                            if (multiSelectState.isInSelectionMode) {
+                                multiSelectState.toggle(album)
+                            } else {
+                                onNavigate(Screen.AlbumsDetails(album.name))
+                            }
+                        },
+                        onLongClick = { multiSelectState.toggle(album) },
                         onToggleFavorite = { onHandlePlayerActions(PlayerActions.ToggleAlbumFavorite(album.id)) }
                     )
                 }

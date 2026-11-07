@@ -61,6 +61,12 @@ class PlaylistDetailsViewModel(
 
     fun handlePlaylistActions(action: PlaylistActions) {
         when (action) {
+            is PlaylistActions.SetFavorite -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    dao.setFavorite(action.playlistId, action.isFavorite)
+                }
+            }
+
             is PlaylistActions.UpsertPlaylist -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     dao.upsertPlaylist(action.playlist)

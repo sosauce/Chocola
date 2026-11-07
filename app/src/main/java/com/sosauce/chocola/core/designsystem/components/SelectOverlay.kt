@@ -109,6 +109,7 @@ class SelectOverlayState internal constructor() {
  * Snapshot of a [SelectOverlayItem] taken when it is lifted. The item never changes while lifted,
  * so this is exactly what the overlay shows.
  * @param key identifies the item, also used as its shared element key
+ * @param onSelect starts multi selection with the item
  * @param locals composition locals at the item's position, re-provided around [content] in the overlay
  */
 @Immutable
@@ -116,6 +117,7 @@ internal class SelectOverlayEntry(
     val key: Any,
     val bounds: Rect,
     val actions: List<SelectOverlayAction>,
+    val onSelect: () -> Unit,
     val locals: CompositionLocalContext,
     val content: @Composable () -> Unit
 )
@@ -200,6 +202,7 @@ fun SelectOverlayHost(
 @Composable
 fun SelectOverlayItem(
     actions: List<SelectOverlayAction>,
+    onSelect: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     content: @Composable (showOverlay: () -> Unit) -> Unit
@@ -217,13 +220,14 @@ fun SelectOverlayItem(
 
     val showOverlay: () -> Unit = show@{
         val coords = coordinates.value?.takeIf { it.isAttached } ?: return@show
-        if (!enabled || actions.isEmpty()) return@show
+        if (!enabled) return@show
         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
         state.show(
             SelectOverlayEntry(
                 key = key,
                 bounds = coords.boundsInWindow(),
                 actions = actions,
+                onSelect = onSelect,
                 locals = locals,
                 content = { content {} }
             )
@@ -311,6 +315,7 @@ private fun SharedTransitionScope.SelectOverlayLayer(
             transition = transition,
             actions = entry.actions,
             onActionClick = { action -> state.dismiss(then = action.onClick) },
+            onSelect = entry.onSelect,
             liftedContent = {
                 Box(
                     modifier = Modifier.sharedElementWithCallerManagedVisibility(
@@ -347,6 +352,7 @@ private fun SelectOverlayContentLayout(
     transition: Transition<Boolean>,
     actions: List<SelectOverlayAction>,
     onActionClick: (SelectOverlayAction) -> Unit,
+    onSelect: () -> Unit,
     liftedContent: @Composable () -> Unit
 ) {
     val density = LocalDensity.current
@@ -364,8 +370,9 @@ private fun SelectOverlayContentLayout(
         label = "menu alpha"
     ) { open -> if (open) 1f else 0f }
 
-    // rows fade in one after the other on enter, on exit the menu fades out as a whole
-    val rowAlphas = actions.indices.map { index ->
+    // rows fade in one after the other on enter, on exit the menu fades out as a whole.
+    // +1 for the mandatory select action the menu always shows first
+    val rowAlphas = List(actions.size + 1) { index ->
         transition.animateFloat(
             transitionSpec = {
                 if (targetState) {
@@ -387,6 +394,7 @@ private fun SelectOverlayContentLayout(
             SelectOverlayMenu(
                 actions = actions,
                 onActionClick = onActionClick,
+                onSelect = onSelect,
                 modifier = Modifier.graphicsLayer {
                     transformOrigin = origin
                     scaleX = menuScale

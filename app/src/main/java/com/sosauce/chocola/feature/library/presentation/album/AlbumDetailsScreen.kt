@@ -18,8 +18,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.sosauce.chocola.R
 import com.sosauce.chocola.core.domain.model.CuteTrack
 import com.sosauce.chocola.core.domain.player.MusicState
 import com.sosauce.chocola.core.domain.player.PlaySource
@@ -31,10 +29,8 @@ import com.sosauce.chocola.core.presentation.components.trackItems
 import com.sosauce.chocola.core.presentation.components.TracksSelectedBar
 import com.sosauce.chocola.core.presentation.navigation.Screen
 import com.sosauce.chocola.feature.library.presentation.album.components.AlbumHeader
-import com.sosauce.chocola.core.designsystem.components.NumberOfTracks
 import com.sosauce.chocola.core.presentation.util.barsContentTransform
 import com.sosauce.chocola.core.presentation.util.selfAlignHorizontally
-import com.sosauce.nekobites.animations.AnimatedFab
 import com.sosauce.nekobites.components.LoadingBox
 import com.sosauce.sweetselect.rememberSweetSelectState
 
@@ -74,19 +70,6 @@ fun SharedTransitionScope.AlbumDetailsScreen(
                         onHandlePlayerActions = onHandlePlayerActions,
                         onNavigate = onNavigate,
                         backButton = { CuteSearchbarDefaults.BackButton(onNavigateUp) },
-                        fab = {
-                            AnimatedFab(
-                                onClick = {
-                                    onHandlePlayerActions(
-                                        PlayerActions.PlayFromSource(
-                                            mediaId = null,
-                                            source = PlaySource.Album(state.album.name)
-                                        )
-                                    )
-                                },
-                                icon = R.drawable.shuffle
-                            )
-                        },
                         sortMenu = {
                             CuteSearchbarDefaults.TrackSortPopupContent()
                         }
@@ -113,9 +96,6 @@ fun SharedTransitionScope.AlbumDetailsScreen(
                         album = state.album,
                         onHandlePlayerActions = onHandlePlayerActions
                     )
-                    if (state.album.tracks.isNotEmpty()) {
-                        NumberOfTracks(size = state.album.tracks.size)
-                    }
                 }
 
                 if (state.album.tracks.isEmpty()) {

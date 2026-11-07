@@ -26,6 +26,7 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
@@ -34,23 +35,33 @@ import com.sosauce.chocola.core.designsystem.theme.ChocolaTheme
 
 /**
  * Menu of a [SelectOverlayItem], one row per action.
+ * The mandatory "Select" action is always shown first, it starts multi selection with the lifted item.
+ * @param onSelect starts multi selection with the lifted item
  * @param itemModifier extra modifier per item, used by the overlay to animate the rows in
  */
 @Composable
 fun SelectOverlayMenu(
     actions: List<SelectOverlayAction>,
     onActionClick: (SelectOverlayAction) -> Unit,
+    onSelect: () -> Unit,
     modifier: Modifier = Modifier,
     itemModifier: (index: Int) -> Modifier = { Modifier }
 ) {
 
+    val allActions = listOf(
+        SelectOverlayAction(
+            label = stringResource(R.string.select),
+            icon = R.drawable.check_circle,
+            onClick = onSelect
+        )
+    ) + actions
 
     DropdownMenuGroup(
         shapes = MenuDefaults.groupShapes(),
         modifier = modifier.width(IntrinsicSize.Max)
     ) {
 
-        actions.fastForEachIndexed { index, action ->
+        allActions.fastForEachIndexed { index, action ->
 
             val contentColor = if (action.isDestructive) {
                 MaterialTheme.colorScheme.error
@@ -63,7 +74,7 @@ fun SelectOverlayMenu(
                 onClick = { onActionClick(action) },
                 shape = when (index) {
                     0 -> MenuDefaults.leadingItemShape
-                    actions.lastIndex -> MenuDefaults.trailingItemShape
+                    allActions.lastIndex -> MenuDefaults.trailingItemShape
                     else -> MenuDefaults.middleItemShape
                 },
                 text = {
@@ -102,7 +113,8 @@ private fun SelectOverlayMenuPreview() {
         Box(Modifier.padding(16.dp)) {
             SelectOverlayMenu(
                 actions = previewActions,
-                onActionClick = {}
+                onActionClick = {},
+                onSelect = {}
             )
         }
     }
@@ -141,6 +153,7 @@ private fun SelectOverlayLiftedPreview() {
                         key = Any(),
                         bounds = bounds,
                         actions = previewActions,
+                        onSelect = {},
                         locals = locals,
                         content = itemContent
                     )

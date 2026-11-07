@@ -38,7 +38,8 @@ fun LazyListScope.trackItems(
                 onNavigate = onNavigate,
                 onHandlePlayerAction = onHandlePlayerAction,
                 extraActions = extraSelectActions(track)
-            )
+            ),
+            onSelect = { multiSelectState.addAll(listOf(track)) }
         ) { showOverlay ->
             MusicListItem(
                 onShortClick = {
