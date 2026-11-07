@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,7 +33,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.carousel.HorizontalMultiBrowseCarousel
 import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,11 +51,8 @@ import com.sosauce.chocola.core.domain.player.PlaySource
 import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.core.presentation.components.CuteSearchbar
 import com.sosauce.chocola.core.presentation.components.CuteSearchbarDefaults
-import com.sosauce.chocola.core.presentation.components.DefaultMusicListItemTrailingContent
-import com.sosauce.chocola.core.presentation.components.MusicListItem
 import com.sosauce.chocola.core.designsystem.components.NoResult
-import com.sosauce.chocola.core.designsystem.components.SelectOverlayItem
-import com.sosauce.chocola.core.presentation.components.trackSelectActions
+import com.sosauce.chocola.core.presentation.components.trackItems
 import com.sosauce.chocola.core.presentation.components.TracksSelectedBar
 import com.sosauce.chocola.core.presentation.navigation.Screen
 import com.sosauce.chocola.core.designsystem.components.NumberOfTracks
@@ -189,55 +184,14 @@ fun SharedTransitionScope.ArtistDetailsScreen(
                     key = "NbTracks"
                 ) { NumberOfTracks(size = state.tracks.size) }
 
-                items(
-                    items = state.tracks,
-                    key = { it.mediaId }
-                ) { track ->
-
-                    val isSelected by multiSelectState.isSelectedAsState(track)
-
-                    SelectOverlayItem(
-                        modifier = Modifier.animateItem(),
-                        enabled = !multiSelectState.isInSelectionMode,
-                        actions = trackSelectActions(
-                            track = track,
-                            onNavigate = onNavigate,
-                            onHandlePlayerAction = onHandlePlayerAction
-                        )
-                    ) { showOverlay ->
-                        MusicListItem(
-                            track = track,
-                            onShortClick = {
-                                if (multiSelectState.isInSelectionMode) {
-                                    multiSelectState.toggle(track)
-                                } else {
-                                    onHandlePlayerAction(
-                                        PlayerActions.PlayFromSource(
-                                            mediaId = track.mediaId,
-                                            source = PlaySource.Artist(state.artist.name)
-                                        )
-                                    )
-                                }
-                            },
-                            onLongClick = {
-                                if (multiSelectState.isInSelectionMode) {
-                                    multiSelectState.toggle(track)
-                                } else {
-                                    showOverlay()
-                                }
-                            },
-                            isSelected = isSelected,
-                            isActive = track.mediaId == activeTrackId,
-                            trailingContent = {
-                                DefaultMusicListItemTrailingContent(
-                                    track = track,
-                                    onNavigate = onNavigate,
-                                    onHandlePlayerActions = onHandlePlayerAction
-                                )
-                            }
-                        )
-                    }
-                }
+                trackItems(
+                    tracks = state.tracks,
+                    multiSelectState = multiSelectState,
+                    activeTrackId = activeTrackId,
+                    source = PlaySource.Artist(state.artist.name),
+                    onNavigate = onNavigate,
+                    onHandlePlayerAction = onHandlePlayerAction
+                )
             }
         }
 

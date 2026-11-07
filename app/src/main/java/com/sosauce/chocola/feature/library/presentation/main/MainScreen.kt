@@ -75,10 +75,9 @@ import com.sosauce.chocola.core.domain.player.PlaySource
 import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.core.presentation.components.CuteSearchbar
 import com.sosauce.chocola.core.presentation.components.CuteSearchbarDefaults
-import com.sosauce.chocola.core.presentation.components.DefaultMusicListItemTrailingContent
-import com.sosauce.chocola.core.presentation.components.MusicListItem
 import com.sosauce.chocola.core.designsystem.components.NoResult
 import com.sosauce.chocola.core.designsystem.components.SelectOverlayItem
+import com.sosauce.chocola.core.presentation.components.trackItems
 import com.sosauce.chocola.core.presentation.components.trackSelectActions
 import com.sosauce.chocola.core.designsystem.components.PlayPauseButton
 import com.sosauce.chocola.core.presentation.components.TracksSelectedBar
@@ -271,107 +270,25 @@ fun SharedTransitionScope.MainScreen(
                             )
                         }
                         if (!category.isHidden) {
-                            items(
-                                items = category.tracks,
-                                key = { it.mediaId }
-                            ) { track ->
-
-                                val isSelected by multiSelectState.isSelectedAsState(track)
-
-                                SelectOverlayItem(
-                                    modifier = Modifier.animateItem(),
-                                    enabled = !multiSelectState.isInSelectionMode,
-                                    actions = trackSelectActions(
-                                        track = track,
-                                        onNavigate = onNavigate,
-                                        onHandlePlayerAction = onHandlePlayerAction
-                                    )
-                                ) { showOverlay ->
-                                    MusicListItem(
-                                        onShortClick = {
-                                            if (multiSelectState.isInSelectionMode) {
-                                                multiSelectState.toggle(track)
-                                            } else {
-                                                onHandlePlayerAction(
-                                                    PlayerActions.PlayFromSource(
-                                                        mediaId = track.mediaId,
-                                                        source = PlaySource.ExplicitTracks(category.tracks)
-                                                    )
-                                                )
-                                            }
-                                        },
-                                        onLongClick = {
-                                            if (multiSelectState.isInSelectionMode) {
-                                                multiSelectState.toggle(track)
-                                            } else {
-                                                showOverlay()
-                                            }
-                                        },
-                                        track = track,
-                                        isSelected = isSelected,
-                                        isActive = track.mediaId == activeTrackId,
-                                        trailingContent = {
-                                            DefaultMusicListItemTrailingContent(
-                                                track = track,
-                                                onNavigate = onNavigate,
-                                                onHandlePlayerActions = onHandlePlayerAction
-                                            )
-                                        }
-                                    )
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    items(
-                        items = state.nonFavoriteTracks,
-                        key = { it.mediaId },
-                    ) { track ->
-
-                        val isSelected by multiSelectState.isSelectedAsState(track)
-
-                        SelectOverlayItem(
-                            modifier = Modifier.animateItem(),
-                            enabled = !multiSelectState.isInSelectionMode,
-                            actions = trackSelectActions(
-                                track = track,
+                            trackItems(
+                                tracks = category.tracks,
+                                multiSelectState = multiSelectState,
+                                activeTrackId = activeTrackId,
+                                source = PlaySource.ExplicitTracks(category.tracks),
                                 onNavigate = onNavigate,
                                 onHandlePlayerAction = onHandlePlayerAction
                             )
-                        ) { showOverlay ->
-                            MusicListItem(
-                                onShortClick = {
-                                    if (multiSelectState.isInSelectionMode) {
-                                        multiSelectState.toggle(track)
-                                    } else {
-                                        onHandlePlayerAction(
-                                            PlayerActions.PlayFromSource(
-                                                mediaId = track.mediaId,
-                                                source = PlaySource.ExplicitTracks(state.nonFavoriteTracks)
-                                            )
-                                        )
-                                    }
-                                },
-                                onLongClick = {
-                                    if (multiSelectState.isInSelectionMode) {
-                                        multiSelectState.toggle(track)
-                                    } else {
-                                        showOverlay()
-                                    }
-                                },
-                                track = track,
-                                isSelected = isSelected,
-                                isActive = track.mediaId == activeTrackId,
-                                trailingContent = {
-                                    DefaultMusicListItemTrailingContent(
-                                        track = track,
-                                        onNavigate = onNavigate,
-                                        onHandlePlayerActions = onHandlePlayerAction
-                                    )
-                                }
-                            )
                         }
                     }
+                } else {
+                    trackItems(
+                        tracks = state.nonFavoriteTracks,
+                        multiSelectState = multiSelectState,
+                        activeTrackId = activeTrackId,
+                        source = PlaySource.All,
+                        onNavigate = onNavigate,
+                        onHandlePlayerAction = onHandlePlayerAction
+                    )
                 }
             }
         }

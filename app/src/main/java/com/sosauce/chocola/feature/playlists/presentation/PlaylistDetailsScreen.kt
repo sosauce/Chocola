@@ -10,14 +10,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -34,13 +32,10 @@ import com.sosauce.chocola.core.domain.player.PlaySource
 import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.core.presentation.components.CuteSearchbar
 import com.sosauce.chocola.core.presentation.components.CuteSearchbarDefaults
-import com.sosauce.chocola.core.presentation.components.DefaultMusicListItemTrailingContent
 import com.sosauce.chocola.core.presentation.components.MoreOptions
-import com.sosauce.chocola.core.presentation.components.MusicListItem
 import com.sosauce.chocola.core.designsystem.components.NoResult
 import com.sosauce.chocola.core.designsystem.components.SelectOverlayAction
-import com.sosauce.chocola.core.designsystem.components.SelectOverlayItem
-import com.sosauce.chocola.core.presentation.components.trackSelectActions
+import com.sosauce.chocola.core.presentation.components.trackItems
 import com.sosauce.chocola.core.presentation.components.TracksSelectedBar
 import com.sosauce.chocola.core.presentation.navigation.Screen
 import com.sosauce.chocola.core.designsystem.components.NumberOfTracks
@@ -163,93 +158,52 @@ fun SharedTransitionScope.PlaylistDetailsScreen(
                         }
                     }
 
-                    items(
-                        items = state.tracks,
-                        key = { it.mediaId }
-                    ) { track ->
-
-                        val isSelected by multiSelectState.isSelectedAsState(track)
-
-                        SelectOverlayItem(
-                            modifier = Modifier.animateItem(),
-                            enabled = !multiSelectState.isInSelectionMode,
-                            actions = trackSelectActions(
-                                track = track,
-                                onNavigate = onNavigate,
-                                onHandlePlayerAction = onHandlePlayerAction,
-                                extraActions = listOf(
-                                    SelectOverlayAction(
-                                        label = stringResource(R.string.remove_from_playlist),
-                                        icon = R.drawable.playlist_remove,
-                                        onClick = {
-                                            onHandlePlaylistAction(
-                                                PlaylistActions.UpsertPlaylist(
-                                                    state.playlist.copy(
-                                                        musics = state.playlist.musics.copyMutate {
-                                                            remove(
-                                                                track.mediaId
-                                                            )
-                                                        }
-                                                    )
+                    trackItems(
+                        tracks = state.tracks,
+                        multiSelectState = multiSelectState,
+                        activeTrackId = activeTrackId,
+                        source = PlaySource.ExplicitTracks(state.playlistTracks),
+                        onNavigate = onNavigate,
+                        onHandlePlayerAction = onHandlePlayerAction,
+                        extraOptions = { track ->
+                            listOf(
+                                MoreOptions(
+                                    text = { stringResource(R.string.remove_from_playlist) },
+                                    icon = R.drawable.playlist_remove,
+                                    onClick = {
+                                        onHandlePlaylistAction(
+                                            PlaylistActions.UpsertPlaylist(
+                                                state.playlist.copy(
+                                                    musics = state.playlist.musics.copyMutate {
+                                                        remove(track.mediaId)
+                                                    }
                                                 )
                                             )
-                                        }
-                                    )
+                                        )
+                                    }
                                 )
                             )
-                        ) { showOverlay ->
-                            MusicListItem(
-                                onShortClick = {
-                                    if (multiSelectState.isInSelectionMode) {
-                                        multiSelectState.toggle(track)
-                                    } else {
-                                        onHandlePlayerAction(
-                                            PlayerActions.PlayFromSource(
-                                                mediaId = track.mediaId,
-                                                source = PlaySource.ExplicitTracks(state.playlistTracks)
+                        },
+                        extraSelectActions = { track ->
+                            listOf(
+                                SelectOverlayAction(
+                                    label = stringResource(R.string.remove_from_playlist),
+                                    icon = R.drawable.playlist_remove,
+                                    onClick = {
+                                        onHandlePlaylistAction(
+                                            PlaylistActions.UpsertPlaylist(
+                                                state.playlist.copy(
+                                                    musics = state.playlist.musics.copyMutate {
+                                                        remove(track.mediaId)
+                                                    }
+                                                )
                                             )
                                         )
                                     }
-                                },
-                                isSelected = isSelected,
-                                onLongClick = {
-                                    if (multiSelectState.isInSelectionMode) {
-                                        multiSelectState.toggle(track)
-                                    } else {
-                                        showOverlay()
-                                    }
-                                },
-                                track = track,
-                                isActive = track.mediaId == activeTrackId,
-                                trailingContent = {
-                                    DefaultMusicListItemTrailingContent(
-                                        track = track,
-                                        onNavigate = onNavigate,
-                                        onHandlePlayerActions = onHandlePlayerAction,
-                                        extraOptions = listOf(
-                                            MoreOptions(
-                                                text = { stringResource(R.string.remove_from_playlist) },
-                                                icon = R.drawable.playlist_remove,
-                                                onClick = {
-                                                    onHandlePlaylistAction(
-                                                        PlaylistActions.UpsertPlaylist(
-                                                            state.playlist.copy(
-                                                                musics = state.playlist.musics.copyMutate {
-                                                                    remove(
-                                                                        track.mediaId
-                                                                    )
-                                                                }
-                                                            )
-                                                        )
-                                                    )
-                                                }
-                                            )
-                                        )
-                                    )
-                                }
+                                )
                             )
                         }
-                    }
+                    )
 
                 }
             }
