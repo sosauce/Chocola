@@ -40,11 +40,7 @@ fun ColumnScope.SettingsNavigation() {
                     selected = selected,
                     onClick = { initialScreen = screen.value },
                     label = stringResource(screen.label),
-                    containerColor = if (selected) {
-                        MaterialTheme.colorScheme.primaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.surfaceContainerHighest
-                    }
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest
                 ) {
                     Icon(
                         painter = painterResource(screen.icon),

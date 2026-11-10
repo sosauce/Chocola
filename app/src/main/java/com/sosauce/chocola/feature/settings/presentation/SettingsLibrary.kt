@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -142,17 +143,17 @@ fun SettingsLibrary(
                     checked = autoAddSub,
                     onCheckedChange = { autoAddSub = !autoAddSub }
                 )
-                SettingsSwitch(
-                    title = stringResource(R.string.hide_single_album),
-                    description = stringResource(R.string.hide_single_album_desc),
-                    checked = hideSingleAlbums,
-                    onCheckedChange = { hideSingleAlbums = !hideSingleAlbums }
-                )
                 SettingsChoice(
                     title = stringResource(R.string.new_folder_policy),
                     active = newFolderPolicy,
                     options = policies,
                     onSelect = { newFolderPolicy = it }
+                )
+                SettingsSwitch(
+                    title = stringResource(R.string.hide_single_album),
+                    description = stringResource(R.string.hide_single_album_desc),
+                    checked = hideSingleAlbums,
+                    onCheckedChange = { hideSingleAlbums = !hideSingleAlbums }
                 )
             }
         }

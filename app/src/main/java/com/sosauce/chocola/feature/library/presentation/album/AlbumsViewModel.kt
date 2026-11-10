@@ -34,18 +34,17 @@ class AlbumsViewModel(
 
 
     val state = combine(
-        kotlinx.coroutines.flow.combine(
+        combine(
             abstractTracksScanner.latestTracks(),
-            favoritesDao.observeAlbumIds(),
-            userPreferences.getAlbumArtFileName()
-        ) { tracks, favAlbumIds, artFileName -> Triple(tracks, favAlbumIds, artFileName) },
+            favoritesDao.observeAlbumIds()
+        ) { tracks, favAlbumIds -> tracks to favAlbumIds },
         userPreferences.getAlbumsSort,
         userPreferences.getRegexFilter,
         userPreferences.getMatchCaseFilter,
         userPreferences.sortAlbumsAscending,
         userPreferences.getHideSingleAlbums(),
         searchQuery
-    ) { (tracks, favAlbumIds, artFileName), sort, regex, matchCase, ascending, hideSingleAlbums, query ->
+    ) { (tracks, favAlbumIds), sort, regex, matchCase, ascending, hideSingleAlbums, query ->
         var albums = tracks
             .groupBy { it.album }
             .map { (album, albumTracks) ->
@@ -58,7 +57,7 @@ class AlbumsViewModel(
                     name = album,
                     artist = lastTrack.artist,
                     tracks = albumTracks,
-                    art = ImageUtils.getAlbumArt(albumTracks, artFileName),
+                    art = ImageUtils.getAlbumArt(albumId),
                     isFavorite = albumId in favAlbumIds
                 )
             }

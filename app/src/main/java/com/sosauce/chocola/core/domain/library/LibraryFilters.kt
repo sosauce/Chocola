@@ -101,8 +101,14 @@ fun List<Artist>.ordered(
     }.thenIf(!ascending) { asReversed() }
 }
 
+
 fun List<CuteTrack>.orderAlbumTrackNumber(): List<CuteTrack> {
-    return sortedBy { it.trackNumber }
+    return sortedWith(
+        compareBy(
+            { it.trackNumber == 0 },
+            { it.trackNumber }
+        )
+    )
 }
 
 fun List<CuteTrack>.sortByAlbum(): List<CuteTrack> {

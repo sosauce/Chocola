@@ -25,8 +25,6 @@ data object LegacyPreferencesKeys {
     val EQUALIZER_BANDS = stringPreferencesKey("EQUALIZER_BANDS")
 }
 
-const val DEFAULT_ALBUM_ART_FILE_NAME = "cover.jpg"
-
 data object PreferencesKeys {
     val THEME = stringPreferencesKey("theme")
     val USE_SYSTEM_FONT = booleanPreferencesKey("use_sys_font")
@@ -89,8 +87,6 @@ data object PreferencesKeys {
     // names of NowPlayingButton entries the user chose to hide
     val NOW_PLAYING_HIDDEN_BUTTONS = stringSetPreferencesKey("NOW_PLAYING_HIDDEN_BUTTONS")
     val HIDE_SINGLE_ALBUM = booleanPreferencesKey("HIDE_SINGLE_ALBUM")
-    val ALBUM_ART_FROM_FILE = booleanPreferencesKey("ALBUM_ART_FROM_FILE")
-    val ALBUM_ART_FILE_NAME = stringPreferencesKey("ALBUM_ART_FILE_NAME")
 
 }
 

@@ -44,9 +44,8 @@ class ArtistDetailsViewModel(
         ) { tracks, ids -> tracks to ids },
         userPreferences.searchSettings(),
         userPreferences.getHideSingleAlbums(),
-        userPreferences.getAlbumArtFileName(),
         searchQuery
-    ) { (tracks, favoriteIds), settings, hideSingleAlbums, artFileName, query ->
+    ) { (tracks, favoriteIds), settings, hideSingleAlbums, query ->
         val filtered = tracks
             .fastFilter { it.artist == artistName }
 
@@ -63,7 +62,7 @@ class ArtistDetailsViewModel(
                     name = albumName,
                     artist = artistName,
                     tracks = tracks,
-                    art = ImageUtils.getAlbumArt(tracks, artFileName)
+                    art = ImageUtils.getAlbumArt(lastTrack.albumId)
                 )
             }
         if (hideSingleAlbums) {

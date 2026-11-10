@@ -16,8 +16,6 @@ import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.sosauce.chocola.core.data.backup.BackupSettingsFile
 import com.sosauce.chocola.core.data.backup.SETTINGS_BACKUP_APP_NAME
 import com.sosauce.chocola.core.data.backup.SettingType
-import com.sosauce.chocola.core.data.datastore.PreferencesKeys.ALBUM_ART_FILE_NAME
-import com.sosauce.chocola.core.data.datastore.PreferencesKeys.ALBUM_ART_FROM_FILE
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.ALBUM_SORT
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.ARTIST_SORT
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.AUTO_ADD_SUBFOLDERS
@@ -168,10 +166,6 @@ class UserPreferences(
     fun getHideSingleAlbums() = context.dataStore.data.map {
         it[HIDE_SINGLE_ALBUM] ?: false
     }
-
-    fun getAlbumArtFileName() = context.dataStore.data.map {
-        if (it[ALBUM_ART_FROM_FILE] == true) it[ALBUM_ART_FILE_NAME] ?: DEFAULT_ALBUM_ART_FILE_NAME else null
-    }.distinctUntilChanged()
 
     val getHiddenFolders = context.dataStore.data.map {
         it[HIDDEN_FOLDERS] ?: emptySet()

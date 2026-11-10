@@ -129,10 +129,6 @@ fun SharedTransitionScope.AlbumCard(
                 maxLines = 1,
                 style = MaterialTheme.typography.titleMediumEmphasized,
                 modifier = Modifier
-                    .sharedBounds(
-                        sharedContentState = rememberSharedContentState(album.name + album.id),
-                        animatedVisibilityScope = LocalNavAnimatedContentScope.current
-                    )
                     .basicMarquee()
             )
             Text(

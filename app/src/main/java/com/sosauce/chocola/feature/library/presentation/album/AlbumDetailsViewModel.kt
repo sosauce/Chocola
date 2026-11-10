@@ -43,9 +43,8 @@ class AlbumDetailsViewModel(
             favoritesDao.observeAlbumIds()
         ) { tracks, ids -> tracks to ids },
         userPreferences.searchSettings(),
-        userPreferences.getAlbumArtFileName(),
         searchQuery
-    ) { (tracks, favoriteIds), settings, artFileName, query ->
+    ) { (tracks, favoriteIds), settings, query ->
         val filtered = tracks
             .fastFilter { it.album == albumName }
             .orderAlbumTrackNumber()
@@ -59,7 +58,7 @@ class AlbumDetailsViewModel(
             name = albumName,
             artist = lastTrack.artist,
             tracks = filtered.search(query.toString(), settings),
-            art = ImageUtils.getAlbumArt(filtered, artFileName),
+            art = ImageUtils.getAlbumArt(albumId),
             isFavorite = albumId in favoriteIds
         )
 

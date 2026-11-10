@@ -23,9 +23,6 @@ import com.sosauce.chocola.core.data.datastore.PreferencesKeys.HAS_BEEN_THROUGH_
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.HAS_SEEN_TIP
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.HIDDEN_TRACKS
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.HIDE_SINGLE_ALBUM
-import com.sosauce.chocola.core.data.datastore.PreferencesKeys.ALBUM_ART_FROM_FILE
-import com.sosauce.chocola.core.data.datastore.PreferencesKeys.ALBUM_ART_FILE_NAME
-import com.sosauce.chocola.core.data.datastore.DEFAULT_ALBUM_ART_FILE_NAME
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.INITIAL_SCREEN
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.KEEP_ALIVE
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.LYRICS_ALIGNMENT
@@ -265,14 +262,6 @@ fun rememberHiddenNowPlayingButtons(): Set<NowPlayingButton> {
 @Composable
 fun rememberHideSingleAlbums() =
     rememberPreference(key = HIDE_SINGLE_ALBUM, defaultValue = false)
-
-@Composable
-fun rememberAlbumArtFromFile() =
-    rememberPreference(key = ALBUM_ART_FROM_FILE, defaultValue = false)
-
-@Composable
-fun rememberAlbumArtFileName() =
-    rememberPreference(key = ALBUM_ART_FILE_NAME, defaultValue = DEFAULT_ALBUM_ART_FILE_NAME)
 
 @Composable
 fun rememberInitialScreenBlocking(): Screen {
