@@ -10,22 +10,17 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -49,29 +44,26 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
-import com.sosauce.chocola.core.data.local.Playlist
-import com.sosauce.chocola.core.domain.player.MusicState
-import com.sosauce.chocola.core.domain.player.PlayerActions
-import com.sosauce.chocola.core.presentation.components.CuteSearchbar
 import com.sosauce.chocola.core.designsystem.components.NoResult
 import com.sosauce.chocola.core.designsystem.components.SelectOverlayAction
 import com.sosauce.chocola.core.designsystem.components.SelectOverlayItem
-import com.sosauce.chocola.core.presentation.components.CuteSearchbarDefaults
+import com.sosauce.chocola.core.domain.player.MusicState
+import com.sosauce.chocola.core.domain.player.PlayerActions
+import com.sosauce.chocola.core.presentation.components.CuteSearchbar
 import com.sosauce.chocola.core.presentation.components.SelectedBarSurface
 import com.sosauce.chocola.core.presentation.components.dialogs.PlaylistDeletionDialog
 import com.sosauce.chocola.core.presentation.navigation.Screen
+import com.sosauce.chocola.core.presentation.util.barsContentTransform
+import com.sosauce.chocola.core.presentation.util.selfAlignHorizontally
 import com.sosauce.chocola.feature.playlists.presentation.components.CreatePlaylistDialog
 import com.sosauce.chocola.feature.playlists.presentation.components.EditPlaylist
 import com.sosauce.chocola.feature.playlists.presentation.components.FavoritePlaylistItem
 import com.sosauce.chocola.feature.playlists.presentation.components.PlaylistItem
-import com.sosauce.chocola.core.presentation.util.barsContentTransform
-import com.sosauce.chocola.core.presentation.util.selfAlignHorizontally
+import com.sosauce.chocola.feature.playlists.presentation.model.PlaylistUi
 import com.sosauce.nekobites.animations.ToggleAnimatedFab
 import com.sosauce.nekobites.components.LoadingBox
 import com.sosauce.nekobites.components.NoXFound
 import com.sosauce.sweetselect.rememberSweetSelectState
-import sv.lib.squircleshape.CornerSmoothing
-import sv.lib.squircleshape.SquircleShape
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -89,7 +81,7 @@ fun SharedTransitionScope.PlaylistsScreen(
     val lazyState = rememberLazyListState()
     var fabMenuExpanded by remember { mutableStateOf(false) }
     var showDeletionDialog by remember { mutableStateOf(false) }
-    val multiSelectState = rememberSweetSelectState<Playlist>()
+    val multiSelectState = rememberSweetSelectState<PlaylistUi>()
 
 
     val importPlaylistLauncher =
@@ -332,7 +324,7 @@ fun SharedTransitionScope.PlaylistsScreen(
  */
 @Composable
 private fun playlistSelectActions(
-    playlist: Playlist,
+    playlist: PlaylistUi,
     onHandlePlaylistAction: (PlaylistActions) -> Unit
 ): List<SelectOverlayAction> {
     var showEditDialog by remember { mutableStateOf(false) }
@@ -343,7 +335,7 @@ private fun playlistSelectActions(
                 onHandlePlaylistAction(
                     PlaylistActions.ExportM3uPlaylist(
                         uri = it,
-                        tracks = playlist.musics
+                        tracks = playlist.tracks.mapTo(mutableSetOf()) { it.mediaId }
                     )
                 )
             }
@@ -370,7 +362,12 @@ private fun playlistSelectActions(
             label = stringResource(if (playlist.isFavorite) R.string.remove_favorite else R.string.add_favorite),
             icon = if (playlist.isFavorite) R.drawable.favorite_filled else R.drawable.favorite,
             onClick = {
-                onHandlePlaylistAction(PlaylistActions.SetFavorite(playlist.id, !playlist.isFavorite))
+                onHandlePlaylistAction(
+                    PlaylistActions.SetFavorite(
+                        playlist.id,
+                        !playlist.isFavorite
+                    )
+                )
             }
         ),
         SelectOverlayAction(

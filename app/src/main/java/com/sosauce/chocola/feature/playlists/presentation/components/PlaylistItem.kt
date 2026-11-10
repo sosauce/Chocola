@@ -9,14 +9,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.DropdownMenuGroup
 import androidx.compose.material3.DropdownMenuItem
@@ -41,7 +37,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -50,11 +45,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
 import com.sosauce.chocola.R
-import com.sosauce.chocola.core.data.local.Playlist
 import com.sosauce.chocola.core.designsystem.components.CuteListItem
 import com.sosauce.chocola.core.presentation.components.MoreOptions
 import com.sosauce.chocola.core.presentation.components.dialogs.PlaylistDeletionDialog
 import com.sosauce.chocola.feature.playlists.presentation.PlaylistActions
+import com.sosauce.chocola.feature.playlists.presentation.model.PlaylistUi
 import com.sosauce.nekobites.components.AnimatedSelectedIcon
 import sv.lib.squircleshape.CornerSmoothing
 import sv.lib.squircleshape.SquircleShape
@@ -62,7 +57,7 @@ import sv.lib.squircleshape.SquircleShape
 @Composable
 fun PlaylistItem(
     modifier: Modifier = Modifier,
-    playlist: Playlist,
+    playlist: PlaylistUi,
     onHandlePlaylistActions: (PlaylistActions) -> Unit,
     onClickPlaylist: () -> Unit,
     onLongClick: (() -> Unit)? = null,
@@ -82,7 +77,7 @@ fun PlaylistItem(
                 onHandlePlaylistActions(
                     PlaylistActions.ExportM3uPlaylist(
                         uri = it,
-                        tracks = playlist.musics
+                        tracks = playlist.tracks.mapTo(mutableSetOf()) { it.mediaId }
                     )
                 )
             }
@@ -93,7 +88,12 @@ fun PlaylistItem(
             text = { stringResource(if (playlist.isFavorite) R.string.remove_favorite else R.string.add_favorite) },
             onClick = {
                 isDropdownExpanded = false
-                onHandlePlaylistActions(PlaylistActions.SetFavorite(playlist.id, !playlist.isFavorite))
+                onHandlePlaylistActions(
+                    PlaylistActions.SetFavorite(
+                        playlist.id,
+                        !playlist.isFavorite
+                    )
+                )
             },
             icon = R.drawable.favorite
         ),
@@ -165,7 +165,7 @@ fun PlaylistItem(
                             .background(MaterialTheme.colorScheme.surfaceContainer),
                         contentAlignment = Alignment.Center
                     ) {
-                        if (playlist.emoji.isNotBlank()) {
+                        if (!playlist.emoji.isNullOrBlank()) {
                             Text(
                                 text = playlist.emoji,
                                 fontSize = 25.sp
@@ -181,12 +181,12 @@ fun PlaylistItem(
                 }
             },
             trailingContent = {
-                if (playlist.color != -1) {
+                playlist.color?.let { color ->
                     Box(
                         modifier = Modifier
                             .size(15.dp)
                             .background(
-                                color = Color(playlist.color),
+                                color = color,
                                 shape = MaterialShapes.Circle.toShape()
                             )
                     )
@@ -254,8 +254,8 @@ fun PlaylistItem(
             val bottomText = if (enabled) {
                 pluralStringResource(
                     R.plurals.tracks_plural,
-                    playlist.musics.size,
-                    playlist.musics.size
+                    playlist.tracks.size,
+                    playlist.tracks.size
                 )
             } else {
                 stringResource(R.string.already_in_playlist)

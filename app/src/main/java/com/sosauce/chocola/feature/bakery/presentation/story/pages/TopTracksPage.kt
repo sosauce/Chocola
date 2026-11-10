@@ -10,19 +10,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuDefaults
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,16 +25,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.sosauce.chocola.R
 import com.sosauce.chocola.core.designsystem.components.CuteListItem
 import com.sosauce.chocola.core.designsystem.theme.ChocolaTheme
-import com.sosauce.chocola.core.designsystem.groupedShape
 import com.sosauce.chocola.feature.bakery.presentation.model.StoryPageUi
 import com.sosauce.chocola.feature.bakery.presentation.model.TrackStatUi
+import com.sosauce.nekobites.utils.groupedShape
 import sv.lib.squircleshape.CornerSmoothing
 import sv.lib.squircleshape.SquircleShape
 
@@ -77,8 +70,8 @@ fun TopTracksPage(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    if (index in listOf(0,1,2)) {
-                        val icon = when(index) {
+                    if (index in listOf(0, 1, 2)) {
+                        val icon = when (index) {
                             0 -> R.drawable.badge_1st
                             1 -> R.drawable.badge_2nd
                             2 -> R.drawable.badge_3rd
@@ -91,14 +84,17 @@ fun TopTracksPage(
                         )
                     } else {
                         Text(
-                            text = "${index+1}.",
+                            text = "${index + 1}.",
                             modifier = Modifier.padding(5.dp)
                         )
                     }
 
                     CuteListItem(
                         onClick = null,
-                        shape = groupedShape(isFirst = index == 0, isLast = index == items.lastIndex),
+                        shape = groupedShape(
+                            isFirst = index == 0,
+                            isLast = index == items.lastIndex
+                        ),
                         backgroundColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f),
                         leadingContent = {
                             Box(
@@ -122,7 +118,10 @@ fun TopTracksPage(
                         },
                         trailingContent = {
                             Text(
-                                text = stringResource(R.string.listens_count_value, track.listenCount),
+                                text = stringResource(
+                                    R.string.listens_count_value,
+                                    track.listenCount
+                                ),
                                 style = MaterialTheme.typography.labelMediumEmphasized.copy(
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 ),
@@ -184,7 +183,14 @@ private fun TopTracksPagePreview() {
                     TrackStatUi("1", "Cinnamon Girl", "Lana Del Rey", "NFR!", null, 412),
                     TrackStatUi("2", "After Dark", "Mr.Kitty", "Time", null, 388),
                     TrackStatUi("3", "Apocalypse", "Cigarettes After Sex", "Cry", null, 302),
-                    TrackStatUi("4", "Chamber of Reflection", "Mac DeMarco", "Salad Days", null, 264),
+                    TrackStatUi(
+                        "4",
+                        "Chamber of Reflection",
+                        "Mac DeMarco",
+                        "Salad Days",
+                        null,
+                        264
+                    ),
                     TrackStatUi("5", "Space Song", "Beach House", "Depression Cherry", null, 241)
                 )
             )

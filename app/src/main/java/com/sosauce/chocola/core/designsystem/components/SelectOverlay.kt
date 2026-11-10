@@ -306,7 +306,12 @@ private fun SharedTransitionScope.SelectOverlayLayer(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .drawBehind { drawRect(scrimColor, alpha = progress.value * SelectOverlayDefaults.ScrimAlpha) }
+                .drawBehind {
+                    drawRect(
+                        scrimColor,
+                        alpha = progress.value * SelectOverlayDefaults.ScrimAlpha
+                    )
+                }
                 .then(if (state.isOpen) dismissOnTap else Modifier)
         )
         SelectOverlayContentLayout(
@@ -335,7 +340,11 @@ private fun SharedTransitionScope.SelectOverlayLayer(
                         }
                     }
                     // the copy is a preview, tapping it dismisses like iOS instead of reaching the copy's own click handlers
-                    Box(Modifier.matchParentSize().then(if (state.isOpen) dismissOnTap else Modifier))
+                    Box(
+                        Modifier
+                            .matchParentSize()
+                            .then(if (state.isOpen) dismissOnTap else Modifier)
+                    )
                 }
             }
         )

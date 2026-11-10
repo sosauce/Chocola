@@ -7,7 +7,9 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -20,12 +22,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.materialkolor.DynamicMaterialExpressiveTheme
 import com.materialkolor.dynamiccolor.ColorSpec
 import com.materialkolor.rememberDynamicMaterialThemeState
 import com.sosauce.chocola.R
-import com.sosauce.chocola.core.presentation.preferences.rememberAppTheme
-import com.sosauce.chocola.core.presentation.preferences.rememberPaletteStyle
+import com.sosauce.chocola.core.designsystem.CuteTheme
+import com.sosauce.chocola.core.designsystem.components.NoResult
+import com.sosauce.chocola.core.designsystem.components.SelectOverlayAction
 import com.sosauce.chocola.core.domain.model.CuteTrack
 import com.sosauce.chocola.core.domain.player.MusicState
 import com.sosauce.chocola.core.domain.player.PlaySource
@@ -33,20 +37,17 @@ import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.core.presentation.components.CuteSearchbar
 import com.sosauce.chocola.core.presentation.components.CuteSearchbarDefaults
 import com.sosauce.chocola.core.presentation.components.MoreOptions
-import com.sosauce.chocola.core.designsystem.components.NoResult
-import com.sosauce.chocola.core.designsystem.components.SelectOverlayAction
-import com.sosauce.chocola.core.presentation.components.trackItems
 import com.sosauce.chocola.core.presentation.components.TracksSelectedBar
+import com.sosauce.chocola.core.presentation.components.trackItems
 import com.sosauce.chocola.core.presentation.navigation.Screen
-import com.sosauce.chocola.feature.playlists.presentation.components.EmptyPlaylist
-import com.sosauce.chocola.feature.playlists.presentation.components.PlaylistHeader
-import com.sosauce.chocola.core.designsystem.CuteTheme
+import com.sosauce.chocola.core.presentation.preferences.rememberAppTheme
+import com.sosauce.chocola.core.presentation.preferences.rememberPaletteStyle
 import com.sosauce.chocola.core.presentation.util.barsContentTransform
-import com.sosauce.chocola.core.domain.util.copyMutate
 import com.sosauce.chocola.core.presentation.util.selfAlignHorizontally
 import com.sosauce.chocola.core.presentation.util.toPaletteStyle
+import com.sosauce.chocola.feature.playlists.presentation.components.EmptyPlaylist
+import com.sosauce.chocola.feature.playlists.presentation.components.PlaylistHeader
 import com.sosauce.nekobites.components.LoadingBox
-import com.sosauce.nekobites.utils.ColorUtils.toColor
 import com.sosauce.sweetselect.rememberSweetSelectState
 
 @Composable
@@ -73,7 +74,7 @@ fun SharedTransitionScope.PlaylistDetailsScreen(
 
     DynamicMaterialExpressiveTheme(
         state = rememberDynamicMaterialThemeState(
-            seedColor = state.playlist.color.toColor(MaterialTheme.colorScheme.primary),
+            seedColor = state.playlist.color ?: MaterialTheme.colorScheme.primary,
             isDark = if (theme == CuteTheme.SYSTEM) isSystemInDarkTheme else if (theme == CuteTheme.AMOLED) true else theme == CuteTheme.DARK,
             isAmoled = theme == CuteTheme.AMOLED,
             specVersion = ColorSpec.SpecVersion.SPEC_2025,
@@ -118,14 +119,12 @@ fun SharedTransitionScope.PlaylistDetailsScreen(
                     contentPadding = PaddingValues(bottom = paddingValues.calculateBottomPadding()),
                     state = listState
                 ) {
-
-
                     if (state.tracks.isEmpty()) {
                         item(
                             key = "empty"
                         ) {
                             if (textFieldState.text.isEmpty()) {
-                                EmptyPlaylist(state.playlist.emoji)
+                                EmptyPlaylist(state.playlist.emoji.orEmpty())
                             } else {
                                 NoResult(Modifier.animateItem())
                             }
@@ -146,6 +145,7 @@ fun SharedTransitionScope.PlaylistDetailsScreen(
                                     )
                                 }
                             )
+                            Spacer(Modifier.height(5.dp))
                         }
                     }
 
@@ -165,9 +165,7 @@ fun SharedTransitionScope.PlaylistDetailsScreen(
                                         onHandlePlaylistAction(
                                             PlaylistActions.UpsertPlaylist(
                                                 state.playlist.copy(
-                                                    musics = state.playlist.musics.copyMutate {
-                                                        remove(track.mediaId)
-                                                    }
+                                                    tracks = state.playlist.tracks.filterNot { it.mediaId == track.mediaId }
                                                 )
                                             )
                                         )
@@ -184,9 +182,7 @@ fun SharedTransitionScope.PlaylistDetailsScreen(
                                         onHandlePlaylistAction(
                                             PlaylistActions.UpsertPlaylist(
                                                 state.playlist.copy(
-                                                    musics = state.playlist.musics.copyMutate {
-                                                        remove(track.mediaId)
-                                                    }
+                                                    tracks = state.playlist.tracks.filterNot { it.mediaId == track.mediaId }
                                                 )
                                             )
                                         )

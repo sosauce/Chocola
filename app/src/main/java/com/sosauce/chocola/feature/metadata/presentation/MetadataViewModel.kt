@@ -20,9 +20,6 @@ import com.kyant.taglib.AudioPropertiesReadStyle
 import com.kyant.taglib.Metadata
 import com.kyant.taglib.Picture
 import com.kyant.taglib.TagLib
-import com.sosauce.chocola.feature.metadata.presentation.toAudioFileMetadata
-import com.sosauce.chocola.feature.metadata.presentation.toModifiableMap
-import com.sosauce.chocola.feature.metadata.presentation.toPropertyMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -116,7 +113,8 @@ class MetadataViewModel(
             (getFileDescriptorFromPath("w")
                 ?: throw Exception("No file descriptor found!")).use { fd ->
                 fd.dup().detachFd().let {
-                    TagLib.savePropertyMap(it,
+                    TagLib.savePropertyMap(
+                        it,
                         metadataState.value.mutablePropertiesMap.toAudioFileMetadata()
                             .toPropertyMap()
                     )
@@ -141,7 +139,8 @@ class MetadataViewModel(
 
             application.contentResolver.openFileDescriptor(sourceFileUri, "rw", null)?.use { fd ->
                 fd.dup().detachFd().let {
-                    TagLib.savePropertyMap(it,
+                    TagLib.savePropertyMap(
+                        it,
                         metadataState.value.mutablePropertiesMap.toAudioFileMetadata()
                             .toPropertyMap()
                     )

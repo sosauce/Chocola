@@ -41,7 +41,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -53,21 +52,20 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.skydoves.cloudy.cloudy
 import com.sosauce.chocola.R
+import com.sosauce.chocola.core.designsystem.ArtworkShape
+import com.sosauce.chocola.core.domain.player.MusicState
+import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.core.presentation.preferences.rememberArtLyrics
 import com.sosauce.chocola.core.presentation.preferences.rememberArtworkShape
 import com.sosauce.chocola.core.presentation.preferences.rememberCarousel
 import com.sosauce.chocola.core.presentation.preferences.rememberIsLandscape
 import com.sosauce.chocola.core.presentation.preferences.rememberNowPlayingShapeMorph
-import com.sosauce.chocola.core.domain.player.MusicState
-import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.feature.lyrics.presentation.LyricsList
-import com.sosauce.chocola.core.designsystem.ArtworkShape
 import com.sosauce.nekobites.animations.rememberAnimatedShape
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 
 @Composable
@@ -137,7 +135,8 @@ fun Artwork(
             val loadedMedias by rememberUpdatedState(musicState.loadedMedias)
 
             LaunchedEffect(musicState.loadedMedias, musicState.track.mediaId) {
-                val target = musicState.loadedMedias.indexOfFirst { it.mediaId == musicState.track.mediaId }
+                val target =
+                    musicState.loadedMedias.indexOfFirst { it.mediaId == musicState.track.mediaId }
                 if (target != -1 && carouselState.currentItem != target) {
                     carouselState.animateScrollToItem(target)
                 }

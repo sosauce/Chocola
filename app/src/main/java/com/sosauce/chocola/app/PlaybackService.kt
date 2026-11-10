@@ -5,8 +5,6 @@ package com.sosauce.chocola.app
 import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Intent
-import android.content.pm.ApplicationInfo
-import android.os.Looper
 import androidx.annotation.OptIn
 import androidx.compose.ui.util.fastFilter
 import androidx.lifecycle.lifecycleScope
@@ -27,6 +25,10 @@ import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.sosauce.chocola.R
+import com.sosauce.chocola.core.data.audio.EqualizerManager
+import com.sosauce.chocola.core.data.auto.AndroidAutoHelper
+import com.sosauce.chocola.core.data.bakery.PlaybackSnapshot
+import com.sosauce.chocola.core.data.bakery.StatsRecorder
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.KEEP_ALIVE
 import com.sosauce.chocola.core.data.datastore.dataStore
 import com.sosauce.chocola.core.data.widgets.WIDGET_ART
@@ -34,16 +36,11 @@ import com.sosauce.chocola.core.data.widgets.WIDGET_ARTIST
 import com.sosauce.chocola.core.data.widgets.WIDGET_IS_PLAYING
 import com.sosauce.chocola.core.data.widgets.WIDGET_TITLE
 import com.sosauce.chocola.core.data.widgets.WidgetsHelper
-import com.sosauce.chocola.core.data.audio.EqualizerManager
-import com.sosauce.chocola.core.data.auto.AndroidAutoHelper
-import com.sosauce.chocola.core.data.bakery.PlaybackSnapshot
-import com.sosauce.chocola.core.data.bakery.StatsRecorder
 import com.sosauce.chocola.core.designsystem.CUTE_MUSIC_ID
 import com.sosauce.chocola.core.presentation.util.playOrPause
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -329,7 +326,6 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
 
         return super.onStartCommand(intent, flags, startId)
     }
-
 
 
     companion object {

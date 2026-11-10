@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3ExpressiveApi::class)
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
 
 package com.sosauce.chocola.feature.metadata.presentation
 
@@ -11,16 +11,16 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.background
+import androidx.annotation.DrawableRes
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,27 +28,35 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
@@ -61,9 +69,12 @@ import coil3.compose.AsyncImage
 import com.kyant.taglib.Picture
 import com.sosauce.chocola.R
 import com.sosauce.chocola.core.presentation.navigation.Screen
-import com.sosauce.chocola.core.presentation.util.selfAlignHorizontally
 import com.sosauce.nekobites.animations.AnimatedFab
-import com.sosauce.nekobites.components.ThreadDivider
+
+private val OuterCorner = 24.dp
+private val InnerCorner = 2.dp
+private val FocusedCorner = 16.dp
+private val Gap = 2.dp
 
 @Composable
 fun MetadataEditorScreen(
@@ -74,10 +85,9 @@ fun MetadataEditorScreen(
     onNavigateUp: () -> Unit,
     onNavigate: (Screen) -> Unit
 ) {
-
-
     val context = LocalContext.current
     val resources = LocalResources.current
+    val fields = state.mutablePropertiesMap
 
     val editSongLauncher =
         rememberLauncherForActivityResult(
@@ -94,9 +104,6 @@ fun MetadataEditorScreen(
             }
         }
 
-
-
-
     Scaffold(
         bottomBar = {
             Row(
@@ -109,7 +116,7 @@ fun MetadataEditorScreen(
                 AnimatedFab(
                     onClick = onNavigateUp,
                     icon = R.drawable.back,
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
                 )
                 AnimatedFab(
                     onClick = {
@@ -125,279 +132,318 @@ fun MetadataEditorScreen(
                             onHandleMetadataActions(MetadataActions.SaveChanges)
                         }
                     },
-                    icon = R.drawable.check,
+                    icon = R.drawable.check
                 )
             }
         }
     ) { paddingValues ->
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(paddingValues)
-                .padding(horizontal = 5.dp)
+                .statusBarsPadding()
+                .padding(bottom = paddingValues.calculateBottomPadding() + 16.dp)
                 .imePadding()
         ) {
-            MetadataArt(
-                modifier = Modifier
-                    .padding(vertical = 5.dp)
-                    .align(Alignment.CenterHorizontally),
+            ArtworkHero(
                 art = state.art,
                 onHandleMetadataActions = onHandleMetadataActions
             )
-            Column {
-                EditTextField(
-                    initialValue = state.mutablePropertiesMap["TITLE"],
-                    label = {
-                        Text(
-                            text = stringResource(R.string.title)
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(R.drawable.music_note),
-                            contentDescription = null
-                        )
-                    }
-                ) { title ->
-                    state.mutablePropertiesMap["TITLE"] = title
-                }
-                Row(
-                    modifier = Modifier.padding(start = 20.dp, top = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    ThreadDivider(
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        text = "${stringResource(R.string.file_name)}: ${
-                            trackPath.substringAfterLast(
-                                '/'
-                            ).substringBeforeLast(".")
-                        }",
-                        style = MaterialTheme.typography.labelMediumEmphasized.copy(
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        ),
-                        modifier = Modifier
-                            .padding(start = 5.dp)
-                            .basicMarquee()
 
-                    )
-                }
+            Spacer(Modifier.height(16.dp))
 
-                EditTextField(
-                    initialValue = state.mutablePropertiesMap["ARTIST"],
-                    label = {
-                        Text(
-                            text = stringResource(R.string.artist)
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(R.drawable.artist_rounded),
-                            contentDescription = null
-                        )
-                    }
-                ) { artist ->
-                    state.mutablePropertiesMap["ARTIST"] = artist
-                }
-                EditTextField(
-                    initialValue = state.mutablePropertiesMap["ALBUM"],
-                    label = {
-                        Text(
-                            text = stringResource(R.string.album)
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(androidx.media3.session.R.drawable.media3_icon_album),
-                            contentDescription = null
-                        )
-                    }
-                ) { album ->
-                    state.mutablePropertiesMap["ALBUM"] = album
-                }
-                Spacer(Modifier.height(20.dp))
+            FileNamePill(
+                name = trackPath.substringAfterLast('/').substringBeforeLast(".")
+            )
 
-                Row {
-                    EditTextField(
-                        initialValue = state.mutablePropertiesMap["DATE"],
-                        label = {
-                            Text(
-                                text = stringResource(R.string.year)
-                            )
-                        },
-                        modifier = Modifier.weight(1f),
-                        keyboardType = KeyboardType.Number
-                    ) { year ->
-                        state.mutablePropertiesMap["DATE"] = year
-                    }
-                    EditTextField(
-                        initialValue = state.mutablePropertiesMap["GENRE"],
-                        label = {
-                            Text(
-                                text = stringResource(R.string.genre)
-                            )
-                        },
+            FieldGroup {
+                FieldTile(
+                    value = fields["TITLE"],
+                    onValueChange = { fields["TITLE"] = it },
+                    label = stringResource(R.string.title),
+                    icon = R.drawable.music_note
+                )
+                FieldTile(
+                    value = fields["ARTIST"],
+                    onValueChange = { fields["ARTIST"] = it },
+                    label = stringResource(R.string.artist),
+                    icon = R.drawable.artist_rounded
+                )
+                FieldTile(
+                    value = fields["ALBUM"],
+                    onValueChange = { fields["ALBUM"] = it },
+                    label = stringResource(R.string.album),
+                    icon = androidx.media3.session.R.drawable.media3_icon_album
+                )
+            }
+
+            FieldGroup {
+                Row(horizontalArrangement = Arrangement.spacedBy(Gap)) {
+                    FieldTile(
+                        value = fields["DATE"],
+                        onValueChange = { fields["DATE"] = it },
+                        label = stringResource(R.string.year),
+                        keyboardType = KeyboardType.Number,
                         modifier = Modifier.weight(1f)
-                    ) { genre ->
-                        state.mutablePropertiesMap["GENRE"] = genre
-                    }
+                    )
+                    FieldTile(
+                        value = fields["GENRE"],
+                        onValueChange = { fields["GENRE"] = it },
+                        label = stringResource(R.string.genre),
+                        modifier = Modifier.weight(1f)
+                    )
                 }
-                Row {
-                    EditTextField(
-                        initialValue = state.mutablePropertiesMap["TRACKNUMBER"],
-                        label = {
-                            Text(
-                                text = stringResource(R.string.track_nb),
-                                modifier = Modifier.basicMarquee()
-                            )
-                        },
-                        modifier = Modifier.weight(1f),
-                        keyboardType = KeyboardType.Number
-                    ) { track ->
-                        state.mutablePropertiesMap["TRACKNUMBER"] = track
-                    }
-                    EditTextField(
-                        initialValue = state.mutablePropertiesMap["DISCNUMBER"],
-                        label = {
-                            Text(
-                                text = stringResource(R.string.disc_nb),
-                                modifier = Modifier.basicMarquee()
-                            )
-                        },
-                        modifier = Modifier.weight(1f),
-                        keyboardType = KeyboardType.Number
-                    ) { disc ->
-                        state.mutablePropertiesMap["DISCNUMBER"] = disc
-                    }
+                Row(horizontalArrangement = Arrangement.spacedBy(Gap)) {
+                    FieldTile(
+                        value = fields["TRACKNUMBER"],
+                        onValueChange = { fields["TRACKNUMBER"] = it },
+                        label = stringResource(R.string.track_nb),
+                        keyboardType = KeyboardType.Number,
+                        modifier = Modifier.weight(1f)
+                    )
+                    FieldTile(
+                        value = fields["DISCNUMBER"],
+                        onValueChange = { fields["DISCNUMBER"] = it },
+                        label = stringResource(R.string.disc_nb),
+                        keyboardType = KeyboardType.Number,
+                        modifier = Modifier.weight(1f)
+                    )
                 }
-                EditTextField(
-                    initialValue = state.mutablePropertiesMap["LYRICS"],
-                    label = {
-                        Text(
-                            text = stringResource(R.string.lyrics),
-                            modifier = Modifier.basicMarquee()
-                        )
-                    },
-                    imeAction = ImeAction.Default
-                ) { lyrics ->
-                    state.mutablePropertiesMap["LYRICS"] = lyrics
-                }
-                Button(
-                    onClick = { onNavigate(Screen.LyricsEditor(trackPath)) },
-                    shapes = ButtonDefaults.shapes(),
-                    modifier = Modifier.selfAlignHorizontally()
-                ) {
-                    Text(stringResource(R.string.lyrics_editor))
-                }
+            }
+
+            FieldGroup {
+                FieldTile(
+                    value = fields["LYRICS"],
+                    onValueChange = { fields["LYRICS"] = it },
+                    label = stringResource(R.string.lyrics),
+                    icon = R.drawable.lyrics_rounded,
+                    imeAction = ImeAction.Default,
+                    singleLine = false
+                )
+                LyricsEditorRow(
+                    onClick = { onNavigate(Screen.LyricsEditor(trackPath)) }
+                )
             }
         }
     }
 }
 
+@Composable
+private fun ArtworkHero(
+    art: Picture?,
+    onHandleMetadataActions: (MetadataActions) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val colors = MaterialTheme.colorScheme
+    val photoPickerLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
+            onHandleMetadataActions(MetadataActions.UpdateAudioArt(it ?: Uri.EMPTY))
+        }
+    val pickImage = {
+        photoPickerLauncher.launch(
+            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+        )
+    }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+    ) {
+        Surface(
+            onClick = pickImage,
+            shape = RoundedCornerShape(32.dp),
+            color = colors.surfaceContainerHighest,
+            modifier = Modifier
+                .size(210.dp)
+                .shadow(12.dp, RoundedCornerShape(32.dp))
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    painter = painterResource(R.drawable.add),
+                    contentDescription = stringResource(R.string.artwork),
+                    tint = colors.onSurfaceVariant,
+                    modifier = Modifier.size(48.dp)
+                )
+                if (art != null) {
+                    AsyncImage(
+                        model = art.data,
+                        contentDescription = stringResource(R.string.artwork),
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            }
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+            modifier = Modifier.height(ButtonDefaults.MinHeight)
+        ) {
+            Button(
+                onClick = { onHandleMetadataActions(MetadataActions.RemoveArtwork) },
+                enabled = art != null,
+                colors = ButtonDefaults.buttonColors().copy(
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = contentColorFor(MaterialTheme.colorScheme.error)
+                ),
+                shapes = ButtonDefaults.shapes()
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.trash_rounded),
+                    contentDescription = null,
+                    modifier = Modifier.size(ButtonDefaults.IconSize)
+                )
+                Spacer(Modifier.width(ButtonDefaults.IconSpacing))
+                Text(stringResource(R.string.delete))
+            }
+        }
+    }
+}
 
 @Composable
-private fun EditTextField(
-    modifier: Modifier = Modifier,
-    initialValue: String?,
-    label: (@Composable () -> Unit)? = null,
-    imeAction: ImeAction = ImeAction.Done,
-    keyboardType: KeyboardType = KeyboardType.Unspecified,
-    leadingIcon: @Composable (() -> Unit)? = null,
-    returnModifiedValue: (String) -> Unit
-) {
+private fun FileNamePill(name: String) {
+    Surface(
+        shape = CircleShape,
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        modifier = Modifier.padding(horizontal = 32.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.audio_file),
+                contentDescription = stringResource(R.string.file_name),
+                modifier = Modifier.size(16.dp)
+            )
+            Spacer(Modifier.width(6.dp))
+            Text(
+                text = name,
+                style = MaterialTheme.typography.labelLargeEmphasized,
+                maxLines = 1,
+                modifier = Modifier.basicMarquee()
+            )
+        }
+    }
+}
 
-
-    OutlinedTextField(
-        value = initialValue ?: "",
-        onValueChange = { returnModifiedValue(it) },
-        label = label,
-        keyboardOptions = KeyboardOptions(
-            imeAction = imeAction,
-            keyboardType = keyboardType
-        ),
-        leadingIcon = leadingIcon,
-        shape = RoundedCornerShape(12.dp),
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 5.dp, vertical = 1.dp)
+@Composable
+private fun FieldGroup(content: @Composable ColumnScope.() -> Unit) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(Gap),
+        modifier = Modifier
+            .padding(start = 16.dp, end = 16.dp, top = 20.dp)
+            .clip(RoundedCornerShape(OuterCorner)),
+        content = content
     )
 }
 
 @Composable
-private fun MetadataArt(
+private fun FieldTile(
+    value: String?,
+    onValueChange: (String) -> Unit,
+    label: String,
     modifier: Modifier = Modifier,
-    art: Picture?,
-    onHandleMetadataActions: (MetadataActions) -> Unit
+    @DrawableRes icon: Int? = null,
+    keyboardType: KeyboardType = KeyboardType.Unspecified,
+    imeAction: ImeAction = ImeAction.Done,
+    singleLine: Boolean = true
 ) {
+    val colors = MaterialTheme.colorScheme
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
+    val corner by animateDpAsState(
+        targetValue = if (isFocused) FocusedCorner else InnerCorner,
+        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
+    )
+    val container by animateColorAsState(
+        if (isFocused) colors.surfaceContainerHigh else colors.surfaceContainer
+    )
 
-    val context = LocalContext.current
-    val photoPickerLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
-            onHandleMetadataActions(
-                MetadataActions.UpdateAudioArt(
-                    it ?: Uri.EMPTY
-                )
-            )
-        }
-
-    Box(modifier = modifier) {
-        if (art != null) {
-            AsyncImage(
-                model = art.data,
-                contentDescription = stringResource(id = R.string.artwork),
-                modifier = Modifier
-                    .size(230.dp)
-                    .clip(RoundedCornerShape(10))
-                    .clickable {
-                        photoPickerLauncher.launch(
-                            PickVisualMediaRequest(
-                                ActivityResultContracts.PickVisualMedia.ImageOnly
-                            )
-                        )
-                    },
-                contentScale = ContentScale.Crop
-            )
-        } else {
-            Box(
-                modifier = Modifier
-                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(10))
-                    .background(MaterialTheme.colorScheme.surfaceContainer)
-                    .clickable {
-                        photoPickerLauncher.launch(
-                            PickVisualMediaRequest(
-                                ActivityResultContracts.PickVisualMedia.ImageOnly
-                            )
-                        )
-                    }
-                    .size(230.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.add),
-                    contentDescription = stringResource(id = R.string.artwork)
-                )
-            }
-        }
-        AnimatedVisibility(
-            visible = art != null,
-            enter = scaleIn(),
-            exit = scaleOut(),
+    Surface(
+        shape = RoundedCornerShape(corner),
+        color = container,
+        modifier = modifier.fillMaxWidth()
+    ) {
+        TextField(
+            value = value ?: "",
+            onValueChange = onValueChange,
+            label = { Text(text = label, maxLines = 1, modifier = Modifier.basicMarquee()) },
+            leadingIcon = icon?.let { { FieldIcon(it) } },
+            singleLine = singleLine,
+            minLines = if (singleLine) 1 else 3,
+            keyboardOptions = KeyboardOptions(imeAction = imeAction, keyboardType = keyboardType),
+            interactionSource = interactionSource,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent
+            ),
             modifier = Modifier
-                .align(Alignment.TopEnd)
-                .offset(x = 10.dp, y = (-20).dp)
-        ) {
-            FilledIconButton(
-                onClick = { onHandleMetadataActions(MetadataActions.RemoveArtwork) },
-                shapes = IconButtonDefaults.shapes()
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.close),
-                    contentDescription = null
-                )
-            }
-        }
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+        )
     }
 }
 
+@Composable
+private fun FieldIcon(@DrawableRes icon: Int) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .padding(start = 8.dp)
+            .size(36.dp)
+    ) {
+        Icon(
+            painter = painterResource(icon),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+            modifier = Modifier.size(20.dp)
+        )
+    }
+}
+
+@Composable
+private fun LyricsEditorRow(onClick: () -> Unit) {
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(InnerCorner),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(36.dp)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.edit_rounded),
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+            Spacer(Modifier.width(5.dp))
+            Text(
+                text = stringResource(R.string.lyrics_editor),
+                style = MaterialTheme.typography.titleMediumEmphasized,
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(Modifier.weight(1f))
+            Icon(
+                painter = painterResource(R.drawable.arrow_right),
+                contentDescription = null
+            )
+        }
+    }
+}

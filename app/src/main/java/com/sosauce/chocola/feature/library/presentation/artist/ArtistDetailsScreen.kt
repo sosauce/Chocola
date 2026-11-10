@@ -9,8 +9,10 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,21 +28,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.sosauce.chocola.core.designsystem.components.NoResult
 import com.sosauce.chocola.core.domain.model.CuteTrack
 import com.sosauce.chocola.core.domain.player.MusicState
 import com.sosauce.chocola.core.domain.player.PlaySource
 import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.core.presentation.components.CuteSearchbar
 import com.sosauce.chocola.core.presentation.components.CuteSearchbarDefaults
-import com.sosauce.chocola.core.designsystem.components.NoResult
-import com.sosauce.chocola.core.presentation.components.trackItems
 import com.sosauce.chocola.core.presentation.components.TracksSelectedBar
+import com.sosauce.chocola.core.presentation.components.trackItems
 import com.sosauce.chocola.core.presentation.navigation.Screen
-import com.sosauce.chocola.feature.library.presentation.artist.components.ArtistHeader
-import com.sosauce.chocola.core.designsystem.components.NumberOfAlbums
 import com.sosauce.chocola.core.presentation.util.barsContentTransform
 import com.sosauce.chocola.core.presentation.util.selfAlignHorizontally
 import com.sosauce.chocola.feature.library.presentation.album.components.AlbumCard
+import com.sosauce.chocola.feature.library.presentation.artist.components.ArtistHeader
 import com.sosauce.nekobites.components.LoadingBox
 import com.sosauce.sweetselect.rememberSweetSelectState
 
@@ -106,6 +107,7 @@ fun SharedTransitionScope.ArtistDetailsScreen(
                         albumCount = state.albums.size,
                         onHandlePlayerActions = onHandlePlayerAction
                     )
+                    Spacer(Modifier.height(5.dp))
                 }
 
                 if (state.albums.isNotEmpty()) {
@@ -125,7 +127,7 @@ fun SharedTransitionScope.ArtistDetailsScreen(
                             AlbumCard(
                                 album = album,
                                 onClick = { onNavigate(Screen.AlbumsDetails(name = album.name)) },
-                                onToggleFavorite = { onHandlePlayerAction(PlayerActions.ToggleAlbumFavorite(album.id)) },
+                                onHandlePlayerActions = onHandlePlayerAction,
                                 modifier = Modifier.maskClip(MaterialTheme.shapes.extraLarge)
                             )
                         }

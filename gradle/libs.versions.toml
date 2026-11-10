@@ -3,10 +3,6 @@ agp = "9.5.1"
 cloudy = "0.7.1"
 emoji2Emojipicker = "1.7.0"
 glance = "1.2.0"
-haze = "2.1.0"
-hazeBlur = "2.0.1"
-hazeBlurMaterial3 = "2.0.1"
-hazeBlurMaterials = "2.0.1"
 hazeMaterials = "1.7.3"
 koinAndroid = "4.2.2"
 koinAndroidxCompose = "4.2.2"
@@ -27,6 +23,7 @@ media3Effect = "1.11.1"
 media3Exoplayer = "1.11.1"
 media3Session = "1.11.1"
 media3Transformer = "1.11.1"
+nekobites = "2.0.0"
 reorderable = "3.1.0" # https://github.com/Calvin-LL/Reorderable
 serialization = "2.4.21"
 squircleShape = "5.4.0"
@@ -68,17 +65,13 @@ androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 cloudy = { module = "com.github.skydoves:cloudy", version.ref = "cloudy" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
-haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
-haze-blur = { module = "dev.chrisbanes.haze:haze-blur", version.ref = "hazeBlur" }
-haze-blur-material3 = { module = "dev.chrisbanes.haze:haze-blur-material3", version.ref = "hazeBlurMaterial3" }
-haze-blur-materials = { module = "dev.chrisbanes.haze:haze-blur-materials", version.ref = "hazeBlurMaterials" }
-haze-materials = { module = "dev.chrisbanes.haze:haze-materials", version.ref = "hazeMaterials" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }
 koin-androidx-startup = { module = "io.insert-koin:koin-androidx-startup", version.ref = "koinAndroidxStartup" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 lyrics-core = { module = "com.mocharealm.accompanist:lyrics-core", version.ref = "lyricsCore" }
 material-kolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
+nekobites = { module = "com.github.sosauce:nekobites", version.ref = "nekobites" }
 reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 squircle-shape = { module = "com.stoyanvuchev:squircle-shape", version.ref = "squircleShape" }
 sweetselect-compose = { module = "io.github.sosauce:sweetselect-compose", version.ref = "sweetselectCompose" }

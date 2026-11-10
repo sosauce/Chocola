@@ -7,20 +7,18 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sosauce.chocola.core.data.library.AbstractTracksScanner
 import com.sosauce.chocola.core.data.datastore.UserPreferences
+import com.sosauce.chocola.core.data.library.AbstractTracksScanner
 import com.sosauce.chocola.core.data.local.FavoritesDao
+import com.sosauce.chocola.core.domain.library.ordered
 import com.sosauce.chocola.core.domain.model.Artist
 import com.sosauce.chocola.core.domain.util.combine
-import com.sosauce.chocola.core.domain.library.ordered
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
-import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
 
 class ArtistsViewModel(
@@ -34,7 +32,10 @@ class ArtistsViewModel(
 
 
     val state = combine(
-        kotlinx.coroutines.flow.combine(abstractTracksScanner.latestTracks(), favoritesDao.observeArtistIds()) { tracks, ids -> tracks to ids },
+        kotlinx.coroutines.flow.combine(
+            abstractTracksScanner.latestTracks(),
+            favoritesDao.observeArtistIds()
+        ) { tracks, ids -> tracks to ids },
         userPreferences.getArtistsSort,
         userPreferences.getRegexFilter,
         userPreferences.getMatchCaseFilter,
@@ -42,23 +43,21 @@ class ArtistsViewModel(
         userPreferences.getHideSingleAlbums(),
         searchQuery
     ) { (tracks, favoriteIds), sort, regex, matchCase, ascending, hideSingleAlbums, query ->
+
+
         val artists = tracks.groupBy { it.artist }
-            .map { (artist, tracks) ->
-                val albums = mutableMapOf<String, Int>()
-                for (track in tracks) {
-                    if (track.album !in albums) albums[track.album] = 1
-                    else albums[track.album] = albums[track.album]!! + 1
-                }
-                var numberAlbums = 0
-                if (hideSingleAlbums) {
-                    for ((album, size) in albums) if (size > 1) numberAlbums++
-                } else numberAlbums = albums.size
+            .map { (artist, artistTracks) ->
+                val artistId = artistTracks.last().artistId
+                val albumCounts = artistTracks.groupingBy { it.album }.eachCount()
+                val numberAlbums =
+                    if (hideSingleAlbums) albumCounts.count { it.value > 1 } else albumCounts.size
+
                 Artist(
-                    id = Random.nextLong(),
-                    tracks = tracks,
+                    id = artistId,
+                    tracks = artistTracks,
                     numberAlbums = numberAlbums,
                     name = artist,
-                    isFavorite = tracks.firstOrNull()?.artistId in favoriteIds
+                    isFavorite = artistId in favoriteIds
                 )
             }
             .ordered(sort, regex, matchCase, ascending, query.toString())

@@ -16,6 +16,8 @@ import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.sosauce.chocola.core.data.backup.BackupSettingsFile
 import com.sosauce.chocola.core.data.backup.SETTINGS_BACKUP_APP_NAME
 import com.sosauce.chocola.core.data.backup.SettingType
+import com.sosauce.chocola.core.data.datastore.PreferencesKeys.ALBUM_ART_FILE_NAME
+import com.sosauce.chocola.core.data.datastore.PreferencesKeys.ALBUM_ART_FROM_FILE
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.ALBUM_SORT
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.ARTIST_SORT
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.AUTO_ADD_SUBFOLDERS
@@ -45,20 +47,19 @@ import com.sosauce.chocola.core.data.mapper.toJsonMap
 import com.sosauce.chocola.core.designsystem.NewFolderPolicy
 import com.sosauce.chocola.core.designsystem.NowPlayingButton
 import com.sosauce.chocola.core.designsystem.toHiddenNowPlayingButtons
-import com.sosauce.chocola.core.domain.player.MusicState
 import com.sosauce.chocola.core.domain.model.AlbumSort
 import com.sosauce.chocola.core.domain.model.ArtistSort
 import com.sosauce.chocola.core.domain.model.PlaylistSort
 import com.sosauce.chocola.core.domain.model.SearchSettings
 import com.sosauce.chocola.core.domain.model.TrackSort
 import com.sosauce.chocola.core.domain.model.TracksSettings
+import com.sosauce.chocola.core.domain.player.MusicState
 import com.sosauce.chocola.core.domain.util.addOrRemove
 import com.sosauce.chocola.core.domain.util.copyMutate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -71,8 +72,6 @@ import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.long
-import kotlin.collections.emptySet
-import kotlin.collections.forEach
 
 class UserPreferences(
     private val context: Context
@@ -136,6 +135,7 @@ class UserPreferences(
     fun getWhitelistedFolders() = context.dataStore.data.map {
         it[WHITELISTED_FOLDERS] ?: emptySet()
     }
+
     fun getBlacklistedFolders() = context.dataStore.data.map {
         it[BLACKLISTED_FOLDERS] ?: emptySet()
     }
@@ -169,6 +169,10 @@ class UserPreferences(
         it[HIDE_SINGLE_ALBUM] ?: false
     }
 
+    fun getAlbumArtFileName() = context.dataStore.data.map {
+        if (it[ALBUM_ART_FROM_FILE] == true) it[ALBUM_ART_FILE_NAME] ?: DEFAULT_ALBUM_ART_FILE_NAME else null
+    }.distinctUntilChanged()
+
     val getHiddenFolders = context.dataStore.data.map {
         it[HIDDEN_FOLDERS] ?: emptySet()
     }
@@ -185,7 +189,8 @@ class UserPreferences(
         if (!button.isHideable) return
         context.dataStore.edit {
             val current = it[NOW_PLAYING_HIDDEN_BUTTONS] ?: emptySet()
-            it[NOW_PLAYING_HIDDEN_BUTTONS] = if (hidden) current + button.name else current - button.name
+            it[NOW_PLAYING_HIDDEN_BUTTONS] =
+                if (hidden) current + button.name else current - button.name
         }
     }
 
@@ -231,13 +236,15 @@ class UserPreferences(
         }
 
     suspend fun hasFolderLists(): Boolean =
-        context.dataStore.data.first().let { WHITELISTED_FOLDERS in it || BLACKLISTED_FOLDERS in it }
+        context.dataStore.data.first()
+            .let { WHITELISTED_FOLDERS in it || BLACKLISTED_FOLDERS in it }
 
     suspend fun seedInitialFoldersIfAbsent(blacklist: Set<String>) =
         context.dataStore.edit {
             it[WHITELISTED_FOLDERS] = emptySet()
             it[BLACKLISTED_FOLDERS] = blacklist
         }
+
     suspend fun unhideTrack(mediaId: String) {
         context.dataStore.edit {
             val alreadyHidden = it[HIDDEN_TRACKS] ?: emptySet()
@@ -326,13 +333,20 @@ class UserPreferences(
                 settings.forEach { (key, setting) ->
                     val v = setting.value
                     when (setting.type) {
-                        SettingType.BOOLEAN -> prefs[booleanPreferencesKey(key)] = v.jsonPrimitive.boolean
+                        SettingType.BOOLEAN -> prefs[booleanPreferencesKey(key)] =
+                            v.jsonPrimitive.boolean
+
                         SettingType.INT -> prefs[intPreferencesKey(key)] = v.jsonPrimitive.int
                         SettingType.LONG -> prefs[longPreferencesKey(key)] = v.jsonPrimitive.long
                         SettingType.FLOAT -> prefs[floatPreferencesKey(key)] = v.jsonPrimitive.float
-                        SettingType.DOUBLE -> prefs[doublePreferencesKey(key)] = v.jsonPrimitive.double
-                        SettingType.STRING -> prefs[stringPreferencesKey(key)] = v.jsonPrimitive.content
-                        SettingType.SET_STRING -> prefs[stringSetPreferencesKey(key)] = v.jsonArray.fastMap { it.jsonPrimitive.content }.toSet()
+                        SettingType.DOUBLE -> prefs[doublePreferencesKey(key)] =
+                            v.jsonPrimitive.double
+
+                        SettingType.STRING -> prefs[stringPreferencesKey(key)] =
+                            v.jsonPrimitive.content
+
+                        SettingType.SET_STRING -> prefs[stringSetPreferencesKey(key)] =
+                            v.jsonArray.fastMap { it.jsonPrimitive.content }.toSet()
                     }
 
                 }

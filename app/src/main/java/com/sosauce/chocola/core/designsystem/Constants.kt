@@ -8,9 +8,7 @@ import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.SliderState
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.RoundedPolygon
@@ -25,7 +23,6 @@ import com.sosauce.chocola.core.designsystem.components.WavyTrack
 const val CUTE_MUSIC_ID = "CUTE_MUSIC_ID"
 const val ICON_TEXT_SPACING = 5
 const val GITHUB_RELEASES = "https://github.com/sosauce/Chocola/releases"
-const val SUPPORT_PAGE = "https://sosauce.github.io/support/"
 
 
 object SharedTransitionKeys {

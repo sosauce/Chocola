@@ -106,7 +106,12 @@ private val previewActions = listOf(
 )
 
 @Preview(showBackground = true, widthDp = 300, heightDp = 300)
-@Preview(showBackground = true, widthDp = 300, heightDp = 300, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(
+    showBackground = true,
+    widthDp = 300,
+    heightDp = 300,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun SelectOverlayMenuPreview() {
     ChocolaTheme {
@@ -121,7 +126,12 @@ private fun SelectOverlayMenuPreview() {
 }
 
 @Preview(showBackground = true, widthDp = 380, heightDp = 820)
-@Preview(showBackground = true, widthDp = 380, heightDp = 820, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(
+    showBackground = true,
+    widthDp = 380,
+    heightDp = 820,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun SelectOverlayLiftedPreview() {
     ChocolaTheme {

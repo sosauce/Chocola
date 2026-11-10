@@ -49,7 +49,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -60,11 +59,11 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sosauce.chocola.R
-import com.sosauce.chocola.core.data.local.Playlist
 import com.sosauce.chocola.core.designsystem.components.EmojiPicker
+import com.sosauce.chocola.core.domain.util.copyMutate
 import com.sosauce.chocola.feature.playlists.presentation.PlaylistActions
 import com.sosauce.chocola.feature.playlists.presentation.PlaylistViewModel
-import com.sosauce.chocola.core.domain.util.copyMutate
+import com.sosauce.chocola.feature.playlists.presentation.model.PlaylistUi
 import com.sosauce.nekobites.animations.Icon
 import com.sosauce.nekobites.animations.rememberClipboardIconController
 import com.sosauce.nekobites.components.ColorPickerDialog
@@ -79,7 +78,7 @@ import kotlin.time.Duration.Companion.milliseconds
 @SuppressLint("ResourceType")
 @Composable
 fun EditPlaylist(
-    playlist: Playlist?,
+    playlist: PlaylistUi?,
     onHandlePlaylistActions: ((PlaylistActions) -> Unit)?,
     onDismissRequest: () -> Unit,
 ) {
@@ -89,7 +88,7 @@ fun EditPlaylist(
     val state by playlistViewModel.state.collectAsStateWithLifecycle()
     val localizedPlaylist = stringResource(R.string.playlist)
 
-    var newPlaylist by remember { mutableStateOf(playlist ?: Playlist()) }
+    var newPlaylist by remember { mutableStateOf(playlist ?: PlaylistUi()) }
     val name = rememberTextFieldState(initialText = newPlaylist.name)
     var showEmojiPicker by remember { mutableStateOf(false) }
     var showNewTagDialog by remember { mutableStateOf(false) }
@@ -123,7 +122,7 @@ fun EditPlaylist(
 
     if (showColorPicker) {
         ColorPickerDialog(
-            initialColor = Color(newPlaylist.color),
+            initialColor = newPlaylist.color ?: Color.White,
             onDismissRequest = { showColorPicker = false },
             icon = {
                 Icon(
@@ -134,7 +133,7 @@ fun EditPlaylist(
             title = { Text(stringResource(R.string.color_picker)) },
             dismissButton = {
                 TextButton(
-                    onClick = onDismissRequest,
+                    onClick = { showColorPicker = false },
                     shapes = ButtonDefaults.shapes()
                 ) {
                     Text(stringResource(R.string.cancel))
@@ -144,7 +143,7 @@ fun EditPlaylist(
                 TextButton(
                     onClick = {
                         newPlaylist = newPlaylist.copy(
-                            color = newColor.toArgb()
+                            color = newColor
                         )
                         showColorPicker = false
                     },
@@ -243,8 +242,9 @@ fun EditPlaylist(
                                 .clickable { showEmojiPicker = true },
                             contentAlignment = Alignment.Center
                         ) {
-                            if (newPlaylist.emoji.isNotBlank()) {
-                                AnimatedContent(newPlaylist.emoji) {
+                            val emoji = newPlaylist.emoji
+                            if (!emoji.isNullOrBlank()) {
+                                AnimatedContent(emoji) {
                                     Text(
                                         text = it,
                                         fontSize = 35.sp
@@ -272,7 +272,7 @@ fun EditPlaylist(
                     modifier = Modifier.padding(horizontal = 15.dp, vertical = 4.dp)
                 )
                 val colorCard =
-                    if (newPlaylist.color != -1) Color(newPlaylist.color) else MaterialTheme.colorScheme.surfaceContainerHighest
+                    newPlaylist.color ?: MaterialTheme.colorScheme.surfaceContainerHighest
 
                 Row(
                     Modifier.fillMaxSize(),
@@ -289,7 +289,7 @@ fun EditPlaylist(
                         )
                     ) {
                         val icon =
-                            if (newPlaylist.color != -1) R.drawable.edit_filled else R.drawable.add
+                            if (newPlaylist.color != null) R.drawable.edit_filled else R.drawable.add
                         Icon(
                             painter = painterResource(icon),
                             contentDescription = null,
@@ -305,7 +305,7 @@ fun EditPlaylist(
 
                     randomColorStatus.Icon(R.drawable.shuffle) {
                         newPlaylist = newPlaylist.copy(
-                            color = ColorUtils.randomColor(1f).toArgb()
+                            color = ColorUtils.randomColor(1f)
                         )
                         randomColorStatus.setSuccess()
                     }

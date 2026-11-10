@@ -1,8 +1,8 @@
 package com.sosauce.chocola.core.data.local
 
+import com.sosauce.chocola.core.domain.model.PlaylistSort
 import com.sosauce.chocola.core.domain.util.regex
 import com.sosauce.chocola.core.domain.util.thenIf
-import com.sosauce.chocola.core.domain.model.PlaylistSort
 import java.util.regex.PatternSyntaxException
 
 fun List<Playlist>.ordered(

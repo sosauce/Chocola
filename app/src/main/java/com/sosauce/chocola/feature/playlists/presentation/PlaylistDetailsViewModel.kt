@@ -5,15 +5,16 @@ package com.sosauce.chocola.feature.playlists.presentation
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.util.fastFilter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sosauce.chocola.core.data.library.AbstractTracksScanner
 import com.sosauce.chocola.core.data.datastore.UserPreferences
-import com.sosauce.chocola.core.domain.model.CuteTrack
-import com.sosauce.chocola.core.data.local.Playlist
+import com.sosauce.chocola.core.data.library.AbstractTracksScanner
 import com.sosauce.chocola.core.data.local.PlaylistDao
 import com.sosauce.chocola.core.domain.library.search
+import com.sosauce.chocola.core.domain.model.CuteTrack
+import com.sosauce.chocola.feature.playlists.presentation.model.PlaylistUi
+import com.sosauce.chocola.feature.playlists.presentation.model.toEntity
+import com.sosauce.chocola.feature.playlists.presentation.model.toUi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -43,15 +44,13 @@ class PlaylistDetailsViewModel(
         userPreferences.searchSettings(),
         searchQuery
     ) { playlist, tracks, settings, query ->
-        val filtered = tracks
-            .fastFilter { playlist.musics.contains(it.mediaId) }
-
+        val playlistUi = playlist.toUi(tracks)
 
         PlaylistDetailsState(
             isLoading = false,
-            tracks = filtered.search(query.toString(), settings),
-            playlistTracks = filtered,
-            playlist = playlist
+            tracks = playlistUi.tracks.search(query.toString(), settings),
+            playlistTracks = playlistUi.tracks,
+            playlist = playlistUi
         )
     }.flowOn(Dispatchers.Default).stateIn(
         viewModelScope,
@@ -69,7 +68,7 @@ class PlaylistDetailsViewModel(
 
             is PlaylistActions.UpsertPlaylist -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    dao.upsertPlaylist(action.playlist)
+                    dao.upsertPlaylist(action.playlist.toEntity())
                 }
             }
 
@@ -82,7 +81,7 @@ class PlaylistDetailsViewModel(
 @Stable
 data class PlaylistDetailsState(
     val isLoading: Boolean = true,
-    val playlist: Playlist = Playlist(),
+    val playlist: PlaylistUi = PlaylistUi(),
     val tracks: List<CuteTrack> = emptyList(),
     val playlistTracks: List<CuteTrack> = emptyList()
 )

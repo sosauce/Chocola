@@ -2,7 +2,6 @@
 
 package com.sosauce.chocola.feature.bakery.presentation.story.pages
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -25,9 +24,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
 import com.sosauce.chocola.core.designsystem.components.CuteListItem
-import com.sosauce.chocola.core.designsystem.groupedShape
 import com.sosauce.chocola.feature.bakery.presentation.model.FunFactUi
 import com.sosauce.chocola.feature.bakery.presentation.model.StoryPageUi
+import com.sosauce.nekobites.utils.groupedShape
 
 @Composable
 fun FunFactsPage(

@@ -27,9 +27,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
 import com.sosauce.chocola.core.designsystem.NowPlayingButton
-import com.sosauce.chocola.core.presentation.preferences.rememberSeekButtonsDuration
 import com.sosauce.chocola.core.domain.player.MusicState
 import com.sosauce.chocola.core.domain.player.PlayerActions
+import com.sosauce.chocola.core.presentation.preferences.rememberSeekButtonsDuration
 import com.sosauce.nekobites.animations.AnimatedDrawable
 import com.sosauce.nekobites.animations.AnimatedDrawableFile
 import com.sosauce.nekobites.helpers.rememberInteractionSource
@@ -85,9 +85,10 @@ fun ActionButtonsRow(
         modifier = Modifier.fillMaxWidth()
     ) { item ->
         val index = actionButtonsGroup.indexOf(item.key)
-        val buttonModifier = animatedWeight(item, if (item.key == NowPlayingButton.PLAY_PAUSE) 1.5f else 1f)
-            .height(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide).height)
-            .animateWidth(interactionSource = interactionSources[index])
+        val buttonModifier =
+            animatedWeight(item, if (item.key == NowPlayingButton.PLAY_PAUSE) 1.5f else 1f)
+                .height(IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide).height)
+                .animateWidth(interactionSource = interactionSources[index])
 
         when (item.key) {
             NowPlayingButton.PREVIOUS -> FilledIconButton(

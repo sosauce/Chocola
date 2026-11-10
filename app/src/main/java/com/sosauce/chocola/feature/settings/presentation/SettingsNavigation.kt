@@ -2,86 +2,67 @@
 
 package com.sosauce.chocola.feature.settings.presentation
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.sosauce.chocola.R
-import com.sosauce.chocola.feature.settings.presentation.components.SettingsCard
-import com.sosauce.chocola.core.presentation.preferences.rememberInitialScreen
 import com.sosauce.chocola.core.presentation.navigation.Screen
-import com.sosauce.chocola.feature.settings.presentation.components.SettingsSelector
-import com.sosauce.chocola.feature.settings.presentation.components.SettingsWithTitle
-import com.sosauce.nekobites.components.LazyRowWithScrollButton
+import com.sosauce.chocola.core.presentation.preferences.rememberInitialScreen
+import com.sosauce.nekobites.components.settings.SelectableTile
+import com.sosauce.nekobites.components.settings.SettingsGroup
+import com.sosauce.nekobites.components.settings.SettingsPicker
 
 @Composable
-fun SettingsNavigation() {
-
+fun ColumnScope.SettingsNavigation() {
     var initialScreen by rememberInitialScreen()
 
-    val screenItems = listOf(
-        ScreenItem(
-            onClick = { initialScreen = Screen.Main.toString() },
-            icon = R.drawable.music_note,
-            text = R.string.main,
-            isSelected = initialScreen == Screen.Main.toString()
-        ),
-        ScreenItem(
-            onClick = { initialScreen = Screen.Albums.toString() },
-            icon = R.drawable.album_filled,
-            text = R.string.albums,
-            isSelected = initialScreen == Screen.Albums.toString()
-
-        ),
-        ScreenItem(
-            onClick = { initialScreen = Screen.Artists.toString() },
-            icon = R.drawable.artists_filled,
-            text = R.string.artists,
-            isSelected = initialScreen == Screen.Artists.toString()
-        ),
-        ScreenItem(
-            onClick = { initialScreen = Screen.Playlists.toString() },
-            icon = R.drawable.playlist,
-            text = R.string.playlists,
-            isSelected = initialScreen == Screen.Playlists.toString()
-        )
+    val screens = listOf(
+        LaunchScreenOption(Screen.Main.toString(), R.drawable.music_note, R.string.main),
+        LaunchScreenOption(Screen.Albums.toString(), R.drawable.album_filled, R.string.albums),
+        LaunchScreenOption(Screen.Artists.toString(), R.drawable.artists_filled, R.string.artists),
+        LaunchScreenOption(Screen.Playlists.toString(), R.drawable.playlist, R.string.playlists)
     )
 
-    Column {
-        SettingsWithTitle(
-            title = R.string.default_launch_screen
-        ) {
-            SettingsCard(
-                topDp = 24.dp,
-                bottomDp = 24.dp
-            ) {
-                Column {
-                    LazyRowWithScrollButton(
-                        items = screenItems
-                    ) { screen ->
-                        SettingsSelector(
-                            onClick = screen.onClick,
-                            icon = screen.icon,
-                            text = screen.text,
-                            isSelected = screen.isSelected
-                        )
+    SettingsGroup(title = stringResource(R.string.default_launch_screen)) {
+        SettingsPicker {
+            items(screens) { screen ->
+                val selected = initialScreen == screen.value
+                SelectableTile(
+                    selected = selected,
+                    onClick = { initialScreen = screen.value },
+                    label = stringResource(screen.label),
+                    containerColor = if (selected) {
+                        MaterialTheme.colorScheme.primaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surfaceContainerHighest
                     }
+                ) {
+                    Icon(
+                        painter = painterResource(screen.icon),
+                        contentDescription = null,
+                        tint = if (selected) {
+                            MaterialTheme.colorScheme.onPrimaryContainer
+                        } else {
+                            MaterialTheme.colorScheme.onSurface
+                        }
+                    )
                 }
             }
         }
     }
-
 }
 
-data class ScreenItem(
-    val onClick: () -> Unit,
-    val icon: Int,
-    val text: Int,
-    val isSelected: Boolean
+private data class LaunchScreenOption(
+    val value: String,
+    @param:DrawableRes val icon: Int,
+    @param:StringRes val label: Int
 )

@@ -2,10 +2,8 @@
 
 package com.sosauce.chocola.core.presentation.components
 
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
@@ -21,7 +19,6 @@ import androidx.compose.material3.Badge
 import androidx.compose.material3.DropdownMenuGroup
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.DropdownMenuPopup
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -47,21 +44,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.core.app.ShareCompat
 import androidx.core.net.toUri
 import coil3.compose.AsyncImage
 import com.sosauce.chocola.R
-import com.sosauce.chocola.core.presentation.preferences.rememberHiddenTracks
+import com.sosauce.chocola.core.designsystem.components.CuteListItem
 import com.sosauce.chocola.core.domain.model.CuteTrack
 import com.sosauce.chocola.core.domain.player.PlayerActions
+import com.sosauce.chocola.core.domain.util.copyMutate
 import com.sosauce.chocola.core.presentation.components.dialogs.DeletionDialog
 import com.sosauce.chocola.core.presentation.components.dialogs.tracksDetails.TracksDetailsDialog
-import com.sosauce.chocola.core.presentation.navigation.Screen
 import com.sosauce.chocola.core.presentation.navigation.LocalScreen
-import com.sosauce.chocola.core.designsystem.components.CuteListItem
-import com.sosauce.chocola.core.domain.util.copyMutate
+import com.sosauce.chocola.core.presentation.navigation.Screen
+import com.sosauce.chocola.core.presentation.preferences.rememberHiddenTracks
 import com.sosauce.nekobites.animations.AnimatedDrawable
 import com.sosauce.nekobites.animations.AnimatedDrawableFile
 import com.sosauce.nekobites.components.AnimatedSelectedIcon
@@ -73,7 +69,7 @@ fun MusicListItem(
     modifier: Modifier = Modifier,
     track: CuteTrack,
     shape: Shape = RoundedCornerShape(24.dp),
-    backgroundColor: Color = Color.Transparent,
+    backgroundColor: Color = MaterialTheme.colorScheme.background,
     onShortClick: () -> Unit,
     onLongClick: (() -> Unit)? = null,
     isSelected: Boolean = false,
@@ -87,7 +83,7 @@ fun MusicListItem(
     )
 
     val background by animateColorAsState(
-        targetValue = if (isActive) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f) else backgroundColor
+        targetValue = if (isActive) MaterialTheme.colorScheme.surfaceContainerHighest else backgroundColor
     )
 
     CuteListItem(
@@ -333,7 +329,8 @@ fun TrackDropdownMenu(
             }
             FilledIconButton(
                 onClick = {
-                    track.mediaId.toLongOrNull()?.let { onHandlePlayerActions(PlayerActions.ToggleFavorite(it)) }
+                    track.mediaId.toLongOrNull()
+                        ?.let { onHandlePlayerActions(PlayerActions.ToggleFavorite(it)) }
                 },
                 modifier = Modifier
                     .weight(1f)

@@ -14,7 +14,8 @@ fun FavoriteAlbumItem(
     isSelected: Boolean,
     isInSelectionMode: Boolean,
     onClick: () -> Unit,
-    onLongClick: () -> Unit
+    onLongClick: () -> Unit,
+    onUnfavorite: () -> Unit
 ) {
     FavoriteItem(
         modifier = modifier,
@@ -23,7 +24,8 @@ fun FavoriteAlbumItem(
         isSelected = isSelected,
         isInSelectionMode = isInSelectionMode,
         onClick = onClick,
-        onLongClick = onLongClick
+        onLongClick = onLongClick,
+        onUnfavorite = onUnfavorite
     ) { isPressed ->
         FavoriteArtwork(
             model = album.art,

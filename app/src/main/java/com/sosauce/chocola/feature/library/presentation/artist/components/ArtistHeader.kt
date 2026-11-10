@@ -11,13 +11,12 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import com.sosauce.chocola.R
 import com.sosauce.chocola.core.designsystem.components.DetailsHeader
-import com.sosauce.chocola.core.designsystem.components.DetailsHeaderArtwork
-import com.sosauce.chocola.core.designsystem.components.DetailsHeaderPoster
+import com.sosauce.chocola.core.designsystem.components.DetailsHeaderDefaults
+import com.sosauce.chocola.core.designsystem.components.DetailsHeaderPlaybackActions
 import com.sosauce.chocola.core.domain.model.Artist
 import com.sosauce.chocola.core.domain.model.CuteTrack
 import com.sosauce.chocola.core.domain.player.PlaySource
 import com.sosauce.chocola.core.domain.player.PlayerActions
-import com.sosauce.chocola.feature.library.presentation.util.ImageUtils
 
 @Composable
 fun SharedTransitionScope.ArtistHeader(
@@ -26,38 +25,49 @@ fun SharedTransitionScope.ArtistHeader(
     albumCount: Int,
     onHandlePlayerActions: (PlayerActions) -> Unit
 ) {
-    val artUri = ImageUtils.getAlbumArt(artist.albumId)
 
     DetailsHeader(
-        title = artist.name,
-        subtitle = null,
-        trackCount = tracks.size,
-        isFavorite = artist.isFavorite,
-        onShuffle = {
-            onHandlePlayerActions(
-                PlayerActions.PlayFromSource(
-                    mediaId = null,
-                    source = PlaySource.Artist(artist.name)
+        title = {
+            DetailsHeaderDefaults.Title(
+                text = artist.name,
+                modifier = Modifier.sharedBounds(
+                    sharedContentState = rememberSharedContentState(artist.name + artist.id),
+                    animatedVisibilityScope = LocalNavAnimatedContentScope.current
                 )
             )
         },
-        onPlay = {
-            onHandlePlayerActions(
-                PlayerActions.StartPlaylist(PlaySource.Artist(artist.name))
+        artwork = null,
+        info = {
+            DetailsHeaderDefaults.InfoChip(
+                text = pluralStringResource(R.plurals.tracks_plural, tracks.size, tracks.size),
+                icon = R.drawable.music_note
             )
+            if (albumCount > 0) {
+                DetailsHeaderDefaults.InfoChip(
+                    text = pluralStringResource(R.plurals.albums_plural, albumCount, albumCount),
+                    icon = R.drawable.album_filled
+                )
+            }
         },
-        onToggleFavorite = {
-            onHandlePlayerActions(PlayerActions.ToggleArtistFavorite(artist.id))
-        },
-        titleModifier = Modifier.sharedBounds(
-            sharedContentState = rememberSharedContentState(artist.name + artist.id),
-            animatedVisibilityScope = LocalNavAnimatedContentScope.current
-        ),
-        poster = { DetailsHeaderPoster(model = artUri) },
-        artwork = {
-            DetailsHeaderArtwork(
-                model = artUri,
-                placeholderIcon = R.drawable.artists_filled
+        actions = {
+            DetailsHeaderPlaybackActions(
+                isFavorite = artist.isFavorite,
+                onShuffle = {
+                    onHandlePlayerActions(
+                        PlayerActions.PlayFromSource(
+                            mediaId = null,
+                            source = PlaySource.Artist(artist.name)
+                        )
+                    )
+                },
+                onPlay = {
+                    onHandlePlayerActions(
+                        PlayerActions.StartPlaylist(PlaySource.Artist(artist.name))
+                    )
+                },
+                onToggleFavorite = {
+                    onHandlePlayerActions(PlayerActions.ToggleArtistFavorite(artist.id))
+                }
             )
         }
     )

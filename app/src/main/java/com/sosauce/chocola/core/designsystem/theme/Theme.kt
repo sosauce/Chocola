@@ -2,33 +2,28 @@
 
 package com.sosauce.chocola.core.designsystem.theme
 
-import android.icu.number.IntegerWidth
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MotionScheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontVariation
 import com.materialkolor.DynamicMaterialExpressiveTheme
 import com.materialkolor.dynamiccolor.ColorSpec
 import com.materialkolor.rememberDynamicMaterialThemeState
 import com.sosauce.chocola.R
+import com.sosauce.chocola.core.designsystem.CuteTheme
 import com.sosauce.chocola.core.presentation.preferences.rememberAppTheme
 import com.sosauce.chocola.core.presentation.preferences.rememberPaletteStyle
 import com.sosauce.chocola.core.presentation.preferences.rememberUseArtTheme
 import com.sosauce.chocola.core.presentation.preferences.rememberUseSystemFont
-import com.sosauce.chocola.core.designsystem.CuteTheme
 import com.sosauce.chocola.core.presentation.util.toPaletteStyle
 
 @Composable
@@ -96,7 +91,7 @@ fun sansFlexCustomWidth(width: Float): FontFamily {
             resId = R.font.google_sans_flex,
             variationSettings = FontVariation.Settings(
                 FontVariation.Setting("ROND", 100f),
-                FontVariation.Setting("wght", 900f),
+                FontVariation.weight(750),
                 FontVariation.width(width)
             )
         )
