@@ -109,31 +109,23 @@ class MetadataViewModel(
 
 
     private fun saveChangesApi30Plus() {
-        try {
-            (getFileDescriptorFromPath("w")
-                ?: throw Exception("No file descriptor found!")).use { fd ->
-                fd.dup().detachFd().let {
-                    TagLib.savePropertyMap(
-                        it,
-                        metadataState.value.mutablePropertiesMap.toAudioFileMetadata()
-                            .toPropertyMap()
-                    )
-                }
+        (getFileDescriptorFromPath("w")
+            ?: throw Exception("No file descriptor found!")).use { fd ->
+            val metadataSaved = TagLib.savePropertyMap(
+                fd.dup().detachFd(),
+                metadataState.value.mutablePropertiesMap.toAudioFileMetadata().toPropertyMap()
+            )
+            if (!metadataSaved) throw Exception("Failed to save metadata!")
 
-                fd.dup().detachFd().let {
-                    val newPic =
-                        metadataState.value.art?.let { art -> arrayOf(art) } ?: emptyArray()
-                    TagLib.savePictures(it, newPic)
-                }
+            val newPic = metadataState.value.art?.let { art -> arrayOf(art) } ?: emptyArray()
+            val artSaved = TagLib.savePictures(fd.dup().detachFd(), newPic)
+            if (!artSaved) throw Exception("Failed to save artwork!")
 
-                scanTrack()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
+            scanTrack()
         }
     }
 
-    private fun saveChangesLegacy() {
+    private fun saveChangesLegacy(): Boolean {
         try {
             val sourceFileUri = getFileUri() ?: throw FileNotFoundException()
 
@@ -153,6 +145,7 @@ class MetadataViewModel(
             }
 
             scanTrack()
+            return true
 
         } catch (e: SecurityException) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -162,6 +155,7 @@ class MetadataViewModel(
                     )
 
                 _legacyAskPermission.trySend(recoverableSecurityException.userAction.actionIntent)
+                return false
             } else {
                 throw RuntimeException(e.message, e)
             }
@@ -260,12 +254,13 @@ class MetadataViewModel(
                 viewModelScope.launch(Dispatchers.IO) {
 
                     try {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        val saved = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                             saveChangesApi30Plus()
+                            true
                         } else {
                             saveChangesLegacy()
                         }
-                        _events.trySend(MetadataEvents.SaveSuccessful)
+                        if (saved) _events.trySend(MetadataEvents.SaveSuccessful)
                     } catch (e: Exception) {
                         _events.trySend(MetadataEvents.SaveUnsuccessful(e.message))
                     }
