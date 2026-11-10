@@ -3,6 +3,8 @@
 package com.sosauce.chocola.feature.playlists.presentation
 
 import android.app.Application
+import android.os.Environment
+import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.compose.foundation.text.input.TextFieldState
@@ -29,6 +31,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import kotlin.time.Duration.Companion.milliseconds
 
 class PlaylistViewModel(
@@ -111,11 +114,16 @@ class PlaylistViewModel(
                 val tracksFromFile = mutableSetOf<String>()
 
                 viewModelScope.launch(Dispatchers.IO) {
+                    val playlistFolder = File(
+                        Environment.getExternalStorageDirectory(),
+                        DocumentsContract.getDocumentId(action.uri).substringAfter(':').substringBeforeLast('/', "")
+                    )
                     application.contentResolver.openInputStream(action.uri)?.bufferedReader()
                         ?.useLines { lines ->
                             for (line in lines) {
-                                if (!line.startsWith('/')) continue
-                                tracksFromFile.add(getMediaIdFromFilePath(line))
+                                if (line.isBlank() || line.startsWith('#')) continue
+                                val path = if (line.startsWith('/')) line else playlistFolder.resolve(line).normalize().path
+                                tracksFromFile.add(getMediaIdFromFilePath(path))
                             }
 
                         }
