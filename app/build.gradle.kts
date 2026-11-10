@@ -27,8 +27,8 @@ android {
         applicationId = "com.sosauce.cutemusic"
         minSdk = 28
         targetSdk = 37
-        versionCode = 50014
-        versionName = "4.4.6"
+        versionCode = 50015
+        versionName = "4.5.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -152,6 +152,6 @@ dependencies {
     implementation(libs.sweetselect.compose)
     implementation(libs.squircle.shape)
     implementation(libs.cloudy)
-    implementation("io.github.sosauce:nekobites:1.1.2")
+    implementation(libs.sosauce.nekobites)
 }
 
