@@ -71,8 +71,6 @@ import com.sosauce.chocola.core.presentation.preferences.rememberCarousel
 import com.sosauce.chocola.core.presentation.preferences.rememberIsLandscape
 import com.sosauce.chocola.core.presentation.preferences.rememberNowPlayingShapeMorph
 import com.sosauce.chocola.core.presentation.preferences.rememberUseTurntable
-import com.sosauce.chocola.core.domain.player.MusicState
-import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.feature.lyrics.presentation.LyricsList
 import com.sosauce.nekobites.animations.rememberAnimatedShape
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -172,7 +170,18 @@ private fun TurntableArtwork(
                 textShadow = true,
                 musicState = musicState,
                 onHandlePlayerActions = onHandlePlayerActions,
-                emptyLyrics = {}
+                emptyLyrics = {
+                    Text(
+                        text = stringResource(R.string.no_lyrics_note),
+                        style = MaterialTheme.typography.titleLargeEmphasized.copy(
+                            shadow = Shadow(
+                                color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                offset = Offset(10f, 5f),
+                                blurRadius = 10f
+                            )
+                        )
+                    )
+                }
             )
         }
     }

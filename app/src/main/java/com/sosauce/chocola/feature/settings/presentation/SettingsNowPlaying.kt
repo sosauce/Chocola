@@ -31,16 +31,6 @@ import com.sosauce.chocola.core.presentation.preferences.rememberThumbStyle
 import com.sosauce.chocola.core.presentation.preferences.rememberTrackStyle
 import com.sosauce.chocola.core.presentation.preferences.rememberUseArtAsBackground
 import com.sosauce.chocola.core.presentation.preferences.rememberUseTurntable
-import com.sosauce.chocola.feature.settings.presentation.components.SettingsCard
-import com.sosauce.chocola.feature.settings.presentation.components.SettingsCardHeader
-import com.sosauce.chocola.feature.settings.presentation.components.SettingsSwitch
-import com.sosauce.chocola.feature.settings.presentation.components.SettingsWithTitle
-import com.sosauce.chocola.feature.settings.presentation.components.ShapeSelector
-import com.sosauce.chocola.feature.settings.presentation.components.SquareSelector
-import com.sosauce.chocola.core.designsystem.ArtworkShape
-import com.sosauce.chocola.core.designsystem.ThumbStyle
-import com.sosauce.chocola.core.designsystem.TrackStyle
-import com.sosauce.nekobites.components.LazyRowWithScrollButton
 import com.sosauce.nekobites.components.settings.SelectableTile
 import com.sosauce.nekobites.components.settings.SettingsGroup
 import com.sosauce.nekobites.components.settings.SettingsPicker
@@ -128,10 +118,8 @@ fun ColumnScope.SettingsNowPlaying() {
         SettingsSwitch(
             checked = useTurntable,
             onCheckedChange = { useTurntable = !useTurntable },
-            topDp = 2.dp,
-            bottomDp = 2.dp,
-            text = stringResource(R.string.use_turntable),
-            optionalDescription = R.string.use_turntable_desc
+            title = stringResource(R.string.use_turntable),
+            description = stringResource(R.string.use_turntable_desc)
         )
         SettingsSwitch(
             title = stringResource(R.string.shape_morph),
