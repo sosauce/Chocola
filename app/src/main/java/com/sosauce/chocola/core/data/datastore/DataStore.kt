@@ -42,6 +42,7 @@ data object PreferencesKeys {
     val NUMBER_OF_ALBUM_GRIDS = intPreferencesKey("NUMBER_OF_ALBUM_GRIDS")
     val HIDDEN_FOLDERS = stringSetPreferencesKey("HIDDEN_FOLDERS")
     val ART_AS_BACKGROUND = booleanPreferencesKey("ART_AS_BACKGROUND")
+    val USE_TURNTABLE = booleanPreferencesKey("USE_TURNTABLE")
     val ALBUM_SORT = intPreferencesKey("ALBUM_SORT")
     val TRACK_SORT = intPreferencesKey("TRACK_SORT")
     val ARTIST_SORT = intPreferencesKey("ARTIST_SORT")

@@ -30,6 +30,7 @@ import com.sosauce.chocola.core.presentation.preferences.rememberShowAlbumName
 import com.sosauce.chocola.core.presentation.preferences.rememberThumbStyle
 import com.sosauce.chocola.core.presentation.preferences.rememberTrackStyle
 import com.sosauce.chocola.core.presentation.preferences.rememberUseArtAsBackground
+import com.sosauce.chocola.core.presentation.preferences.rememberUseTurntable
 import com.sosauce.nekobites.components.settings.SelectableTile
 import com.sosauce.nekobites.components.settings.SettingsGroup
 import com.sosauce.nekobites.components.settings.SettingsPicker
@@ -45,6 +46,7 @@ fun ColumnScope.SettingsNowPlaying() {
     var thumbStyle by rememberThumbStyle()
     var trackStyle by rememberTrackStyle()
     var useArtBackground by rememberUseArtAsBackground()
+    var useTurntable by rememberUseTurntable()
     var dynamicDuration by rememberDynamicDuration()
     var shapeMorph by rememberNowPlayingShapeMorph()
 
@@ -112,6 +114,12 @@ fun ColumnScope.SettingsNowPlaying() {
             title = stringResource(R.string.art_as_bg),
             checked = useArtBackground,
             onCheckedChange = { useArtBackground = !useArtBackground }
+        )
+        SettingsSwitch(
+            checked = useTurntable,
+            onCheckedChange = { useTurntable = !useTurntable },
+            title = stringResource(R.string.use_turntable),
+            description = stringResource(R.string.use_turntable_desc)
         )
         SettingsSwitch(
             title = stringResource(R.string.shape_morph),
