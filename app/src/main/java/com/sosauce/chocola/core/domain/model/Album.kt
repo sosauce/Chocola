@@ -10,5 +10,8 @@ data class Album(
     val artist: String = "",
     val art: Uri? = null,
     val tracks: List<CuteTrack> = emptyList(),
-    val isFavorite: Boolean = false
-)
+    val isFavorite: Boolean = false,
+) {
+    val durationMillis: Long
+        get() = tracks.sumOf { it.durationMillis }
+}

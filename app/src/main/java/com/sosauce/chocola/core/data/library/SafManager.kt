@@ -6,9 +6,9 @@ import android.content.Context
 import android.net.Uri
 import androidx.core.net.toUri
 import com.kyant.taglib.TagLib
+import com.sosauce.chocola.core.data.content.getUriFromByteArray
 import com.sosauce.chocola.core.data.datastore.UserPreferences
 import com.sosauce.chocola.core.domain.model.CuteTrack
-import com.sosauce.chocola.core.data.content.getUriFromByteArray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -28,13 +28,14 @@ class SafManager(
             }
         }
         .flowOn(Dispatchers.IO)
+
     private fun uriToTrack(
         uri: Uri
     ): CuteTrack? {
         return context.contentResolver.openFileDescriptor(uri, "r")?.use { fd ->
             val metadata = TagLib.getMetadata(fd.dup().detachFd())
 
-            val title = metadata?.propertyMap?.get("TITLE")?.getOrNull(0)  ?: "<unknown>"
+            val title = metadata?.propertyMap?.get("TITLE")?.getOrNull(0) ?: "<unknown>"
             val artist = metadata?.propertyMap?.get("ARTIST")?.joinToString(", ") ?: "<unknown>"
             val album = metadata?.propertyMap?.get("ALBUM")?.getOrNull(0) ?: "<unknown>"
             val artUri =

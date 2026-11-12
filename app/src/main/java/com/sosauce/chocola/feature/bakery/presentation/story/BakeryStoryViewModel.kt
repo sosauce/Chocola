@@ -3,7 +3,6 @@ package com.sosauce.chocola.feature.bakery.presentation.story
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sosauce.chocola.core.domain.util.combine
 import com.sosauce.chocola.feature.bakery.data.BakeryRepository
 import com.sosauce.chocola.feature.bakery.presentation.model.PeriodId
 import kotlinx.coroutines.channels.Channel

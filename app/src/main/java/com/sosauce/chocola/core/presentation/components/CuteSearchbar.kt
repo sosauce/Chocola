@@ -11,6 +11,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -28,11 +29,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -57,8 +61,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.SelectableDropdownMenuItem
-import androidx.compose.material3.ShortNavigationBar
-import androidx.compose.material3.ShortNavigationBarItem
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -94,6 +97,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import com.sosauce.chocola.R
+import com.sosauce.chocola.core.designsystem.SharedTransitionKeys
+import com.sosauce.chocola.core.designsystem.components.PlayPauseButton
+import com.sosauce.chocola.core.domain.player.MusicState
+import com.sosauce.chocola.core.domain.player.PlayerActions
+import com.sosauce.chocola.core.presentation.navigation.LocalScreen
+import com.sosauce.chocola.core.presentation.navigation.Screen
 import com.sosauce.chocola.core.presentation.preferences.rememberAlbumGrids
 import com.sosauce.chocola.core.presentation.preferences.rememberAlbumSort
 import com.sosauce.chocola.core.presentation.preferences.rememberArtistSort
@@ -103,24 +112,16 @@ import com.sosauce.chocola.core.presentation.preferences.rememberMatchCaseFilter
 import com.sosauce.chocola.core.presentation.preferences.rememberRegexFilter
 import com.sosauce.chocola.core.presentation.preferences.rememberShowShuffleButton
 import com.sosauce.chocola.core.presentation.preferences.rememberSortAlbumsAscending
+import com.sosauce.chocola.core.presentation.preferences.rememberSortArtistsAscending
 import com.sosauce.chocola.core.presentation.preferences.rememberSortTracksAscending
 import com.sosauce.chocola.core.presentation.preferences.rememberTrackSort
-import com.sosauce.chocola.core.domain.player.MusicState
-import com.sosauce.chocola.core.domain.player.PlayerActions
-import com.sosauce.chocola.core.presentation.navigation.Screen
 import com.sosauce.chocola.feature.playing.presentation.NowPlaying
-import com.sosauce.chocola.core.designsystem.components.PlayPauseButton
-import com.sosauce.chocola.core.presentation.navigation.LocalScreen
-import com.sosauce.chocola.core.designsystem.SharedTransitionKeys
-import com.sosauce.chocola.core.presentation.preferences.rememberPlaylistSort
-import com.sosauce.chocola.core.presentation.preferences.rememberSortArtistsAscending
-import com.sosauce.chocola.core.presentation.preferences.rememberSortPlaylistsAscending
-import com.sosauce.nekobites.animations.bouncySpec
-import com.sosauce.nekobites.helpers.rememberInteractionSource
 import com.sosauce.nekobites.animations.AnimatedDrawable
 import com.sosauce.nekobites.animations.AnimatedDrawableFile
 import com.sosauce.nekobites.animations.AnimatedFab
+import com.sosauce.nekobites.animations.bouncySpec
 import com.sosauce.nekobites.components.Spacer
+import com.sosauce.nekobites.helpers.rememberInteractionSource
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
@@ -477,86 +478,86 @@ private fun SharedTransitionScope.ScreenSelection(
         )
     )
 
-    ShortNavigationBar {
+    val colors = MaterialTheme.colorScheme
+    val motion = MaterialTheme.motionScheme
+
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(6.dp)
+            .height(TextFieldDefaults.MinHeight)
+    ) {
         screens.forEach { screen ->
-
             val selected = currentScreen == screen.screen
+            val interactionSource = remember { MutableInteractionSource() }
+            val isPressed by interactionSource.collectIsPressedAsState()
 
-            ShortNavigationBarItem(
-                selected = selected,
+            val weight by animateFloatAsState(
+                targetValue = when {
+                    selected -> 2.2f
+                    isPressed -> 1.5f
+                    else -> 1f
+                },
+                animationSpec = motion.fastSpatialSpec()
+            )
+            val corner by animateDpAsState(
+                targetValue = when {
+                    isPressed -> 12.dp
+                    selected -> TextFieldDefaults.MinHeight / 2
+                    else -> 18.dp
+                },
+                animationSpec = motion.fastSpatialSpec()
+            )
+            val containerColor by animateColorAsState(
+                if (selected) colors.primary else colors.surfaceContainerHighest
+            )
+            val contentColor by animateColorAsState(
+                if (selected) colors.onPrimary else colors.onSurfaceVariant
+            )
+
+            Surface(
                 onClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                     dismiss()
                     screen.onClick()
                 },
-                icon = {
+                shape = RoundedCornerShape(corner),
+                color = containerColor,
+                contentColor = contentColor,
+                interactionSource = interactionSource,
+                modifier = Modifier
+                    .weight(weight)
+                    .fillMaxHeight()
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                ) {
                     val icon = if (selected) screen.selectedIcon else screen.unselectedIcon
                     Icon(
                         painter = painterResource(icon),
-                        contentDescription = null,
+                        contentDescription = stringResource(screen.name),
                         modifier = Modifier
                             .sharedElement(
                                 sharedContentState = rememberSharedContentState(icon),
                                 animatedVisibilityScope = LocalNavAnimatedContentScope.current
                             )
                     )
-                },
-                label = {
-                    Text(
-                        text = stringResource(screen.name)
-                    )
+                    if (selected) {
+                        Spacer(8.dp)
+                        Text(
+                            text = stringResource(screen.name),
+                            style = MaterialTheme.typography.labelLargeEmphasized,
+                            maxLines = 1,
+                            softWrap = false
+                        )
+                    }
                 }
-            )
+            }
         }
     }
-
-//    ButtonGroup(
-//        modifier = Modifier.fillMaxWidth(),
-//        overflowIndicator = {}
-//    ) {
-//
-//
-//
-//        screens.fastForEachIndexed { index, item ->
-//
-//            val isActive = currentScreen == item.screen
-//
-//            customItem(
-//                buttonGroupContent = {
-//
-//                    val containerColor = if (isActive) MaterialTheme.colorScheme.primary else Color.Transparent
-//
-//                    Button(
-//                        onClick = {
-//                            item.onClick()
-//                            dismiss()
-//                        },
-//                        interactionSource = interactionsSources[index],
-//                        colors = ButtonDefaults.buttonColors(
-//                            containerColor = containerColor,
-//                            contentColor = contentColorFor(containerColor)
-//                        ),
-//                        shapes = ButtonDefaults.shapes(),
-//                        modifier = Modifier
-//                            .defaultMinSize(
-//                                minWidth = TextFieldDefaults.MinWidth,
-//                                minHeight = TextFieldDefaults.MinHeight,
-//                            )
-//                            .weight(1f)
-//                            .animateWidth(interactionsSources[index])
-//                    ) {
-//                        val icon = if (isActive) item.selectedIcon else item.unselectedIcon
-//
-//                        Icon(
-//                            painter = painterResource(icon),
-//                            contentDescription = null
-//                        )
-//                    }
-//                },
-//                menuContent = {}
-//            )
-//        }
-//    }
 }
 
 private data class ScreenCategory(

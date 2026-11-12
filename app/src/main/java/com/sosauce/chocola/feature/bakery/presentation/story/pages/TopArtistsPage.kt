@@ -27,9 +27,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
 import com.sosauce.chocola.core.designsystem.components.CuteListItem
-import com.sosauce.chocola.core.designsystem.groupedShape
 import com.sosauce.chocola.feature.bakery.presentation.model.ArtistStatUi
 import com.sosauce.chocola.feature.bakery.presentation.model.StoryPageUi
+import com.sosauce.nekobites.utils.groupedShape
 
 @Composable
 fun TopArtistsPage(
@@ -83,7 +83,10 @@ fun TopArtistsPage(
 
                     CuteListItem(
                         onClick = null,
-                        shape = groupedShape(isFirst = index == 0, isLast = index == artists.lastIndex),
+                        shape = groupedShape(
+                            isFirst = index == 0,
+                            isLast = index == artists.lastIndex
+                        ),
                         backgroundColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f),
                         leadingContent = {
                             Box(
@@ -103,7 +106,10 @@ fun TopArtistsPage(
                         },
                         trailingContent = {
                             Text(
-                                text = stringResource(R.string.listens_count_value, artist.listenCount),
+                                text = stringResource(
+                                    R.string.listens_count_value,
+                                    artist.listenCount
+                                ),
                                 style = MaterialTheme.typography.labelMediumEmphasized.copy(
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 ),

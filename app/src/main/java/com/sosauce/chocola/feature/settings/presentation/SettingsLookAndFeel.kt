@@ -2,42 +2,43 @@
 
 package com.sosauce.chocola.feature.settings.presentation
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
+import com.sosauce.chocola.core.designsystem.CutePaletteStyle
+import com.sosauce.chocola.core.designsystem.CuteTheme
+import com.sosauce.chocola.core.designsystem.theme.anyDarkColorScheme
+import com.sosauce.chocola.core.designsystem.theme.anyLightColorScheme
 import com.sosauce.chocola.core.presentation.preferences.rememberAppTheme
 import com.sosauce.chocola.core.presentation.preferences.rememberPaletteStyle
 import com.sosauce.chocola.core.presentation.preferences.rememberShowShuffleButton
 import com.sosauce.chocola.core.presentation.preferences.rememberUseArtTheme
 import com.sosauce.chocola.core.presentation.preferences.rememberUseSystemFont
-import com.sosauce.chocola.feature.settings.presentation.components.PaletteSelector
-import com.sosauce.chocola.feature.settings.presentation.components.SettingsCard
-import com.sosauce.chocola.feature.settings.presentation.components.SettingsCardHeader
-import com.sosauce.chocola.feature.settings.presentation.components.SettingsCategoryCard
-import com.sosauce.chocola.feature.settings.presentation.components.SettingsSelector
-import com.sosauce.chocola.feature.settings.presentation.components.SettingsSwitch
-import com.sosauce.chocola.feature.settings.presentation.components.SettingsWithTitle
-import com.sosauce.chocola.core.designsystem.theme.anyDarkColorScheme
-import com.sosauce.chocola.core.designsystem.theme.anyLightColorScheme
-import com.sosauce.chocola.core.designsystem.CutePaletteStyle
-import com.sosauce.chocola.core.designsystem.CuteTheme
-import com.sosauce.nekobites.components.LazyRowWithScrollButton
+import com.sosauce.chocola.feature.settings.presentation.components.PaletteTile
+import com.sosauce.nekobites.components.settings.SelectableTile
+import com.sosauce.nekobites.components.settings.SettingsClickable
+import com.sosauce.nekobites.components.settings.SettingsGroup
+import com.sosauce.nekobites.components.settings.SettingsPicker
+import com.sosauce.nekobites.components.settings.SettingsSwitch
 
+/** Look & feel page content (appearance + now playing). Meant to be placed in a SettingsPage. */
 @Composable
-fun SettingsLookAndFeel(
+fun ColumnScope.SettingsLookAndFeel(
     onNavigateToNowPlayingButtons: () -> Unit
 ) {
     var theme by rememberAppTheme()
@@ -49,56 +50,38 @@ fun SettingsLookAndFeel(
     val anyLight = anyLightColorScheme()
     val isSystemDark = isSystemInDarkTheme()
 
-    val themeItems = listOf(
-        ThemeItem(
-            onClick = { theme = CuteTheme.SYSTEM },
-            backgroundColor = if (isSystemDark) anyDark.surfaceContainer else anyLight.surfaceContainer,
-            iconColor = if (isSystemDark) anyDark.onSurface else anyLight.onSurface,
-            text = R.string.system,
-            isSelected = theme == CuteTheme.SYSTEM,
-            icon = R.drawable.system_theme
+    val themes = listOf(
+        ThemeOption(
+            value = CuteTheme.SYSTEM,
+            label = R.string.system,
+            icon = R.drawable.system_theme,
+            background = if (isSystemDark) anyDark.surfaceContainerHighest else anyLight.surfaceContainerHighest,
+            iconColor = if (isSystemDark) anyDark.onSurface else anyLight.onSurface
         ),
-        ThemeItem(
-            onClick = { theme = CuteTheme.DARK },
-            backgroundColor = anyDark.surfaceContainer,
-            iconColor = anyDark.onSurface,
-            text = R.string.dark_mode,
-            isSelected = theme == CuteTheme.DARK,
-            icon = R.drawable.dark_mode
+        ThemeOption(
+            value = CuteTheme.DARK,
+            label = R.string.dark_mode,
+            icon = R.drawable.dark_mode,
+            background = anyDark.surfaceContainerHighest,
+            iconColor = anyDark.onSurface
         ),
-        ThemeItem(
-            onClick = { theme = CuteTheme.LIGHT },
-            backgroundColor = anyLight.surfaceContainer,
-            iconColor = anyLight.onSurface,
-            text = R.string.light_mode,
+        ThemeOption(
+            value = CuteTheme.LIGHT,
+            label = R.string.light_mode,
             icon = R.drawable.light_mode,
-            isSelected = theme == CuteTheme.LIGHT
+            background = anyLight.surfaceContainerHighest,
+            iconColor = anyLight.onSurface
         ),
-        ThemeItem(
-            onClick = { theme = CuteTheme.AMOLED },
-            backgroundColor = Color.Black,
-            iconColor = Color.White,
-            text = R.string.amoled_mode,
+        ThemeOption(
+            value = CuteTheme.AMOLED,
+            label = R.string.amoled_mode,
             icon = R.drawable.amoled,
-            isSelected = theme == CuteTheme.AMOLED
-        )
-    )
-    val fontItems = listOf(
-        FontItem(
-            onClick = { useSystemFont = false },
-            isSelected = !useSystemFont,
-            icon = R.drawable.match_case,
-            text = R.string.default_text
-        ),
-        FontItem(
-            onClick = { useSystemFont = true },
-            isSelected = useSystemFont,
-            icon = R.drawable.system_font,
-            text = R.string.system
+            background = Color.Black,
+            iconColor = Color.White
         )
     )
 
-    val paletteItems = listOf(
+    val palettes = listOf(
         CutePaletteStyle.TONAL_SPOT,
         CutePaletteStyle.EXPRESSIVE,
         CutePaletteStyle.VIBRANT,
@@ -108,111 +91,99 @@ fun SettingsLookAndFeel(
         CutePaletteStyle.FRUIT_SALAD
     )
 
+    SettingsGroup(title = stringResource(R.string.appearance)) {
+        SettingsPicker(title = stringResource(R.string.theme)) {
+            items(themes) { option ->
+                SelectableTile(
+                    selected = theme == option.value,
+                    onClick = { theme = option.value },
+                    label = stringResource(option.label),
+                    containerColor = option.background
+                ) {
+                    Icon(
+                        painter = painterResource(option.icon),
+                        contentDescription = null,
+                        tint = option.iconColor
+                    )
+                }
+            }
+        }
+        SettingsPicker(title = stringResource(R.string.palette)) {
+            items(palettes) { palette ->
+                PaletteTile(
+                    paletteStyle = palette,
+                    selected = palette == paletteStyle,
+                    onClick = { paletteStyle = palette }
+                )
+            }
+        }
+        SettingsPicker(title = stringResource(R.string.font)) {
+            item {
+                FontTile(
+                    selected = !useSystemFont,
+                    onClick = { useSystemFont = false },
+                    icon = R.drawable.match_case,
+                    label = R.string.default_text
+                )
+            }
+            item {
+                FontTile(
+                    selected = useSystemFont,
+                    onClick = { useSystemFont = true },
+                    icon = R.drawable.system_font,
+                    label = R.string.system
+                )
+            }
+        }
+        SettingsSwitch(
+            title = stringResource(R.string.use_art),
+            checked = useMaterialArt,
+            onCheckedChange = { useMaterialArt = !useMaterialArt }
+        )
+        SettingsSwitch(
+            title = stringResource(R.string.show_shuffle_btn),
+            checked = showShuffleButton,
+            onCheckedChange = { showShuffleButton = !showShuffleButton }
+        )
+    }
 
-    Column {
-        SettingsWithTitle(
-            title = R.string.appearance
-        ) {
-            SettingsCard(
-                topDp = 24.dp,
-                bottomDp = 2.dp
-            ) {
-                SettingsCardHeader(R.string.theme)
-                LazyRowWithScrollButton(
-                    items = themeItems
-                ) { theme ->
-                    SettingsSelector(
-                        onClick = theme.onClick,
-                        icon = theme.icon,
-                        text = theme.text,
-                        isSelected = theme.isSelected,
-                        containerColor = theme.backgroundColor,
-                        contentColor = theme.iconColor
-                    )
-                }
-            }
-            SettingsCard(
-                topDp = 2.dp,
-                bottomDp = 2.dp
-            ) {
-                SettingsCardHeader(R.string.palette)
-                LazyRowWithScrollButton(
-                    items = paletteItems
-                ) { palette ->
-                    PaletteSelector(
-                        isSelected = palette == paletteStyle,
-                        onSelectNewPalette = { paletteStyle = palette },
-                        paletteStyle = palette
-                    )
-                }
-            }
-            SettingsCard(
-                topDp = 2.dp,
-                bottomDp = 2.dp
-            ) {
-                SettingsCardHeader(R.string.font)
-                LazyRowWithScrollButton(
-                    items = fontItems
-                ) { font ->
-                    SettingsSelector(
-                        onClick = font.onClick,
-                        icon = font.icon,
-                        text = font.text,
-                        isSelected = font.isSelected
-                    )
-                }
-            }
-            SettingsSwitch(
-                checked = useMaterialArt,
-                onCheckedChange = { useMaterialArt = !useMaterialArt },
-                topDp = 2.dp,
-                bottomDp = 2.dp,
-                text = stringResource(R.string.use_art)
-            )
-            SettingsSwitch(
-                checked = showShuffleButton,
-                onCheckedChange = { showShuffleButton = !showShuffleButton },
-                topDp = 2.dp,
-                bottomDp = 24.dp,
-                text = stringResource(R.string.show_shuffle_btn)
-            )
-        }
-        SettingsWithTitle(
-            title = R.string.now_playing
-        ) {
-            SettingsCategoryCard(
-                icon = R.drawable.unhide,
-                name = stringResource(R.string.now_playing_buttons),
-                description = stringResource(R.string.now_playing_buttons_desc),
-                topDp = 24.dp,
-                bottomDp = 24.dp,
-                onNavigate = onNavigateToNowPlayingButtons
-            )
-            Spacer(Modifier.height(10.dp))
-            SettingsNowPlaying()
-        }
+    SettingsGroup(title = stringResource(R.string.now_playing)) {
+        SettingsClickable(
+            title = stringResource(R.string.now_playing_buttons),
+            description = stringResource(R.string.now_playing_buttons_desc),
+            icon = R.drawable.unhide,
+            onClick = onNavigateToNowPlayingButtons
+        )
+    }
+
+    SettingsNowPlaying()
+}
+
+@Composable
+private fun FontTile(
+    selected: Boolean,
+    onClick: () -> Unit,
+    @DrawableRes icon: Int,
+    @StringRes label: Int
+) {
+    SelectableTile(
+        selected = selected,
+        onClick = onClick,
+        label = stringResource(label)
+    ) {
+        Icon(
+            painter = painterResource(icon),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.size(26.dp)
+        )
     }
 }
 
-data class ThemeItem(
-    val onClick: () -> Unit,
-    val backgroundColor: Color,
-    val iconColor: Color = Color.White,
-    val text: Int,
-    val icon: Int,
-    val isSelected: Boolean
+private data class ThemeOption(
+    val value: String,
+    @param:StringRes val label: Int,
+    @param:DrawableRes val icon: Int,
+    val background: Color,
+    val iconColor: Color
 )
-
-data class FontItem(
-    val onClick: () -> Unit,
-    val icon: Int,
-    val text: Int,
-    //val text: @Composable () -> Unit,
-    val isSelected: Boolean
-)
-
-
-enum class FontStyle {
-    DEFAULT,
-    SYSTEM
-}

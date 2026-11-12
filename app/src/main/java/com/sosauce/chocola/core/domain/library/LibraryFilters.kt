@@ -1,13 +1,13 @@
 package com.sosauce.chocola.core.domain.library
 
+import com.sosauce.chocola.core.domain.model.Album
+import com.sosauce.chocola.core.domain.model.AlbumSort
+import com.sosauce.chocola.core.domain.model.Artist
+import com.sosauce.chocola.core.domain.model.ArtistSort
+import com.sosauce.chocola.core.domain.model.CuteTrack
+import com.sosauce.chocola.core.domain.model.SearchSettings
 import com.sosauce.chocola.core.domain.util.regex
 import com.sosauce.chocola.core.domain.util.thenIf
-import com.sosauce.chocola.core.domain.model.SearchSettings
-import com.sosauce.chocola.core.domain.model.Album
-import com.sosauce.chocola.core.domain.model.Artist
-import com.sosauce.chocola.core.domain.model.CuteTrack
-import com.sosauce.chocola.core.domain.model.AlbumSort
-import com.sosauce.chocola.core.domain.model.ArtistSort
 import java.util.regex.PatternSyntaxException
 
 fun List<CuteTrack>.search(
@@ -101,10 +101,16 @@ fun List<Artist>.ordered(
     }.thenIf(!ascending) { asReversed() }
 }
 
+
 fun List<CuteTrack>.orderAlbumTrackNumber(): List<CuteTrack> {
-    return sortedBy { it.trackNumber }
+    return sortedWith(
+        compareBy(
+            { it.trackNumber == 0 },
+            { it.trackNumber }
+        )
+    )
 }
 
 fun List<CuteTrack>.sortByAlbum(): List<CuteTrack> {
-    return sortedWith(compareBy({it.album}, {it.trackNumber}))
+    return sortedWith(compareBy({ it.album }, { it.trackNumber }))
 }

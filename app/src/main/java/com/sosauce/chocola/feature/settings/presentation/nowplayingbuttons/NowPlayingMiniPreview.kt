@@ -14,7 +14,6 @@ import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
@@ -87,7 +86,8 @@ private fun ScaledToFit(
             constraints.maxWidth / fullSize.width.toFloat(),
             if (constraints.hasBoundedHeight) constraints.maxHeight / fullSize.height.toFloat() else Float.MAX_VALUE
         ).coerceAtMost(1f)
-        val placeable = measurables.single().measure(Constraints.fixed(fullSize.width, fullSize.height))
+        val placeable =
+            measurables.single().measure(Constraints.fixed(fullSize.width, fullSize.height))
         val width = (fullSize.width * scale).roundToInt()
         val height = (fullSize.height * scale).roundToInt()
 

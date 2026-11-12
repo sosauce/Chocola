@@ -55,7 +55,9 @@ class SetupViewModel(
         }
     }
 
-    init { initFolders() }
+    init {
+        initFolders()
+    }
 
     private fun initFolders() {
         viewModelScope.launch {

@@ -15,7 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.emoji2.emojipicker.EmojiPickerView
-import com.sosauce.chocola.core.data.local.Playlist
+import com.sosauce.chocola.feature.playlists.presentation.model.PlaylistUi
 
 /**
  * Unified UI for creating and editing a playlist, not a dialog.
@@ -23,7 +23,7 @@ import com.sosauce.chocola.core.data.local.Playlist
  */
 @Composable
 fun ManagePlaylist(
-    playlist: Playlist?
+    playlist: PlaylistUi?
 ) {
 
     var showEmojiPicker by remember { mutableStateOf(false) }

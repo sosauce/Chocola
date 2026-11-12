@@ -31,8 +31,8 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.sosauce.chocola.R
-import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.core.designsystem.components.PlayPauseButton
+import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.core.presentation.preferences.rememberAodEnableGestures
 import com.sosauce.chocola.core.presentation.preferences.rememberAodShowControls
 import com.sosauce.nekobites.components.Spacer

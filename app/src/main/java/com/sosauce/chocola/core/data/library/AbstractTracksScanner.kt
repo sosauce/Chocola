@@ -6,17 +6,15 @@ import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
-import android.util.Size
 import androidx.compose.ui.util.fastFilter
 import androidx.compose.ui.util.fastForEach
 import androidx.core.net.toUri
-import com.sosauce.chocola.core.domain.model.TracksSettings
+import com.sosauce.chocola.core.data.content.observe
 import com.sosauce.chocola.core.data.datastore.UserPreferences
+import com.sosauce.chocola.core.domain.library.sortByAlbum
 import com.sosauce.chocola.core.domain.model.CuteTrack
 import com.sosauce.chocola.core.domain.model.TrackSort
-import com.sosauce.chocola.core.data.content.observe
-import com.sosauce.chocola.core.domain.library.orderAlbumTrackNumber
-import com.sosauce.chocola.core.domain.library.sortByAlbum
+import com.sosauce.chocola.core.domain.model.TracksSettings
 import com.sosauce.chocola.core.domain.util.combine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,16 +22,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
-import kotlin.collections.chunked
-import kotlin.collections.joinToString
-import kotlin.collections.plus
-import kotlin.collections.toTypedArray
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
@@ -71,7 +63,8 @@ class AbstractTracksScanner(
             context.contentResolver.observe(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI)
         val minTrackDurationFlow = userPreferences.getMinTrackDuration()
         val whitelistedFoldersFlow = userPreferences.getWhitelistedFolders()
-        val tracksSettingsFlow = userPreferences.tracksSettings().debounce(250.milliseconds) // Debounce settings if user changes them quickly (prolly unnecessary)
+        val tracksSettingsFlow = userPreferences.tracksSettings()
+            .debounce(250.milliseconds) // Debounce settings if user changes them quickly (prolly unnecessary)
 
         return combine(
             mediaStoreFlow,
@@ -162,6 +155,7 @@ class AbstractTracksScanner(
         val trackNbColumn = getColumnIndexOrThrow(MediaStore.Audio.Media.TRACK)
         val albumIdColumn = getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID)
         val artistIdColumn = getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST_ID)
+        val durationColumn = getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
 
         while (moveToNext()) {
 
@@ -175,11 +169,11 @@ class AbstractTracksScanner(
             val trackNumber = getInt(trackNbColumn)
             val albumId = getLong(albumIdColumn)
             val artistId = getLong(artistIdColumn)
+            val durationMillis = getLong(durationColumn)
             val uri = ContentUris.withAppendedId(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 id
             )
-
 
 
             val mediaId = id.toString()
@@ -197,7 +191,8 @@ class AbstractTracksScanner(
                     path = filePath,
                     isSaf = false,
                     albumId = albumId,
-                    artistId = artistId
+                    artistId = artistId,
+                    durationMillis = durationMillis
                 )
             )
         }
@@ -249,7 +244,8 @@ class AbstractTracksScanner(
             MediaStore.Audio.Media.DATA,
             MediaStore.Audio.Media.TRACK,
             MediaStore.Audio.Media.ALBUM_ID,
-            MediaStore.Audio.Media.ARTIST_ID
+            MediaStore.Audio.Media.ARTIST_ID,
+            MediaStore.Audio.Media.DURATION
         )
     }
 

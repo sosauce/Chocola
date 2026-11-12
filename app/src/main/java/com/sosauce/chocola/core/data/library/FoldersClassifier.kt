@@ -34,7 +34,11 @@ class FoldersClassifier(
             val existing = paths.toHashSet()
 
             // delete folders from wl/bl that no longer exist
-            val newWl = setting.whitelisted.filterTo(mutableSetOf()) { w -> w in existing || paths.any { it.startsWith("$w/") } }
+            val newWl = setting.whitelisted.filterTo(mutableSetOf()) { w ->
+                w in existing || paths.any {
+                    it.startsWith("$w/")
+                }
+            }
             val newBl = setting.blacklisted.filterTo(mutableSetOf()) { it in existing }
 
 
@@ -51,7 +55,10 @@ class FoldersClassifier(
                 }
             }
 
-            if (setting.whitelisted != newWl || setting.blacklisted != newBl) userPreferences.saveFoldersList(newWl, newBl)
+            if (setting.whitelisted != newWl || setting.blacklisted != newBl) userPreferences.saveFoldersList(
+                newWl,
+                newBl
+            )
         }
     }
 

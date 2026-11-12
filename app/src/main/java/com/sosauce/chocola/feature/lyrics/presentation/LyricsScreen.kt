@@ -17,10 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.sosauce.chocola.R
+import com.sosauce.chocola.core.designsystem.components.PlayPauseButton
 import com.sosauce.chocola.core.domain.player.MusicState
 import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.core.presentation.navigation.Screen
-import com.sosauce.chocola.core.designsystem.components.PlayPauseButton
 import com.sosauce.chocola.core.presentation.util.selfAlignHorizontally
 import com.sosauce.nekobites.animations.AnimatedFab
 

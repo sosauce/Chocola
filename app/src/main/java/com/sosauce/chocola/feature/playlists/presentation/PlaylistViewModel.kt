@@ -3,6 +3,8 @@
 package com.sosauce.chocola.feature.playlists.presentation
 
 import android.app.Application
+import android.os.Environment
+import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.compose.foundation.text.input.TextFieldState
@@ -12,10 +14,14 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.sosauce.chocola.R
 import com.sosauce.chocola.core.data.datastore.UserPreferences
+import com.sosauce.chocola.core.data.library.AbstractTracksScanner
 import com.sosauce.chocola.core.data.local.Playlist
 import com.sosauce.chocola.core.data.local.PlaylistDao
-import com.sosauce.chocola.core.domain.util.combine
 import com.sosauce.chocola.core.data.local.ordered
+import com.sosauce.chocola.core.domain.util.combine
+import com.sosauce.chocola.feature.playlists.presentation.model.PlaylistUi
+import com.sosauce.chocola.feature.playlists.presentation.model.toEntity
+import com.sosauce.chocola.feature.playlists.presentation.model.toUi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,12 +31,14 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import kotlin.time.Duration.Companion.milliseconds
 
 class PlaylistViewModel(
     private val application: Application,
     private val dao: PlaylistDao,
-    private val userPreferences: UserPreferences
+    private val userPreferences: UserPreferences,
+    private val abstractTracksScanner: AbstractTracksScanner
 ) : AndroidViewModel(application) {
 
     val textFieldState = TextFieldState()
@@ -44,16 +52,18 @@ class PlaylistViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             combine(
                 dao.getPlaylists(),
+                abstractTracksScanner.latestTracks(),
                 userPreferences.getPlaylistsSort,
                 userPreferences.getRegexFilter,
                 userPreferences.getMatchCaseFilter,
                 userPreferences.sortPlaylistsAscending,
                 userQuery
-            ) { playlists, sort, regex, matchCase, ascending, query ->
+            ) { playlists, tracks, sort, regex, matchCase, ascending, query ->
 
                 val sortedPlaylists =
                     playlists.ordered(sort, regex, matchCase, ascending, query.toString())
                         .sortedByDescending { it.isFavorite }
+                        .map { it.toUi(tracks) }
                 val (favoritePlaylists, nonFavoritePlaylists) = sortedPlaylists.partition { it.isFavorite }
 
                 PlaylistsState(
@@ -73,21 +83,29 @@ class PlaylistViewModel(
             is PlaylistActions.SetFavorite -> viewModelScope.launch(Dispatchers.IO) {
                 dao.setFavorite(action.playlistId, action.isFavorite)
             }
+
             is PlaylistActions.DeletePlaylists -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    dao.deletePlaylist(action.playlists)
+                    dao.deletePlaylist(action.playlists.map { it.toEntity() })
                 }
             }
 
             is PlaylistActions.CreatePlaylist -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    dao.upsertPlaylist(action.playlist)
+                    dao.upsertPlaylist(action.playlist.toEntity())
                 }
             }
 
             is PlaylistActions.UpsertPlaylist -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    dao.upsertPlaylist(action.playlist)
+                    dao.upsertPlaylist(action.playlist.toEntity())
+                }
+            }
+
+            is PlaylistActions.AddTracksToPlaylist -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    val playlist = action.playlist.toEntity()
+                    dao.upsertPlaylist(playlist.copy(musics = playlist.musics + action.mediaIds))
                 }
             }
 
@@ -96,11 +114,16 @@ class PlaylistViewModel(
                 val tracksFromFile = mutableSetOf<String>()
 
                 viewModelScope.launch(Dispatchers.IO) {
+                    val playlistFolder = File(
+                        Environment.getExternalStorageDirectory(),
+                        DocumentsContract.getDocumentId(action.uri).substringAfter(':').substringBeforeLast('/', "")
+                    )
                     application.contentResolver.openInputStream(action.uri)?.bufferedReader()
                         ?.useLines { lines ->
                             for (line in lines) {
-                                if (!line.startsWith('/')) continue
-                                tracksFromFile.add(getMediaIdFromFilePath(line))
+                                if (line.isBlank() || line.startsWith('#')) continue
+                                val path = if (line.startsWith('/')) line else playlistFolder.resolve(line).normalize().path
+                                tracksFromFile.add(getMediaIdFromFilePath(path))
                             }
 
                         }
@@ -194,7 +217,7 @@ class PlaylistViewModel(
 @Stable
 data class PlaylistsState(
     val isLoading: Boolean = false,
-    val playlists: List<Playlist> = emptyList(),
-    val favoritePlaylists: List<Playlist> = emptyList(),
-    val nonFavoritePlaylists: List<Playlist> = emptyList()
+    val playlists: List<PlaylistUi> = emptyList(),
+    val favoritePlaylists: List<PlaylistUi> = emptyList(),
+    val nonFavoritePlaylists: List<PlaylistUi> = emptyList()
 )

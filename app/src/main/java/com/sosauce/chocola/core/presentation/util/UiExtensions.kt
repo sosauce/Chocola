@@ -14,7 +14,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.runtime.Composable
@@ -104,7 +103,6 @@ fun rememberFocusRequester(): FocusRequester {
 }
 
 
-
 val barsContentTransform = ContentTransform(
     targetContentEnter = slideInVertically(
         spring(
@@ -151,4 +149,26 @@ fun Int.toLyricDuration(): String {
         val millis = nanoseconds / 1_000_000
         String.format(Locale.getDefault(), "%d:%02d.%03d", minutes, seconds, millis)
     }
+}
+
+fun Long.millisToDuration(): String {
+
+    if (this == 0L) return "No time!"
+
+    val underAMinute = this < 60_000
+
+    if (underAMinute) {
+        return String.format(Locale.getDefault(), "%ds", this / 1000)
+    } else {
+        val totalMinutes = this / (1000 * 60)
+        val hours = totalMinutes / 60
+        val minutes = totalMinutes % 60
+
+        return if (hours > 0) {
+            String.format(Locale.getDefault(), "%dh%02d", hours, minutes)
+        } else {
+            String.format(Locale.getDefault(), "%dm", minutes)
+        }
+    }
+
 }

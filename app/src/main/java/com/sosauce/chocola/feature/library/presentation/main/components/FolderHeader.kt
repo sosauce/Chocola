@@ -26,10 +26,10 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
+import com.sosauce.chocola.core.designsystem.ICON_TEXT_SPACING
 import com.sosauce.chocola.core.domain.player.PlaySource
 import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.feature.library.presentation.main.Category
-import com.sosauce.chocola.core.designsystem.ICON_TEXT_SPACING
 
 @Composable
 fun FolderHeader(

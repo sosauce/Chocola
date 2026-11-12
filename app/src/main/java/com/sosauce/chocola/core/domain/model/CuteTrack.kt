@@ -17,7 +17,8 @@ data class CuteTrack(
     val isSaf: Boolean = false,
     val albumId: Long = -1,
     val isFavorite: Boolean = false,
-    val artistId: Long = -1
+    val artistId: Long = -1,
+    val durationMillis: Long = 0
 ) {
     val uri
         get() = uriString.toUri()

@@ -4,8 +4,8 @@ import android.graphics.Bitmap
 import com.sosauce.chocola.feature.bakery.presentation.model.AllTimeStatsUi
 import com.sosauce.chocola.feature.bakery.presentation.model.PeriodCardUi
 import com.sosauce.chocola.feature.bakery.presentation.model.PeriodId
-import com.sosauce.chocola.feature.bakery.presentation.model.StreakUi
 import com.sosauce.chocola.feature.bakery.presentation.model.StoryPageUi
+import com.sosauce.chocola.feature.bakery.presentation.model.StreakUi
 import kotlinx.coroutines.flow.Flow
 
 interface BakeryRepository {

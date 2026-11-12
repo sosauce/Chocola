@@ -50,8 +50,8 @@ import androidx.compose.ui.util.fastMap
 import coil3.compose.AsyncImage
 import com.sosauce.chocola.R
 import com.sosauce.chocola.core.domain.model.CuteTrack
-import com.sosauce.chocola.core.data.local.Playlist
 import com.sosauce.chocola.feature.playlists.presentation.PlaylistActions
+import com.sosauce.chocola.feature.playlists.presentation.model.PlaylistUi
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 import sv.lib.squircleshape.CornerSmoothing
@@ -209,7 +209,7 @@ fun DeletionDialog(
 
 @Composable
 fun PlaylistDeletionDialog(
-    playlists: List<Playlist>,
+    playlists: List<PlaylistUi>,
     onDismissRequest: () -> Unit,
     onHandlePlaylistAction: (PlaylistActions) -> Unit
 ) {
@@ -285,7 +285,7 @@ fun PlaylistDeletionDialog(
                                     .background(MaterialTheme.colorScheme.surfaceContainerHigh),
                                 contentAlignment = Alignment.Center
                             ) {
-                                if (playlist.emoji.isNotEmpty()) {
+                                if (!playlist.emoji.isNullOrEmpty()) {
                                     Text(
                                         text = playlist.emoji,
                                         fontSize = 25.sp
@@ -306,8 +306,8 @@ fun PlaylistDeletionDialog(
                                 Text(
                                     text = pluralStringResource(
                                         R.plurals.tracks_plural,
-                                        playlist.musics.size,
-                                        playlist.musics.size
+                                        playlist.tracks.size,
+                                        playlist.tracks.size
                                     ),
                                     modifier = Modifier.basicMarquee()
                                 )

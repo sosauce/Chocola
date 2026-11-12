@@ -8,13 +8,13 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.util.fastFilter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sosauce.chocola.core.data.library.AbstractTracksScanner
 import com.sosauce.chocola.core.data.datastore.UserPreferences
+import com.sosauce.chocola.core.data.library.AbstractTracksScanner
 import com.sosauce.chocola.core.data.local.FavoritesDao
+import com.sosauce.chocola.core.domain.library.search
 import com.sosauce.chocola.core.domain.model.Album
 import com.sosauce.chocola.core.domain.model.Artist
 import com.sosauce.chocola.core.domain.model.CuteTrack
-import com.sosauce.chocola.core.domain.library.search
 import com.sosauce.chocola.feature.library.presentation.util.ImageUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -38,15 +38,19 @@ class ArtistDetailsViewModel(
 
 
     val state = combine(
-        combine(abstractTracksScanner.latestTracks(), favoritesDao.observeArtistIds()) { tracks, ids -> tracks to ids },
+        combine(
+            abstractTracksScanner.latestTracks(),
+            favoritesDao.observeArtistIds()
+        ) { tracks, ids -> tracks to ids },
         userPreferences.searchSettings(),
         userPreferences.getHideSingleAlbums(),
         searchQuery
     ) { (tracks, favoriteIds), settings, hideSingleAlbums, query ->
-        val searched = tracks
+        val filtered = tracks
             .fastFilter { it.artist == artistName }
+
+        val searched = filtered
             .search(query.toString(), settings)
-        val artistId = searched.firstOrNull()?.artistId ?: tracks.firstOrNull { it.artist == artistName }?.artistId ?: -1L
 
         var albums = searched
             .groupBy { it.album }
@@ -54,6 +58,7 @@ class ArtistDetailsViewModel(
                 val lastTrack = tracks.last()
 
                 Album(
+                    id = lastTrack.albumId,
                     name = albumName,
                     artist = artistName,
                     tracks = tracks,
@@ -63,6 +68,7 @@ class ArtistDetailsViewModel(
         if (hideSingleAlbums) {
             albums = albums.filter { it.tracks.size > 1 }
         }
+        val artistId = filtered.last().artistId
 
 
 
@@ -71,8 +77,7 @@ class ArtistDetailsViewModel(
             artist = Artist(
                 name = artistName,
                 id = artistId,
-                isFavorite = artistId in favoriteIds,
-                albumId = searched.firstOrNull()?.albumId ?: 0L
+                isFavorite = artistId in favoriteIds
             ),
             tracks = searched,
             albums = albums

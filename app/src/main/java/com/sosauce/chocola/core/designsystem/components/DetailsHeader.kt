@@ -1,295 +1,493 @@
-@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalLayoutApi::class)
 
 package com.sosauce.chocola.core.designsystem.components
 
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonGroup
+import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.ButtonShapes
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
-import androidx.compose.material3.toShape
+import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.ToggleButtonColors
+import androidx.compose.material3.ToggleButtonSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.skydoves.cloudy.cloudy
 import com.sosauce.chocola.R
-import com.sosauce.nekobites.components.Spacer
+import com.sosauce.chocola.core.presentation.preferences.rememberIsLandscape
+import com.sosauce.nekobites.helpers.rememberInteractionSource
 
-private val PosterHeight = 235.dp
-private val IconSize = 200.dp
-private val CardOverlap = 25.dp
-private val SeamY = PosterHeight - CardOverlap
+private val ArtworkSize = 190.dp
+private val LandscapeArtworkSize = 148.dp
 
 @Composable
 fun DetailsHeader(
-    title: String,
-    subtitle: String?,
-    trackCount: Int,
-    isFavorite: Boolean,
-    onShuffle: () -> Unit,
-    onPlay: () -> Unit,
-    onToggleFavorite: () -> Unit,
-    poster: @Composable BoxScope.() -> Unit,
-    artwork: @Composable BoxScope.() -> Unit,
+    title: @Composable () -> Unit,
+    artwork: @Composable (BoxScope.() -> Unit)?,
     modifier: Modifier = Modifier,
-    artworkColor: Color = MaterialTheme.colorScheme.primary,
-    titleModifier: Modifier = Modifier
+    subtitle: (@Composable () -> Unit)? = null,
+    info: (@Composable () -> Unit)? = null,
+    actions: (@Composable RowScope.() -> Unit)? = null,
+    backdrop: (@Composable BoxScope.() -> Unit)? = null,
+    artworkShape: Shape = RoundedCornerShape(32.dp),
+    artworkContainerColor: Color = MaterialTheme.colorScheme.surfaceContainerHigh,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainerHighest
 ) {
-    val cookie9 = MaterialShapes.Cookie9Sided.toShape()
-    val surface = MaterialTheme.colorScheme.surface
+    val isLandscape = rememberIsLandscape()
+    val frame: @Composable (Dp) -> Unit = { size ->
+        artwork?.let {
+            DetailsHeaderArtworkFrame(
+                size = size,
+                shape = artworkShape,
+                containerColor = artworkContainerColor,
+                content = it
+            )
+        }
+    }
 
     Box(
         modifier = modifier
-            .padding(bottom = 5.dp)
-            .fillMaxWidth(),
-        contentAlignment = Alignment.Center
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(bottomStart = 48.dp, bottomEnd = 48.dp))
+            .background(containerColor)
     ) {
-        // poster
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(PosterHeight + 20.dp) // keep the 20.dp pls
-                .align(Alignment.TopCenter)
-        ) {
-            poster()
-        }
+        backdrop?.let { Box(Modifier.matchParentSize(), content = it) }
 
-        Surface(
-            shape = RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp),
-            color = MaterialTheme.colorScheme.surface,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.TopCenter)
-                .padding(top = SeamY)
-        ) {
+        if (isLandscape) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal))
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
+            ) {
+                frame(LandscapeArtworkSize)
+                Column(Modifier.weight(1f)) {
+                    DetailsHeaderTitles(
+                        title = title,
+                        subtitle = subtitle,
+                        alignment = Alignment.CenterStart,
+                        textAlign = TextAlign.Start
+                    )
+                    info?.let {
+                        Spacer(Modifier.height(12.dp))
+                        DetailsHeaderInfo(
+                            arrangement = Arrangement.spacedBy(6.dp),
+                            content = it
+                        )
+                    }
+                    actions?.let {
+                        Spacer(Modifier.height(16.dp))
+                        DetailsHeaderActions(it)
+                    }
+                }
+            }
+        } else {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = IconSize / 2 + 12.dp)
-                    .padding(horizontal = 10.dp)
+                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal))
+                    .padding(start = 15.dp, end = 15.dp, bottom = 15.dp)
             ) {
-                Text(
-                    text = title,
-                    modifier = titleModifier.basicMarquee(),
-                    style = MaterialTheme.typography.headlineLargeEmphasized
+                frame(ArtworkSize)
+                Spacer(Modifier.height(10.dp))
+                DetailsHeaderTitles(
+                    title = title,
+                    subtitle = subtitle,
+                    alignment = Alignment.Center,
+                    textAlign = TextAlign.Center
                 )
-                if (subtitle != null) {
-                    Text(
-                        text = subtitle,
-                        style = MaterialTheme.typography.bodyLargeEmphasized.copy(
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    )
+                info?.let {
+                    Spacer(Modifier.height(14.dp))
+                    DetailsHeaderInfo(Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally), it)
                 }
-                Spacer(5.dp)
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(0.85f),
-                    horizontalArrangement = Arrangement.spacedBy(5.dp)
-                ) {
-                    FilledTonalButton(
-                        onClick = onShuffle,
-                        shapes = ButtonDefaults.shapes(),
-                        modifier = Modifier
-                            .weight(.6f)
-                            .size(
-                                IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide)
-                            )
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.shuffle),
-                            contentDescription = stringResource(R.string.shuffle)
-                        )
-                    }
-
-                    Button(
-                        onClick = onPlay,
-                        shapes = ButtonDefaults.shapes(),
-                        modifier = Modifier
-                            .weight(1.5f)
-                            .size(
-                                IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide)
-                            )
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.widget_play),
-                            contentDescription = null
-                        )
-                        Spacer(5.dp)
-                        Text(stringResource(R.string.play))
-                    }
-
-                    FilledTonalButton(
-                        onClick = onToggleFavorite,
-                        shapes = ButtonDefaults.shapes(),
-                        modifier = Modifier
-                            .weight(.6f)
-                            .size(
-                                IconButtonDefaults.mediumContainerSize(IconButtonDefaults.IconButtonWidthOption.Wide)
-                            )
-                    ) {
-                        Icon(
-                            painter = painterResource(
-                                if (isFavorite) R.drawable.favorite_filled else R.drawable.favorite
-                            ),
-                            contentDescription = stringResource(
-                                if (isFavorite) R.string.remove_favorite else R.string.add_favorite
-                            )
-                        )
-                    }
-                }
-            }
-        }
-
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(top = SeamY - IconSize / 2)
-        ) {
-            Box(
-                modifier = Modifier
-                    .drawWithCache {
-                        val path = cookie9.createOutline(size, layoutDirection, this)
-                            .let { outline ->
-                                Path().apply {
-                                    when (outline) {
-                                        is Outline.Generic -> addPath(outline.path)
-                                        is Outline.Rounded -> addRoundRect(outline.roundRect)
-                                        is Outline.Rectangle -> addRect(outline.rect)
-                                    }
-                                }
-                            }
-                        onDrawBehind {
-                            withTransform(
-                                {
-                                    scale(
-                                        scaleX = 1.08f,
-                                        scaleY = 1.08f,
-                                        pivot = center
-                                    )
-                                }
-                            ) {
-                                drawPath(
-                                    path = path,
-                                    color = surface
-                                )
-                            }
-                        }
-                    }
-                    .size(IconSize)
-                    .clip(cookie9)
-                    .background(
-                        color = artworkColor,
-                        shape = cookie9
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                artwork()
-            }
-
-            Row(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .background(
-                        color = MaterialTheme.colorScheme.tertiaryContainer,
-                        shape = RoundedCornerShape(50)
-                    )
-                    .padding(5.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onTertiaryContainer) {
-                    Icon(
-                        painter = painterResource(R.drawable.music_note),
-                        contentDescription = null
-                    )
-                    Text(text = trackCount.toString())
+                actions?.let {
+                    Spacer(Modifier.height(14.dp))
+                    DetailsHeaderActions(it)
                 }
             }
         }
     }
 }
 
-/**
- * Blurred artwork used as the poster behind a [DetailsHeader].
- */
 @Composable
-fun DetailsHeaderPoster(
-    model: Any?,
-    modifier: Modifier = Modifier,
-    contentDescription: String? = null
+private fun DetailsHeaderArtworkFrame(
+    size: Dp,
+    shape: Shape,
+    containerColor: Color,
+    content: @Composable BoxScope.() -> Unit
 ) {
+    var revealed by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(Unit) { revealed = true }
+    val progress by animateFloatAsState(
+        targetValue = if (revealed) 1f else 0f,
+        animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+        label = "artworkReveal"
+    )
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surfaceContainer)
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .size(size)
+            .graphicsLayer {
+                val scale = 0.92f + 0.08f * progress
+                scaleX = scale
+                scaleY = scale
+            }
+            .shadow(elevation = 12.dp, shape = shape)
+            .clip(shape)
+            .background(containerColor),
+        content = content
+    )
+}
+
+@Composable
+private fun DetailsHeaderTitles(
+    title: @Composable () -> Unit,
+    subtitle: (@Composable () -> Unit)?,
+    alignment: Alignment,
+    textAlign: TextAlign
+) {
+    val colors = MaterialTheme.colorScheme
+
+    Box(
+        contentAlignment = alignment,
+        modifier = Modifier.fillMaxWidth()
     ) {
-        AsyncImage(
-            model = model,
-            contentDescription = contentDescription,
-            modifier = Modifier
+        CompositionLocalProvider(LocalContentColor provides colors.onSurface) {
+            ProvideTextStyle(
+                value = MaterialTheme.typography.displaySmallEmphasized.copy(textAlign = textAlign),
+                content = title
+            )
+        }
+    }
+    subtitle?.let {
+        Spacer(Modifier.height(4.dp))
+        Box(
+            contentAlignment = alignment,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            CompositionLocalProvider(LocalContentColor provides colors.onSurfaceVariant) {
+                ProvideTextStyle(
+                    value = MaterialTheme.typography.headlineSmallEmphasized.copy(textAlign = textAlign),
+                    content = it
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DetailsHeaderInfo(
+    arrangement: Arrangement.Horizontal,
+    content: @Composable () -> Unit
+) {
+    FlowRow(
+        horizontalArrangement = arrangement,
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) { content() }
+}
+
+@Composable
+private fun DetailsHeaderActions(content: @Composable RowScope.() -> Unit) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(ButtonDefaults.MediumContainerHeight),
+        content = content
+    )
+}
+
+object DetailsHeaderDefaults {
+
+    @Composable
+    fun Title(
+        text: String,
+        modifier: Modifier = Modifier
+    ) {
+        Text(
+            text = text,
+            maxLines = 1,
+            modifier = modifier.basicMarquee()
+        )
+    }
+
+    @Composable
+    fun Subtitle(
+        text: String,
+        modifier: Modifier = Modifier
+    ) {
+        Text(
+            text = text,
+            maxLines = 1,
+            modifier = modifier.basicMarquee()
+        )
+    }
+
+    @Composable
+    fun InfoChip(
+        text: String,
+        modifier: Modifier = Modifier,
+        @DrawableRes icon: Int? = null,
+        containerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
+        contentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer
+    ) {
+        Surface(
+            shape = CircleShape,
+            color = containerColor,
+            contentColor = contentColor,
+            modifier = modifier
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(
+                    start = if (icon != null) 10.dp else 14.dp,
+                    end = 14.dp,
+                    top = 6.dp,
+                    bottom = 6.dp
+                )
+            ) {
+                icon?.let {
+                    Icon(
+                        painter = painterResource(it),
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(Modifier.width(6.dp))
+                }
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.labelLargeEmphasized,
+                    maxLines = 1
+                )
+            }
+        }
+    }
+
+    @Composable
+    fun Backdrop(
+        model: Any?,
+        containerColor: Color = MaterialTheme.colorScheme.surfaceContainerHighest
+    ) {
+        Box(Modifier.fillMaxSize()) {
+            AsyncImage(
+                model = model,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer { alpha = 0.55f }
+                    .cloudy(17)
+            )
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(Color.Transparent, containerColor)
+                        )
+                    )
+            )
+        }
+    }
+
+    @Composable
+    fun GradientBackdrop(
+        top: Color = MaterialTheme.colorScheme.primaryContainer,
+        bottom: Color = MaterialTheme.colorScheme.surfaceContainerHighest
+    ) {
+        Box(
+            Modifier
                 .fillMaxSize()
-                .cloudy(15),
-            contentScale = ContentScale.Crop
+                .background(Brush.verticalGradient(colors = listOf(top, bottom)))
         )
     }
 }
 
-/**
- * Artwork shown inside the cookie badge of a [DetailsHeader].
- */
 @Composable
-fun DetailsHeaderArtwork(
-    model: Any?,
-    @DrawableRes placeholderIcon: Int? = null,
-    modifier: Modifier = Modifier,
-    contentDescription: String? = null
+fun DetailsHeaderPlaybackActions(
+    isFavorite: Boolean,
+    onShuffle: () -> Unit,
+    onPlay: () -> Unit,
+    onToggleFavorite: () -> Unit
 ) {
-    if (placeholderIcon != null) {
-        Icon(
-            painter = painterResource(placeholderIcon),
-            contentDescription = null,
-            tint = contentColorFor(MaterialTheme.colorScheme.primary),
-            modifier = modifier.fillMaxSize(0.5f)
+    val colors = MaterialTheme.colorScheme
+    val iconSize = ButtonDefaults.MediumIconSize
+    val interactionSources = List(3) { rememberInteractionSource() }
+
+    ButtonGroup(
+        overflowIndicator = {},
+        horizontalArrangement = Arrangement.spacedBy(2.dp)
+    ) {
+        customItem(
+            buttonGroupContent = {
+                FilledTonalButton(
+                    onClick = onShuffle,
+                    shapes = ButtonShapes(
+                        shape = ButtonGroupDefaults.connectedLeadingButtonShape,
+                        pressedShape = ButtonGroupDefaults.connectedLeadingButtonPressShape
+                    ),
+                    interactionSource = interactionSources[0],
+                    modifier = Modifier
+                        .animateWidth(interactionSource = interactionSources[0])
+                        .weight(1f)
+                        .fillMaxHeight()
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.shuffle),
+                        contentDescription = stringResource(R.string.shuffle),
+                        modifier = Modifier.size(iconSize)
+                    )
+                }
+            },
+            menuContent = {}
+        )
+
+        customItem(
+            buttonGroupContent = {
+                Button(
+                    onClick = onPlay,
+                    shapes = ButtonShapes(
+                        shape = ShapeDefaults.Small,
+                        pressedShape = ButtonGroupDefaults.connectedMiddleButtonPressShape
+                    ),
+                    interactionSource = interactionSources[1],
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    modifier = Modifier
+                        .animateWidth(interactionSources[1])
+                        .weight(2f)
+                        .fillMaxHeight()
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.widget_play),
+                        contentDescription = null,
+                        modifier = Modifier.size(iconSize)
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        text = stringResource(R.string.play),
+                        style = MaterialTheme.typography.titleMediumEmphasized
+                    )
+                }
+            },
+            menuContent = {}
+        )
+        customItem(
+            buttonGroupContent = {
+                ToggleButton(
+                    checked = isFavorite,
+                    onCheckedChange = { onToggleFavorite() },
+                    buttonSize = ToggleButtonSize.Medium,
+                    shapes = ButtonGroupDefaults.connectedTrailingButtonShapes(),
+                    colors = ToggleButtonColors(
+                        containerColor = colors.secondaryContainer,
+                        contentColor = colors.onSecondaryContainer,
+                        disabledContainerColor = colors.onSurface.copy(alpha = 0.1f),
+                        disabledContentColor = colors.onSurface.copy(alpha = 0.38f),
+                        checkedContainerColor = colors.tertiary,
+                        checkedContentColor = colors.onTertiary
+                    ),
+                    interactionSource = interactionSources[2],
+                    modifier = Modifier
+                        .animateWidth(interactionSources[2])
+                        .weight(1f)
+                        .fillMaxHeight()
+                ) {
+                    Icon(
+                        painter = painterResource(
+                            if (isFavorite) R.drawable.favorite_filled else R.drawable.favorite
+                        ),
+                        contentDescription = stringResource(
+                            if (isFavorite) R.string.remove_favorite else R.string.add_favorite
+                        ),
+                        modifier = Modifier.size(iconSize)
+                    )
+                }
+            },
+            menuContent = {}
         )
     }
+}
+
+@Composable
+fun BoxScope.DetailsHeaderArtwork(
+    model: Any?,
+    @DrawableRes placeholderIcon: Int,
+    contentDescription: String? = null
+) {
+    Icon(
+        painter = painterResource(placeholderIcon),
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier
+            .align(Alignment.Center)
+            .fillMaxSize(0.36f)
+    )
     AsyncImage(
         model = model,
         contentDescription = contentDescription,
-        modifier = modifier.fillMaxSize(),
-        contentScale = ContentScale.Crop
+        contentScale = ContentScale.Crop,
+        modifier = Modifier.fillMaxSize()
     )
 }

@@ -2,99 +2,55 @@ package com.sosauce.chocola.feature.library.presentation.main
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.indication
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationItemIconPosition
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ShortNavigationBar
-import androidx.compose.material3.ShortNavigationBarArrangement
-import androidx.compose.material3.ShortNavigationBarDefaults
-import androidx.compose.material3.ShortNavigationBarItem
 import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import com.sosauce.chocola.R
+import com.sosauce.chocola.core.designsystem.components.NoResult
+import com.sosauce.chocola.core.designsystem.components.SelectOverlayItem
 import com.sosauce.chocola.core.domain.model.CuteTrack
 import com.sosauce.chocola.core.domain.player.MusicState
 import com.sosauce.chocola.core.domain.player.PlaySource
 import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.core.presentation.components.CuteSearchbar
 import com.sosauce.chocola.core.presentation.components.CuteSearchbarDefaults
-import com.sosauce.chocola.core.designsystem.components.NoResult
-import com.sosauce.chocola.core.designsystem.components.SelectOverlayItem
+import com.sosauce.chocola.core.presentation.components.TracksSelectedBar
 import com.sosauce.chocola.core.presentation.components.trackItems
 import com.sosauce.chocola.core.presentation.components.trackSelectActions
-import com.sosauce.chocola.core.designsystem.components.PlayPauseButton
-import com.sosauce.chocola.core.presentation.components.TracksSelectedBar
 import com.sosauce.chocola.core.presentation.navigation.Screen
-import com.sosauce.chocola.feature.library.presentation.main.components.FolderHeader
 import com.sosauce.chocola.core.presentation.util.barsContentTransform
-import com.sosauce.nekobites.animations.bouncySpec
 import com.sosauce.chocola.core.presentation.util.selfAlignHorizontally
+import com.sosauce.chocola.feature.library.presentation.main.components.FavoriteTrackItem
+import com.sosauce.chocola.feature.library.presentation.main.components.FolderHeader
 import com.sosauce.nekobites.animations.AnimatedFab
+import com.sosauce.nekobites.animations.bouncySpec
 import com.sosauce.nekobites.components.LoadingBox
 import com.sosauce.nekobites.components.NoXFound
 import com.sosauce.nekobites.components.Spacer
 import com.sosauce.sweetselect.rememberSweetSelectState
-import kotlinx.coroutines.FlowPreview
-import com.sosauce.chocola.feature.library.presentation.main.components.FavoriteTrackItem
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.layout.PaddingValues
 
 // https://medium.com/@gregkorossy/hacking-lazylist-in-android-jetpack-compose-38afacb3df67
 @Composable
@@ -218,7 +174,11 @@ fun SharedTransitionScope.MainScreen(
                                             }
                                         },
                                         onUnfavorite = {
-                                            track.mediaId.toLongOrNull()?.let { onHandlePlayerAction(PlayerActions.ToggleFavorite(it)) }
+                                            track.mediaId.toLongOrNull()?.let {
+                                                onHandlePlayerAction(
+                                                    PlayerActions.ToggleFavorite(it)
+                                                )
+                                            }
                                         }
                                     )
                                 }

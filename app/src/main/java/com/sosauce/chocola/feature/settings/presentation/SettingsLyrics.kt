@@ -2,104 +2,74 @@
 
 package com.sosauce.chocola.feature.settings.presentation
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
-import com.sosauce.chocola.feature.settings.presentation.components.SettingsCard
+import com.sosauce.chocola.core.designsystem.LyricsAlignment
 import com.sosauce.chocola.core.presentation.preferences.rememberArtLyrics
 import com.sosauce.chocola.core.presentation.preferences.rememberLyricsAlignment
 import com.sosauce.chocola.core.presentation.preferences.rememberLyricsFontSize
-import com.sosauce.chocola.feature.settings.presentation.components.SettingsInput
-import com.sosauce.chocola.feature.settings.presentation.components.SettingsSelector
-import com.sosauce.chocola.feature.settings.presentation.components.SettingsSwitch
-import com.sosauce.chocola.feature.settings.presentation.components.SettingsWithTitle
-import com.sosauce.chocola.core.designsystem.LyricsAlignment
-import com.sosauce.nekobites.components.LazyRowWithScrollButton
+import com.sosauce.nekobites.components.settings.SelectableTile
+import com.sosauce.nekobites.components.settings.SettingsGroup
+import com.sosauce.nekobites.components.settings.SettingsPicker
+import com.sosauce.nekobites.components.settings.SettingsStepper
+import com.sosauce.nekobites.components.settings.SettingsSwitch
 
 @Composable
-fun SettingsLyrics() {
-
+fun ColumnScope.SettingsLyrics() {
     var lyricsAlignment by rememberLyricsAlignment()
     var lyricsFontSize by rememberLyricsFontSize()
     var artLyrics by rememberArtLyrics()
-    val alignmentItems = listOf(
-        AlignmentItem(
-            onClick = { lyricsAlignment = LyricsAlignment.START },
-            isSelected = lyricsAlignment == LyricsAlignment.START,
-            icon = R.drawable.align_left,
-            text = R.string.start
-        ),
-        AlignmentItem(
-            onClick = { lyricsAlignment = LyricsAlignment.CENTERED },
-            isSelected = lyricsAlignment == LyricsAlignment.CENTERED,
-            icon = R.drawable.align_center,
-            text = R.string.center
-        ),
-        AlignmentItem(
-            onClick = { lyricsAlignment = LyricsAlignment.END },
-            isSelected = lyricsAlignment == LyricsAlignment.END,
-            icon = R.drawable.align_right,
-            text = R.string.end
-        )
+
+    val alignments = listOf(
+        AlignmentOption(LyricsAlignment.START, R.drawable.align_left, R.string.start),
+        AlignmentOption(LyricsAlignment.CENTERED, R.drawable.align_center, R.string.center),
+        AlignmentOption(LyricsAlignment.END, R.drawable.align_right, R.string.end)
     )
 
-    Column {
-        SettingsWithTitle(
-            title = R.string.lyrics
-        ) {
-
-
-            SettingsCard(
-                topDp = 24.dp,
-                bottomDp = 2.dp
-            ) {
-                Column {
-                    LazyRowWithScrollButton(
-                        items = alignmentItems
-                    ) { alignment ->
-                        SettingsSelector(
-                            onClick = alignment.onClick,
-                            icon = alignment.icon,
-                            text = alignment.text,
-                            isSelected = alignment.isSelected
-                        )
-                    }
+    SettingsGroup {
+        SettingsPicker(title = stringResource(R.string.settings_alignment)) {
+            items(alignments) { option ->
+                SelectableTile(
+                    selected = lyricsAlignment == option.value,
+                    onClick = { lyricsAlignment = option.value },
+                    label = stringResource(option.label)
+                ) {
+                    Icon(
+                        painter = painterResource(option.icon),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
                 }
             }
-
-            SettingsInput(
-                value = lyricsFontSize,
-                minValue = 20,
-                maxValue = 30,
-                topDp = 2.dp,
-                bottomDp = 2.dp,
-                text = R.string.font_size,
-                onNewValue = { lyricsFontSize = it }
-            )
-            SettingsSwitch(
-                checked = artLyrics,
-                onCheckedChange = { artLyrics = !artLyrics },
-                topDp = 2.dp,
-                bottomDp = 24.dp,
-                text = stringResource(R.string.art_lyrics),
-                optionalDescription = R.string.art_lyrics_desc
-            )
         }
+        SettingsStepper(
+            title = stringResource(R.string.font_size),
+            value = lyricsFontSize,
+            range = 20..30,
+            onValueChange = { lyricsFontSize = it }
+        )
+        SettingsSwitch(
+            title = stringResource(R.string.art_lyrics),
+            description = stringResource(R.string.art_lyrics_desc),
+            checked = artLyrics,
+            onCheckedChange = { artLyrics = !artLyrics }
+        )
     }
 }
 
-data class AlignmentItem(
-    val onClick: () -> Unit,
-    val isSelected: Boolean,
-    val icon: Int,
-    val text: Int
+private data class AlignmentOption(
+    val value: String,
+    @param:DrawableRes val icon: Int,
+    @param:StringRes val label: Int
 )

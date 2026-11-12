@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
+
 package com.sosauce.chocola.feature.settings.presentation.nowplayingbuttons
 
 import android.content.res.Configuration
@@ -5,21 +7,23 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,7 +33,8 @@ import com.sosauce.chocola.R
 import com.sosauce.chocola.core.designsystem.NowPlayingButton
 import com.sosauce.chocola.core.designsystem.theme.ChocolaTheme
 import com.sosauce.chocola.core.presentation.preferences.rememberIsLandscape
-import com.sosauce.chocola.feature.settings.presentation.components.SettingsSwitch
+import com.sosauce.nekobites.components.settings.SettingsSwitch
+import com.sosauce.nekobites.components.settings.settingsItemShape
 import com.sosauce.nekobites.helpers.ObserveAsEvents
 import org.koin.androidx.compose.koinViewModel
 
@@ -67,28 +72,28 @@ fun NowPlayingButtonsScreen(
 ) {
     if (state.isLoading) return
 
-    val layoutDirection = LocalLayoutDirection.current
-    val listPadding = PaddingValues(
-        bottom = contentPadding.calculateBottomPadding() + 16.dp
-    )
+    val listPadding = PaddingValues(bottom = contentPadding.calculateBottomPadding() + 16.dp)
 
     if (rememberIsLandscape()) {
         Row(
-            modifier = Modifier
+            Modifier
                 .fillMaxSize()
-                .padding(
-                    start = contentPadding.calculateStartPadding(layoutDirection),
-                    end = contentPadding.calculateEndPadding(layoutDirection)
-                )
+                .statusBarsPadding()
         ) {
-            Box(
-                modifier = Modifier
+            Column(
+                Modifier
                     .weight(1f)
                     .fillMaxHeight()
-                    .padding(start = 16.dp, top = 8.dp, bottom = contentPadding.calculateBottomPadding()),
-                contentAlignment = Alignment.Center
             ) {
-                NowPlayingMiniPreview(hiddenButtons = state.hiddenButtons)
+                PreviewStage(
+                    hiddenButtons = state.hiddenButtons,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(
+                            start = 16.dp,
+                            bottom = contentPadding.calculateBottomPadding() + 16.dp
+                        )
+                )
             }
             ButtonToggles(
                 hiddenButtons = state.hiddenButtons,
@@ -101,23 +106,17 @@ fun NowPlayingButtonsScreen(
         }
     } else {
         Column(
-            modifier = Modifier
+            Modifier
                 .fillMaxSize()
-                .padding(
-                    top = contentPadding.calculateTopPadding(),
-                    start = contentPadding.calculateStartPadding(layoutDirection),
-                    end = contentPadding.calculateEndPadding(layoutDirection)
-                )
+                .statusBarsPadding()
         ) {
-            Box(
+            PreviewStage(
+                hiddenButtons = state.hiddenButtons,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.45f)
-                    .padding(vertical = 8.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                NowPlayingMiniPreview(hiddenButtons = state.hiddenButtons)
-            }
+                    .fillMaxHeight(0.42f)
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            )
             ButtonToggles(
                 hiddenButtons = state.hiddenButtons,
                 onAction = onAction,
@@ -126,6 +125,26 @@ fun NowPlayingButtonsScreen(
                     .weight(1f)
                     .fillMaxWidth()
             )
+        }
+    }
+}
+
+/** Live preview sitting on a tinted stage. */
+@Composable
+private fun PreviewStage(
+    hiddenButtons: Set<NowPlayingButton>,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        shape = RoundedCornerShape(32.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        modifier = modifier
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.padding(12.dp)
+        ) {
+            NowPlayingMiniPreview(hiddenButtons = hiddenButtons)
         }
     }
 }
@@ -141,7 +160,10 @@ private fun ButtonToggles(
 
     LazyColumn(
         modifier = modifier,
-        contentPadding = contentPadding
+        contentPadding = PaddingValues(
+            top = 16.dp,
+            bottom = contentPadding.calculateBottomPadding()
+        )
     ) {
         itemsIndexed(
             items = buttons,
@@ -149,44 +171,36 @@ private fun ButtonToggles(
         ) { index, button ->
             val isVisible = button !in hiddenButtons
             SettingsSwitch(
+                title = stringResource(button.label),
+                icon = button.icon,
                 checked = isVisible,
                 onCheckedChange = {
                     onAction(NowPlayingButtonsAction.SetButtonVisible(button, !isVisible))
                 },
-                topDp = if (index == 0) 24.dp else 2.dp,
-                bottomDp = if (index == buttons.lastIndex) 24.dp else 2.dp,
-                text = stringResource(button.label),
-                icon = button.icon
+                baseShape = settingsItemShape(
+                    isFirst = index == 0,
+                    isLast = index == buttons.lastIndex
+                ),
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 2.dp)
             )
         }
     }
 }
 
-@Preview(showBackground = true, widthDp = 380, heightDp = 820, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(
+    showBackground = true,
+    widthDp = 380,
+    heightDp = 820,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
-private fun NowPlayingButtonsScreenPreview() {
+private fun NowPlayingButtonsScreen2Preview() {
     ChocolaTheme {
         NowPlayingButtonsScreen(
             state = NowPlayingButtonsState(
                 isLoading = false,
-                hiddenButtons = setOf(
-                    NowPlayingButton.QUEUE,
-                    NowPlayingButton.REWIND,
-                    NowPlayingButton.FORWARD,
-                    NowPlayingButton.SHUFFLE
-                )
+                hiddenButtons = setOf(NowPlayingButton.QUEUE, NowPlayingButton.SHUFFLE)
             ),
-            onAction = {}
-        )
-    }
-}
-
-@Preview(showBackground = true, widthDp = 380, heightDp = 820)
-@Composable
-private fun NowPlayingButtonsScreenAllVisiblePreview() {
-    ChocolaTheme {
-        NowPlayingButtonsScreen(
-            state = NowPlayingButtonsState(isLoading = false),
             onAction = {}
         )
     }

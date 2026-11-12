@@ -1,17 +1,14 @@
 package com.sosauce.chocola.app.di
 
-import android.content.pm.ApplicationInfo
 import androidx.room.Room
 import com.sosauce.chocola.core.data.bakery.BakeryDatabase
 import com.sosauce.chocola.core.data.bakery.StatsRecorder
 import com.sosauce.chocola.feature.bakery.data.BakeryRepository
 import com.sosauce.chocola.feature.bakery.data.BakeryRepositoryImpl
-import com.sosauce.chocola.feature.bakery.data.mapper.MockBakeryRepositoryImpl
 import com.sosauce.chocola.feature.bakery.presentation.BakeryViewModel
 import com.sosauce.chocola.feature.bakery.presentation.story.BakeryStoryViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
-import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 

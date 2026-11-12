@@ -7,36 +7,35 @@ import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
-import com.sosauce.nekobites.components.Spacer
+import com.sosauce.chocola.feature.setup.presentation.components.SetupHero
 
 @Composable
 fun SetupPermissions(
     onGotoNextStep: () -> Unit
 ) {
-
     val context = LocalContext.current
     val musicPermission = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
@@ -49,47 +48,19 @@ fun SetupPermissions(
         }
     )
 
-
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
+    Column(Modifier.fillMaxSize()) {
         Box(
+            contentAlignment = Alignment.Center,
             modifier = Modifier
-                .size(156.dp)
-                .background(
-                    color = MaterialTheme.colorScheme.surfaceContainer,
-                    shape = MaterialShapes.Cookie12Sided.toShape()
-                ),
-            contentAlignment = Alignment.Center
+                .weight(1f)
+                .fillMaxWidth()
         ) {
-            Icon(
-                painter = painterResource(R.drawable.music_note),
-                contentDescription = null,
-                modifier = Modifier.size(70.dp)
+            SetupHero(
+                icon = R.drawable.music_note,
+                title = stringResource(R.string.music_and_audio_perm),
+                description = stringResource(R.string.audio_perm_desc)
             )
         }
-
-        Spacer(15.dp)
-
-        Text(
-            text = stringResource(R.string.music_and_audio_perm),
-            style = MaterialTheme.typography.headlineSmallEmphasized.copy(
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Center
-            )
-        )
-
-        Text(
-            text = stringResource(R.string.audio_perm_desc),
-            style = MaterialTheme.typography.bodyMediumEmphasized.copy(
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center
-            )
-        )
-
-        Spacer(20.dp)
         Button(
             onClick = {
                 val permission =
@@ -101,8 +72,22 @@ fun SetupPermissions(
                 musicPermission.launch(permission)
             },
             shapes = ButtonDefaults.shapes(),
+            contentPadding = ButtonDefaults.contentPaddingFor(ButtonDefaults.MediumContainerHeight),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 24.dp, end = 24.dp, bottom = 16.dp)
+                .height(ButtonDefaults.MediumContainerHeight)
         ) {
-            Text(stringResource(R.string.request_permission))
+            Icon(
+                painter = painterResource(R.drawable.music_note),
+                contentDescription = null,
+                modifier = Modifier.size(ButtonDefaults.MediumIconSize)
+            )
+            Spacer(Modifier.width(ButtonDefaults.IconSpacing))
+            Text(
+                text = stringResource(R.string.request_permission),
+                style = MaterialTheme.typography.titleMediumEmphasized
+            )
         }
     }
 }

@@ -7,13 +7,16 @@ import com.sosauce.chocola.R
 import com.sosauce.chocola.core.designsystem.components.FavoriteArtwork
 import com.sosauce.chocola.core.designsystem.components.FavoriteItem
 import com.sosauce.chocola.core.domain.model.Artist
-import com.sosauce.chocola.feature.library.presentation.util.ImageUtils
 
 @Composable
 fun FavoriteArtistItem(
     modifier: Modifier = Modifier,
     artist: Artist,
-    onClick: () -> Unit
+    isSelected: Boolean,
+    isInSelectionMode: Boolean,
+    onClick: () -> Unit,
+    onLongClick: () -> Unit,
+    onUnfavorite: () -> Unit
 ) {
     FavoriteItem(
         modifier = modifier,
@@ -23,13 +26,14 @@ fun FavoriteArtistItem(
             artist.tracks.size,
             artist.tracks.size
         ),
-        isSelected = false,
-        isInSelectionMode = false,
+        isSelected = isSelected,
+        isInSelectionMode = isInSelectionMode,
         onClick = onClick,
-        onLongClick = {}
+        onLongClick = onLongClick,
+        onUnfavorite = onUnfavorite
     ) { isPressed ->
         FavoriteArtwork(
-            model = ImageUtils.getAlbumArt(artist.albumId),
+            model = null,
             placeholderIcon = R.drawable.artists_filled,
             isPressed = isPressed
         )
