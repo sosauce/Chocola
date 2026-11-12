@@ -8,12 +8,10 @@ package com.sosauce.chocola.feature.playing.presentation.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -90,16 +88,19 @@ private fun TurntableArtwork(
     showLyrics: Boolean,
     onHandlePlayerActions: (PlayerActions) -> Unit
 ) {
-    val transition = rememberInfiniteTransition(label = "record rotation")
-    val rotation by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(7000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "record rotation"
-    )
+    val rotation = remember { Animatable(0f) }
+    LaunchedEffect(musicState.isPlaying) {
+        if (musicState.isPlaying) {
+            while (true) {
+                rotation.animateTo(
+                    targetValue = rotation.value + 360f,
+                    animationSpec = tween(7000, easing = LinearEasing)
+                )
+            }
+        } else {
+            rotation.stop()
+        }
+    }
 
     Box(contentAlignment = Alignment.Center) {
         Box(
@@ -107,7 +108,7 @@ private fun TurntableArtwork(
                 .fillMaxSize()
                 .shadow(12.dp, CircleShape)
                 .background(Color(0xFF171719), CircleShape)
-                .rotate(if (musicState.isPlaying) rotation else 0f),
+                .rotate(rotation.value),
             contentAlignment = Alignment.Center
         ) {
             Canvas(modifier = Modifier.fillMaxSize()) {
