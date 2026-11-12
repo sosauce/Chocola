@@ -50,6 +50,7 @@ import com.sosauce.chocola.core.data.datastore.PreferencesKeys.THUMB_STYLE
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.TRACK_SORT
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.TRACK_STYLE
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.USE_ART_THEME
+import com.sosauce.chocola.core.data.datastore.PreferencesKeys.USE_TURNTABLE
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.USE_SYSTEM_FONT
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.WHITELISTED_FOLDERS
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.NEW_FOLDER_POLICY
@@ -114,6 +115,10 @@ fun rememberArtworkShape() =
 @Composable
 fun rememberUseArtAsBackground() =
     rememberPreference(key = ART_AS_BACKGROUND, defaultValue = false)
+
+@Composable
+fun rememberUseTurntable() =
+    rememberPreference(key = USE_TURNTABLE, defaultValue = false)
 
 @Composable
 fun rememberAlbumSort() =

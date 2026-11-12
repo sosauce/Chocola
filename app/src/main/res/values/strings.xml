@@ -88,6 +88,8 @@
     <string name="library_desc">Manage all your tracks, like a DJ!</string>
     <string name="add_queue">Add to queue</string>
     <string name="art_as_bg">Art as background</string>
+    <string name="use_turntable">Vinyl turntable</string>
+    <string name="use_turntable_desc">Display the artwork as a spinning record while music is playing.</string>
     <string name="default_text">Default</string>
     <string name="font">Font</string>
     <string name="album">Album</string>

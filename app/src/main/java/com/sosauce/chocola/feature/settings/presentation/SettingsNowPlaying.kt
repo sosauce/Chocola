@@ -25,6 +25,7 @@ import com.sosauce.chocola.core.presentation.preferences.rememberShowAlbumName
 import com.sosauce.chocola.core.presentation.preferences.rememberThumbStyle
 import com.sosauce.chocola.core.presentation.preferences.rememberTrackStyle
 import com.sosauce.chocola.core.presentation.preferences.rememberUseArtAsBackground
+import com.sosauce.chocola.core.presentation.preferences.rememberUseTurntable
 import com.sosauce.chocola.feature.settings.presentation.components.SettingsCard
 import com.sosauce.chocola.feature.settings.presentation.components.SettingsCardHeader
 import com.sosauce.chocola.feature.settings.presentation.components.SettingsSwitch
@@ -46,6 +47,7 @@ fun SettingsNowPlaying() {
     var thumbStyle by rememberThumbStyle()
     var trackStyle by rememberTrackStyle()
     var useArtBackground by rememberUseArtAsBackground()
+    var useTurntable by rememberUseTurntable()
     var dynamicDuration by rememberDynamicDuration()
     var shapeMorph by rememberNowPlayingShapeMorph()
 
@@ -124,6 +126,14 @@ fun SettingsNowPlaying() {
             topDp = 2.dp,
             bottomDp = 2.dp,
             text = stringResource(R.string.art_as_bg)
+        )
+        SettingsSwitch(
+            checked = useTurntable,
+            onCheckedChange = { useTurntable = !useTurntable },
+            topDp = 2.dp,
+            bottomDp = 2.dp,
+            text = stringResource(R.string.use_turntable),
+            optionalDescription = R.string.use_turntable_desc
         )
         SettingsSwitch(
             checked = shapeMorph,
