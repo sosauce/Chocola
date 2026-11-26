@@ -234,4 +234,16 @@
     <string name="whitelist_folder_tree_desc">Vali kaust. See kaust ja kõik tema alamkaustad, sealhulgas hiljem lisatud kaustad saavad olema lubatud</string>
     <string name="no_folder_picker">Selles seadmes ei leidunud ühtegi rakendust, mis oskaks kaustu valida</string>
     <string name="folder_tree_unsupported">Sa võid valida vaid kaustu, mis asuvad selles seadmes</string>
+    <string name="now_playing_buttons">Esitusekraani nupud</string>
+    <string name="now_playing_buttons_desc">Vali, millised nupud esitusekraanil kuvatakse</string>
+    <string name="now_playing_preview">Esitusekraani eelvaade</string>
+    <string name="queue">Järjekord</string>
+    <string name="more_options">Rohkem valikuid</string>
+    <string name="next_song">Järgmine laul</string>
+    <string name="rewind">Keri tagasi</string>
+    <string name="fast_forward">Keri edasi</string>
+    <string name="shuffle">Juhuesitus</string>
+    <string name="repeat">Korda</string>
+    <string name="favorite">Lemmik</string>
+    <string name="sleep_timer">Unetaimer</string>
 </resources>

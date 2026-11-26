@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -50,11 +49,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sosauce.chocola.R
-import com.sosauce.chocola.core.presentation.preferences.rememberLyricsAlignment
-import com.sosauce.chocola.core.presentation.preferences.rememberLyricsFontSize
 import com.sosauce.chocola.core.domain.player.MusicState
 import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.core.presentation.navigation.Screen
+import com.sosauce.chocola.core.presentation.preferences.rememberLyricsAlignment
+import com.sosauce.chocola.core.presentation.preferences.rememberLyricsFontSize
 import com.sosauce.chocola.core.presentation.util.toLyricsAlignment
 import com.sosauce.nekobites.components.NoXFound
 import com.sosauce.nekobites.components.Spacer

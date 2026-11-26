@@ -23,4 +23,16 @@
     <string name="no_albums_found">Nu s-au găsit albume !</string>
     <string name="playback_speed">Setarea vitezei de redare</string>
     <string name="yes">Da</string>
+    <string name="now_playing_buttons">Butoanele de redare</string>
+    <string name="now_playing_buttons_desc">Alege ce butoane apar pe ecranul de redare</string>
+    <string name="now_playing_preview">Previzualizarea ecranului de redare</string>
+    <string name="queue">Coadă</string>
+    <string name="more_options">Mai multe opțiuni</string>
+    <string name="next_song">Melodia următoare</string>
+    <string name="rewind">Derulează înapoi</string>
+    <string name="fast_forward">Derulează înainte</string>
+    <string name="shuffle">Amestecare</string>
+    <string name="repeat">Repetare</string>
+    <string name="favorite">Favorit</string>
+    <string name="sleep_timer">Temporizator de somn</string>
 </resources>

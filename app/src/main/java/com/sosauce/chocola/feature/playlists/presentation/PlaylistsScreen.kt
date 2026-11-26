@@ -8,28 +8,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,46 +28,42 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButtonMenu
 import androidx.compose.material3.FloatingActionButtonMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
-import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.sosauce.chocola.R
-import com.sosauce.chocola.core.data.local.Playlist
+import com.sosauce.chocola.core.designsystem.components.NoResult
+import com.sosauce.chocola.core.designsystem.components.SelectOverlayAction
+import com.sosauce.chocola.core.designsystem.components.SelectOverlayItem
 import com.sosauce.chocola.core.domain.player.MusicState
 import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.core.presentation.components.CuteSearchbar
-import com.sosauce.chocola.core.designsystem.components.NoResult
 import com.sosauce.chocola.core.presentation.components.SelectedBarSurface
 import com.sosauce.chocola.core.presentation.components.dialogs.PlaylistDeletionDialog
 import com.sosauce.chocola.core.presentation.navigation.Screen
-import com.sosauce.chocola.feature.playlists.presentation.components.CreatePlaylistDialog
-import com.sosauce.chocola.feature.playlists.presentation.components.PlaylistItem
 import com.sosauce.chocola.core.presentation.util.barsContentTransform
 import com.sosauce.chocola.core.presentation.util.selfAlignHorizontally
+import com.sosauce.chocola.feature.playlists.presentation.components.CreatePlaylistDialog
+import com.sosauce.chocola.feature.playlists.presentation.components.EditPlaylist
+import com.sosauce.chocola.feature.playlists.presentation.components.FavoritePlaylistItem
+import com.sosauce.chocola.feature.playlists.presentation.components.PlaylistItem
+import com.sosauce.chocola.feature.playlists.presentation.model.PlaylistUi
 import com.sosauce.nekobites.animations.ToggleAnimatedFab
-import com.sosauce.nekobites.components.AnimatedSelectedIcon
 import com.sosauce.nekobites.components.LoadingBox
 import com.sosauce.nekobites.components.NoXFound
 import com.sosauce.sweetselect.rememberSweetSelectState
-import sv.lib.squircleshape.CornerSmoothing
-import sv.lib.squircleshape.SquircleShape
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -94,7 +81,7 @@ fun SharedTransitionScope.PlaylistsScreen(
     val lazyState = rememberLazyListState()
     var fabMenuExpanded by remember { mutableStateOf(false) }
     var showDeletionDialog by remember { mutableStateOf(false) }
-    val multiSelectState = rememberSweetSelectState<Playlist>()
+    val multiSelectState = rememberSweetSelectState<PlaylistUi>()
 
 
     val importPlaylistLauncher =
@@ -206,8 +193,7 @@ fun SharedTransitionScope.PlaylistsScreen(
 
                         },
                         sortMenu = {
-                            // TODO: PLAYLISTSSORTMENU
-                            //CuteSearchbarDefaults.TrackSortPopupContent()
+
                         }
                     )
                 }
@@ -238,37 +224,35 @@ fun SharedTransitionScope.PlaylistsScreen(
                             ) { playlist ->
                                 val isSelected by multiSelectState.isSelectedAsState(playlist)
 
-                                Column(
-                                    modifier = Modifier.animateItem()
-                                ) {
-                                    AnimatedSelectedIcon(
+                                SelectOverlayItem(
+                                    modifier = Modifier.animateItem(),
+                                    enabled = !multiSelectState.isInSelectionMode,
+                                    actions = playlistSelectActions(
+                                        playlist = playlist,
+                                        onHandlePlaylistAction = onHandlePlaylistAction
+                                    ),
+                                    onSelect = { multiSelectState.addAll(listOf(playlist)) }
+                                ) { showOverlay ->
+                                    FavoritePlaylistItem(
+                                        playlist = playlist,
                                         isSelected = isSelected,
-                                    ) {
-                                        Box(
-                                            modifier = Modifier
-                                                .size(70.dp)
-                                                .clip(MaterialShapes.Cookie9Sided.toShape())
-                                                .background(MaterialTheme.colorScheme.surfaceContainer),
-                                            contentAlignment = Alignment.Center
-                                        ) {
-                                            if (playlist.emoji.isNotBlank()) {
-                                                Text(
-                                                    text = playlist.emoji,
-                                                    fontSize = 25.sp
-                                                )
+                                        isInSelectionMode = multiSelectState.isInSelectionMode,
+                                        onClick = {
+                                            if (multiSelectState.isInSelectionMode) {
+                                                multiSelectState.toggle(playlist)
                                             } else {
-                                                Icon(
-                                                    painter = painterResource(R.drawable.queue_music_rounded),
-                                                    contentDescription = null,
-                                                    modifier = Modifier.size(25.dp)
-                                                )
+                                                onNavigate(Screen.PlaylistDetails(playlist.id))
+                                            }
+                                        },
+                                        onLongClick = {
+                                            if (multiSelectState.isInSelectionMode) {
+                                                multiSelectState.toggle(playlist)
+                                            } else {
+                                                showOverlay()
                                             }
                                         }
-                                    }
+                                    )
                                 }
-
-
-
                             }
                         }
                     }
@@ -298,23 +282,109 @@ fun SharedTransitionScope.PlaylistsScreen(
 
                     val isSelected by multiSelectState.isSelectedAsState(playlist)
 
-                    PlaylistItem(
+                    SelectOverlayItem(
                         modifier = Modifier.animateItem(),
-                        playlist = playlist,
-                        isSelected = isSelected,
-                        onHandlePlaylistActions = onHandlePlaylistAction,
-                        onClickPlaylist = {
-                            if (multiSelectState.isInSelectionMode) {
-                                multiSelectState.toggle(playlist)
-                            } else {
-                                onNavigate(Screen.PlaylistDetails(playlist.id))
+                        enabled = !multiSelectState.isInSelectionMode,
+                        actions = playlistSelectActions(
+                            playlist = playlist,
+                            onHandlePlaylistAction = onHandlePlaylistAction
+                        ),
+                        onSelect = { multiSelectState.addAll(listOf(playlist)) }
+                    ) { showOverlay ->
+                        PlaylistItem(
+                            playlist = playlist,
+                            isSelected = isSelected,
+                            onHandlePlaylistActions = onHandlePlaylistAction,
+                            onClickPlaylist = {
+                                if (multiSelectState.isInSelectionMode) {
+                                    multiSelectState.toggle(playlist)
+                                } else {
+                                    onNavigate(Screen.PlaylistDetails(playlist.id))
+                                }
+                            },
+                            onLongClick = {
+                                if (multiSelectState.isInSelectionMode) {
+                                    multiSelectState.toggle(playlist)
+                                } else {
+                                    showOverlay()
+                                }
                             }
-                        },
-                        onLongClick = { multiSelectState.toggle(playlist) }
-                    )
+                        )
+                    }
                 }
             }
         }
 
     }
+}
+
+/**
+ * Actions shown when [playlist] is lifted into the select overlay, together with the dialogs they open.
+ * Mirrors the options in [PlaylistItem], so both ways of reaching a playlist's actions stay in sync.
+ */
+@Composable
+private fun playlistSelectActions(
+    playlist: PlaylistUi,
+    onHandlePlaylistAction: (PlaylistActions) -> Unit
+): List<SelectOverlayAction> {
+    var showEditDialog by remember { mutableStateOf(false) }
+    var showDeletionDialog by remember { mutableStateOf(false) }
+    val exportPlaylistLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("*/*")) { uri ->
+            uri?.let {
+                onHandlePlaylistAction(
+                    PlaylistActions.ExportM3uPlaylist(
+                        uri = it,
+                        tracks = playlist.tracks.mapTo(mutableSetOf()) { it.mediaId }
+                    )
+                )
+            }
+        }
+
+    if (showEditDialog) {
+        EditPlaylist(
+            playlist = playlist,
+            onDismissRequest = { showEditDialog = false },
+            onHandlePlaylistActions = onHandlePlaylistAction
+        )
+    }
+
+    if (showDeletionDialog) {
+        PlaylistDeletionDialog(
+            playlists = listOf(playlist),
+            onHandlePlaylistAction = onHandlePlaylistAction,
+            onDismissRequest = { showDeletionDialog = false }
+        )
+    }
+
+    return listOf(
+        SelectOverlayAction(
+            label = stringResource(if (playlist.isFavorite) R.string.remove_favorite else R.string.add_favorite),
+            icon = if (playlist.isFavorite) R.drawable.favorite_filled else R.drawable.favorite,
+            onClick = {
+                onHandlePlaylistAction(
+                    PlaylistActions.SetFavorite(
+                        playlist.id,
+                        !playlist.isFavorite
+                    )
+                )
+            }
+        ),
+        SelectOverlayAction(
+            label = stringResource(R.string.edit_playlist),
+            icon = R.drawable.edit_rounded,
+            onClick = { showEditDialog = true }
+        ),
+        SelectOverlayAction(
+            label = stringResource(R.string.export_playlist),
+            icon = R.drawable.export,
+            onClick = { exportPlaylistLauncher.launch("${playlist.name.ifEmpty { "Playlist" }}.m3u") }
+        ),
+        SelectOverlayAction(
+            label = stringResource(R.string.delete),
+            icon = R.drawable.trash_rounded,
+            isDestructive = true,
+            onClick = { showDeletionDialog = true }
+        )
+    )
 }

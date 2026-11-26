@@ -4,96 +4,71 @@ package com.sosauce.chocola.feature.library.presentation.artist.components
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.pluralStringResource
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
-import coil3.compose.AsyncImage
 import com.sosauce.chocola.R
+import com.sosauce.chocola.core.designsystem.components.DetailsHeader
+import com.sosauce.chocola.core.designsystem.components.DetailsHeaderDefaults
+import com.sosauce.chocola.core.designsystem.components.DetailsHeaderPlaybackActions
 import com.sosauce.chocola.core.domain.model.Artist
 import com.sosauce.chocola.core.domain.model.CuteTrack
 import com.sosauce.chocola.core.domain.player.PlaySource
 import com.sosauce.chocola.core.domain.player.PlayerActions
-import com.sosauce.chocola.feature.library.presentation.util.ImageUtils
-import com.sosauce.nekobites.animations.AnimatedFab
 
 @Composable
 fun SharedTransitionScope.ArtistHeader(
     artist: Artist,
     tracks: List<CuteTrack>,
+    albumCount: Int,
     onHandlePlayerActions: (PlayerActions) -> Unit
 ) {
 
-
-    Box(
-        modifier = Modifier
-            .height(300.dp)
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-    ) {
-        AsyncImage(
-            model = ImageUtils.getAlbumArt(artist.albumId),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
-        Row(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .fillMaxWidth()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, MaterialTheme.colorScheme.background)
-                    )
-                )
-                .padding(20.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
+    DetailsHeader(
+        title = {
+            DetailsHeaderDefaults.Title(
                 text = artist.name,
-                style = MaterialTheme.typography.headlineLargeEmphasized,
-                modifier = Modifier
-                    .sharedBounds(
-                        sharedContentState = rememberSharedContentState(artist.name + artist.id),
-                        animatedVisibilityScope = LocalNavAnimatedContentScope.current
-                    )
-                    .weight(1f)
-                    .basicMarquee()
+                modifier = Modifier.sharedBounds(
+                    sharedContentState = rememberSharedContentState(artist.name + artist.id),
+                    animatedVisibilityScope = LocalNavAnimatedContentScope.current
+                )
             )
-            androidx.compose.material3.IconButton(
-                onClick = { onHandlePlayerActions(PlayerActions.ToggleArtistFavorite(artist.id)) }
-            ) {
-                androidx.compose.material3.Icon(
-                    painter = androidx.compose.ui.res.painterResource(R.drawable.favorite_filled),
-                    contentDescription = androidx.compose.ui.res.stringResource(
-                        if (artist.isFavorite) R.string.remove_favorite else R.string.add_favorite
-                    ),
-                    tint = if (artist.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+        },
+        artwork = null,
+        info = {
+            DetailsHeaderDefaults.InfoChip(
+                text = pluralStringResource(R.plurals.tracks_plural, tracks.size, tracks.size),
+                icon = R.drawable.music_note
+            )
+            if (albumCount > 0) {
+                DetailsHeaderDefaults.InfoChip(
+                    text = pluralStringResource(R.plurals.albums_plural, albumCount, albumCount),
+                    icon = R.drawable.album_filled
                 )
             }
-            AnimatedFab(
-                onClick = {
+        },
+        actions = {
+            DetailsHeaderPlaybackActions(
+                isFavorite = artist.isFavorite,
+                onShuffle = {
+                    onHandlePlayerActions(
+                        PlayerActions.PlayFromSource(
+                            mediaId = null,
+                            source = PlaySource.Artist(artist.name)
+                        )
+                    )
+                },
+                onPlay = {
                     onHandlePlayerActions(
                         PlayerActions.StartPlaylist(PlaySource.Artist(artist.name))
                     )
                 },
-                icon = R.drawable.widget_play,
-                minSize = 90.dp
+                onToggleFavorite = {
+                    onHandlePlayerActions(PlayerActions.ToggleArtistFavorite(artist.id))
+                }
             )
         }
-    }
+    )
 }

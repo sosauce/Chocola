@@ -12,20 +12,17 @@ import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.sosauce.chocola.core.data.local.PlaylistCleanup
-import com.sosauce.chocola.core.presentation.player.MusicViewModel
 import com.sosauce.chocola.app.navigation.Nav
-import com.sosauce.chocola.core.data.datastore.dataStore
 import com.sosauce.chocola.core.data.library.FoldersClassifier
-import com.sosauce.chocola.feature.setup.presentation.SetupScreen
+import com.sosauce.chocola.core.data.local.PlaylistCleanup
+import com.sosauce.chocola.core.designsystem.components.SelectOverlayHost
+import com.sosauce.chocola.core.designsystem.components.rememberSelectOverlayState
 import com.sosauce.chocola.core.designsystem.theme.ChocolaTheme
+import com.sosauce.chocola.core.presentation.player.MusicViewModel
 import com.sosauce.chocola.core.presentation.util.hasMusicPermission
-import kotlinx.coroutines.flow.first
+import com.sosauce.chocola.feature.setup.presentation.SetupScreen
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
-import org.json.JSONObject
 import org.koin.android.ext.android.inject
 import org.koin.androidx.compose.koinViewModel
 
@@ -64,9 +61,11 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    Nav(
-                        musicViewModel = musicViewModel
-                    )
+                    SelectOverlayHost(state = rememberSelectOverlayState()) {
+                        Nav(
+                            musicViewModel = musicViewModel
+                        )
+                    }
                 } else {
                     SetupScreen { canProceedToApp = true }
                 }

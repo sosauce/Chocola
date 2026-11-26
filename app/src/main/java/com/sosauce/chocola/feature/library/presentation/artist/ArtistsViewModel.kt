@@ -7,12 +7,12 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sosauce.chocola.core.data.datastore.UserPreferences
 import com.sosauce.chocola.core.data.library.AbstractTracksScanner
 import com.sosauce.chocola.core.data.local.FavoritesDao
-import com.sosauce.chocola.core.data.datastore.UserPreferences
+import com.sosauce.chocola.core.domain.library.ordered
 import com.sosauce.chocola.core.domain.model.Artist
 import com.sosauce.chocola.core.domain.util.combine
-import com.sosauce.chocola.core.domain.library.ordered
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,28 +32,43 @@ class ArtistsViewModel(
 
 
     val state = combine(
-        kotlinx.coroutines.flow.combine(abstractTracksScanner.latestTracks(), favoritesDao.observeArtistIds()) { tracks, ids -> tracks to ids },
+        kotlinx.coroutines.flow.combine(
+            abstractTracksScanner.latestTracks(),
+            favoritesDao.observeArtistIds()
+        ) { tracks, ids -> tracks to ids },
         userPreferences.getArtistsSort,
         userPreferences.getRegexFilter,
         userPreferences.getMatchCaseFilter,
         userPreferences.sortArtistsAscending,
+        userPreferences.getHideSingleAlbums(),
         searchQuery
-    ) { (tracks, favoriteIds), sort, regex, matchCase, ascending, query ->
+    ) { (tracks, favoriteIds), sort, regex, matchCase, ascending, hideSingleAlbums, query ->
+
+
         val artists = tracks.groupBy { it.artist }
-            .map { (artist, tracks) ->
+            .map { (artist, artistTracks) ->
+                val artistId = artistTracks.last().artistId
+                val albumCounts = artistTracks.groupingBy { it.album }.eachCount()
+                val numberAlbums =
+                    if (hideSingleAlbums) albumCounts.count { it.value > 1 } else albumCounts.size
+
                 Artist(
-                    id = tracks.firstOrNull()?.artistId ?: -1L,
-                    tracks = tracks,
+                    id = artistId,
+                    tracks = artistTracks,
+                    numberAlbums = numberAlbums,
                     name = artist,
-                    isFavorite = tracks.firstOrNull()?.artistId in favoriteIds
+                    isFavorite = artistId in favoriteIds
                 )
             }
             .ordered(sort, regex, matchCase, ascending, query.toString())
             .sortedByDescending { it.isFavorite }
+        val (favoriteArtists, nonFavoriteArtists) = artists.partition { it.isFavorite }
 
         ArtistsState(
             isLoading = false,
-            artists = artists
+            artists = artists,
+            favoriteArtists = favoriteArtists,
+            nonFavoriteArtists = nonFavoriteArtists
         )
     }.flowOn(Dispatchers.Default).stateIn(
         viewModelScope,
@@ -67,5 +82,7 @@ class ArtistsViewModel(
 @Stable
 data class ArtistsState(
     val isLoading: Boolean = true,
-    val artists: List<Artist> = emptyList()
+    val artists: List<Artist> = emptyList(),
+    val favoriteArtists: List<Artist> = emptyList(),
+    val nonFavoriteArtists: List<Artist> = emptyList()
 )

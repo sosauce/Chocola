@@ -12,7 +12,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.util.fastFilter
-import androidx.compose.ui.util.fastFirst
 import androidx.compose.ui.util.fastFirstOrNull
 import androidx.compose.ui.util.fastMap
 import androidx.core.net.toUri
@@ -29,24 +28,22 @@ import androidx.media3.session.SessionToken
 import coil3.imageLoader
 import coil3.request.ImageRequest
 import coil3.toBitmap
-import coil3.toUri
 import com.google.common.util.concurrent.MoreExecutors
 import com.sosauce.chocola.app.PlaybackService
+import com.sosauce.chocola.core.data.datastore.UserPreferences
 import com.sosauce.chocola.core.data.library.AbstractTracksScanner
-import com.sosauce.chocola.core.data.local.FavoritesDao
-import com.sosauce.chocola.core.data.local.FavoriteTrackEntity
 import com.sosauce.chocola.core.data.local.FavoriteAlbumEntity
 import com.sosauce.chocola.core.data.local.FavoriteArtistEntity
+import com.sosauce.chocola.core.data.local.FavoriteTrackEntity
+import com.sosauce.chocola.core.data.local.FavoritesDao
 import com.sosauce.chocola.core.data.lyrics.LyricsParser
-import com.sosauce.chocola.core.data.datastore.UserPreferences
 import com.sosauce.chocola.core.data.mapper.toMediaItem
+import com.sosauce.chocola.core.domain.library.orderAlbumTrackNumber
 import com.sosauce.chocola.core.domain.player.MusicState
 import com.sosauce.chocola.core.domain.player.PlaySource
 import com.sosauce.chocola.core.domain.player.PlayerActions
-import com.sosauce.chocola.core.presentation.util.changeRepeatMode
 import com.sosauce.chocola.core.domain.util.copyMutate
-import com.sosauce.chocola.core.domain.library.orderAlbumTrackNumber
-import com.sosauce.chocola.core.domain.model.CuteTrack
+import com.sosauce.chocola.core.presentation.util.changeRepeatMode
 import com.sosauce.chocola.core.presentation.util.pauseWithFadeOut
 import com.sosauce.chocola.core.presentation.util.playOrPause
 import com.sosauce.chocola.core.presentation.util.playRandom
@@ -56,7 +53,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -76,7 +72,8 @@ class MusicViewModel(
     val musicState = _musicState.asStateFlow()
 
     private val tracks = abstractTracksScanner.latestTracks()
-    @Volatile private var favoriteTrackIds: Set<Long> = emptySet()
+    @Volatile
+    private var favoriteTrackIds: Set<Long> = emptySet()
 
     var artworkImageBitmap by mutableStateOf<ImageBitmap?>(null)
         private set
@@ -95,7 +92,8 @@ class MusicViewModel(
                 tracks.value.fastFirstOrNull { track ->
                     track.mediaId == mediaItem.mediaId
                 }?.also { track ->
-                    val trackWithFavorite = track.copy(isFavorite = track.mediaId.toLongOrNull() in favoriteTrackIds)
+                    val trackWithFavorite =
+                        track.copy(isFavorite = track.mediaId.toLongOrNull() in favoriteTrackIds)
                     _musicState.update {
                         it.copy(
                             track = trackWithFavorite
@@ -362,7 +360,6 @@ class MusicViewModel(
     }
 
 
-
     private fun sanitizeDuration(rawDuration: Long, previousDuration: Long): Long =
         if (rawDuration == C.TIME_UNSET || rawDuration < 0) previousDuration else rawDuration
 
@@ -374,7 +371,8 @@ class MusicViewModel(
             tracks.value.fastFirstOrNull { it.mediaId == mediaId }
         }
         liveTrack?.let { track ->
-            val trackWithFavorite = track.copy(isFavorite = track.mediaId.toLongOrNull() in favoriteTrackIds)
+            val trackWithFavorite =
+                track.copy(isFavorite = track.mediaId.toLongOrNull() in favoriteTrackIds)
             _musicState.update { it.copy(track = trackWithFavorite) }
         }
         updateLoadedMedias(controller.currentTimeline)
@@ -418,9 +416,15 @@ class MusicViewModel(
             is PlayerActions.RewindTo -> mediaController!!.seekTo(mediaController!!.currentPosition - action.position)
             is PlayerActions.PlayTrack -> {
                 val targetMediaId = action.track.mediaId
-                val index = _musicState.value.loadedMedias.indexOfFirst { it.mediaId == targetMediaId }.takeIf { it != -1 }
+                var index = 0
+                for (i in 0..mediaController!!.mediaItemCount) {
+                    if (mediaController!!.getMediaItemAt(i).mediaId == targetMediaId) {
+                        index = i
+                        break
+                    }
+                }
 
-                index?.let { index ->
+                index.let { index ->
                     mediaController!!.seekTo(index, 0)
                     mediaController!!.play()
                 }
@@ -469,11 +473,13 @@ class MusicViewModel(
 
                 val targetTracks = when (val source = action.source) {
                     is PlaySource.All -> currentTracks
-                    is PlaySource.Album -> currentTracks.fastFilter { it.album == source.name }.orderAlbumTrackNumber()
+                    is PlaySource.Album -> currentTracks.fastFilter { it.album == source.name }
+                        .orderAlbumTrackNumber()
+
                     is PlaySource.Artist -> currentTracks.fastFilter { it.artist == source.name }
                     is PlaySource.ExplicitTracks -> source.tracks
                 }
-                
+
                 if (random) {
                     mediaController!!.setMediaItems(targetTracks.fastMap { it.toMediaItem() })
                     mediaController!!.playRandom()
@@ -488,7 +494,7 @@ class MusicViewModel(
                         }
 
 
-                if (sameQueue) {
+                if (!mediaController!!.shuffleModeEnabled && sameQueue) {
                     val playerIndex = targetTracks.indexOfFirst { it.mediaId == action.mediaId }
                     mediaController!!.seekTo(playerIndex, 0)
                     mediaController!!.play()
@@ -496,7 +502,11 @@ class MusicViewModel(
                     val startIndex = targetTracks
                         .indexOfFirst { it.mediaId == action.mediaId }
                         .coerceAtLeast(0)
-                    mediaController!!.setMediaItems(targetTracks.fastMap { it.toMediaItem() }, startIndex, 0)
+                    mediaController!!.setMediaItems(
+                        targetTracks.fastMap { it.toMediaItem() },
+                        startIndex,
+                        0
+                    )
                     mediaController!!.play()
                 }
 
@@ -623,27 +633,44 @@ class MusicViewModel(
 
             is PlayerActions.ToggleFavorite -> viewModelScope.launch {
                 if (favoritesDao.isTrackFavorite(action.mediaId)) favoritesDao.removeTrack(action.mediaId)
-                else favoritesDao.addTrack(FavoriteTrackEntity(action.mediaId, System.currentTimeMillis()))
+                else favoritesDao.addTrack(
+                    FavoriteTrackEntity(
+                        action.mediaId,
+                        System.currentTimeMillis()
+                    )
+                )
             }
 
             is PlayerActions.ToggleAlbumFavorite -> viewModelScope.launch {
                 if (favoritesDao.isAlbumFavorite(action.mediaId)) favoritesDao.removeAlbum(action.mediaId)
-                else favoritesDao.addAlbum(FavoriteAlbumEntity(action.mediaId, System.currentTimeMillis()))
+                else favoritesDao.addAlbum(
+                    FavoriteAlbumEntity(
+                        action.mediaId,
+                        System.currentTimeMillis()
+                    )
+                )
             }
 
             is PlayerActions.ToggleArtistFavorite -> viewModelScope.launch {
                 if (favoritesDao.isArtistFavorite(action.mediaId)) favoritesDao.removeArtist(action.mediaId)
-                else favoritesDao.addArtist(FavoriteArtistEntity(action.mediaId, System.currentTimeMillis()))
+                else favoritesDao.addArtist(
+                    FavoriteArtistEntity(
+                        action.mediaId,
+                        System.currentTimeMillis()
+                    )
+                )
             }
 
             is PlayerActions.StartPlaylist -> {
-                mediaController!!.shuffleModeEnabled = !mediaController!!.shuffleModeEnabled
+                mediaController!!.shuffleModeEnabled = false
                 val currentTracks = tracks.value
 
 
                 val targetTracks = when (val source = action.source) {
                     is PlaySource.All -> currentTracks
-                    is PlaySource.Album -> currentTracks.fastFilter { it.album == source.name }.orderAlbumTrackNumber()
+                    is PlaySource.Album -> currentTracks.fastFilter { it.album == source.name }
+                        .orderAlbumTrackNumber()
+
                     is PlaySource.Artist -> currentTracks.fastFilter { it.artist == source.name }
                     is PlaySource.ExplicitTracks -> source.tracks
                 }

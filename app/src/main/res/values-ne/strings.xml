@@ -22,4 +22,16 @@
     <string name="no_music_title">कुनै ट्र्याक भेटिएन!</string>
     <string name="no_music_desc">त्यसो भए तपाईंले एप किन इन्स्टल गर्नुभयो?</string>
     <string name="no_music_tip">सुझाव: स्क्यान गर्न चाहनुभएको फोल्डरहरूलाई सेटिङहरूमा व्हाइटलिस्ट गर्न नबिर्सनुहोस्!</string>
+    <string name="now_playing_buttons">प्लेइङ स्क्रिनका बटनहरू</string>
+    <string name="now_playing_buttons_desc">प्लेइङ स्क्रिनमा कुन बटनहरू देखाउने छान्नुहोस्</string>
+    <string name="now_playing_preview">प्लेइङ स्क्रिनको पूर्वावलोकन</string>
+    <string name="queue">पंक्ति</string>
+    <string name="more_options">थप विकल्पहरू</string>
+    <string name="next_song">अर्को गीत</string>
+    <string name="rewind">पछाडि सार्नुहोस्</string>
+    <string name="fast_forward">अगाडि सार्नुहोस्</string>
+    <string name="shuffle">मिसाउनुहोस्</string>
+    <string name="repeat">दोहोर्याउनुहोस्</string>
+    <string name="favorite">मनपर्ने</string>
+    <string name="sleep_timer">स्लिप टाइमर</string>
 </resources>

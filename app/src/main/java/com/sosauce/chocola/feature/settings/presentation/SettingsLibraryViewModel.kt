@@ -3,8 +3,8 @@ package com.sosauce.chocola.feature.settings.presentation
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sosauce.chocola.core.data.library.AbstractTracksScanner
 import com.sosauce.chocola.core.data.datastore.UserPreferences
+import com.sosauce.chocola.core.data.library.AbstractTracksScanner
 import com.sosauce.chocola.core.data.library.SafManager
 import com.sosauce.chocola.core.data.mapper.toFolders
 import com.sosauce.chocola.core.domain.model.CuteTrack
@@ -68,6 +68,7 @@ class SettingsLibraryViewModel(
                     }
                 }
             }
+
             is LibraryActions.BlacklistFolders -> {
                 viewModelScope.launch {
                     userPreferences.addBlacklistedFolders(action.paths.toSet())

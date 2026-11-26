@@ -149,4 +149,16 @@
     <string name="set_speed">تنظیم سرعت</string>
     <string name="set_pitch">تنظیم گام</string>
     <string name="use_art">مواد هنری</string>
+    <string name="now_playing_buttons">دکمه‌های صفحه پخش</string>
+    <string name="now_playing_buttons_desc">انتخاب کنید کدام دکمه‌ها در صفحه پخش نمایش داده شوند</string>
+    <string name="now_playing_preview">پیش‌نمایش صفحه پخش</string>
+    <string name="queue">صف</string>
+    <string name="more_options">گزینه‌های بیشتر</string>
+    <string name="next_song">آهنگ بعدی</string>
+    <string name="rewind">عقب بردن</string>
+    <string name="fast_forward">جلو بردن</string>
+    <string name="shuffle">پخش تصادفی</string>
+    <string name="repeat">تکرار</string>
+    <string name="favorite">موردعلاقه</string>
+    <string name="sleep_timer">زمان‌سنج خواب</string>
 </resources>

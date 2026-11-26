@@ -27,16 +27,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastAny
-import androidx.compose.ui.util.fastForEach
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sosauce.chocola.R
+import com.sosauce.chocola.core.designsystem.ICON_TEXT_SPACING
+import com.sosauce.chocola.core.presentation.util.selfAlignHorizontally
 import com.sosauce.chocola.feature.playlists.presentation.PlaylistActions
 import com.sosauce.chocola.feature.playlists.presentation.PlaylistViewModel
 import com.sosauce.chocola.feature.playlists.presentation.components.CreatePlaylistDialog
 import com.sosauce.chocola.feature.playlists.presentation.components.PlaylistItem
-import com.sosauce.chocola.core.designsystem.ICON_TEXT_SPACING
-import com.sosauce.chocola.core.domain.util.copyMutate
-import com.sosauce.chocola.core.presentation.util.selfAlignHorizontally
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -86,22 +84,15 @@ fun PlaylistPicker(
                     playlist = playlist,
                     onClickPlaylist = {
                         playlistViewModel.handlePlaylistActions(
-                            PlaylistActions.UpsertPlaylist(
-                                playlist.copy(
-                                    musics = playlist.musics.copyMutate {
-                                        mediaId.fastForEach { id ->
-                                            if (!contains(id)) {
-                                                add(id)
-                                            }
-                                        }
-                                    }
-                                )
+                            PlaylistActions.AddTracksToPlaylist(
+                                playlist = playlist,
+                                mediaIds = mediaId
                             )
                         )
                         onAddingFinished()
                     },
                     onHandlePlaylistActions = playlistViewModel::handlePlaylistActions,
-                    enabled = mediaId.fastAny { it !in playlist.musics }
+                    enabled = mediaId.fastAny { id -> playlist.tracks.none { it.mediaId == id } }
                 )
             }
         }

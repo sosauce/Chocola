@@ -1,7 +1,6 @@
 package com.sosauce.chocola.feature.bakery.presentation.model
 
 import android.net.Uri
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 
 @Stable

@@ -131,7 +131,7 @@ private fun formatListeningTime(millis: Long): String {
 @Composable
 private fun TotalsPagePreview() {
 
-    ChocolaTheme() {
+    ChocolaTheme {
         TotalsPage(
             totals = StoryPageUi.Totals(
                 periodTitle = "October 2026",

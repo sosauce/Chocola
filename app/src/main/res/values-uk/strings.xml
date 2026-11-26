@@ -152,4 +152,16 @@
         <item quantity="many">%d альбомів</item>
         <item quantity="other">%d альбомів</item>
     </plurals>
+    <string name="now_playing_buttons">Кнопки екрана відтворення</string>
+    <string name="now_playing_buttons_desc">Виберіть, які кнопки показувати на екрані відтворення</string>
+    <string name="now_playing_preview">Попередній перегляд екрана відтворення</string>
+    <string name="queue">Черга</string>
+    <string name="more_options">Додатково</string>
+    <string name="next_song">Наступний трек</string>
+    <string name="rewind">Перемотати назад</string>
+    <string name="fast_forward">Перемотати вперед</string>
+    <string name="shuffle">Перемішати</string>
+    <string name="repeat">Повтор</string>
+    <string name="favorite">Улюблене</string>
+    <string name="sleep_timer">Таймер сну</string>
 </resources>

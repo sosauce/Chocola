@@ -3,6 +3,8 @@
 package com.sosauce.chocola.core.presentation.preferences
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.ALBUM_SORT
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.AOD_ENABLE_GESTURES
@@ -19,14 +21,16 @@ import com.sosauce.chocola.core.data.datastore.PreferencesKeys.EQUALIZER_ENABLED
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.GROUP_BY_FOLDERS
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.HAS_BEEN_THROUGH_SETUP
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.HAS_SEEN_TIP
-import com.sosauce.chocola.core.data.datastore.PreferencesKeys.HIDDEN_FOLDERS
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.HIDDEN_TRACKS
+import com.sosauce.chocola.core.data.datastore.PreferencesKeys.HIDE_SINGLE_ALBUM
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.INITIAL_SCREEN
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.KEEP_ALIVE
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.LYRICS_ALIGNMENT
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.LYRICS_FONT_SIZE
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.MATCH_CASE_FILTER
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.MIN_TRACK_DURATION
+import com.sosauce.chocola.core.data.datastore.PreferencesKeys.NEW_FOLDER_POLICY
+import com.sosauce.chocola.core.data.datastore.PreferencesKeys.NOW_PLAYING_HIDDEN_BUTTONS
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.NOW_PLAYING_SHAPE_MORPH
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.NUMBER_OF_ALBUM_GRIDS
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.PALETTE_STYLE
@@ -47,17 +51,19 @@ import com.sosauce.chocola.core.data.datastore.PreferencesKeys.THUMB_STYLE
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.TRACK_SORT
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.TRACK_STYLE
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.USE_ART_THEME
+import com.sosauce.chocola.core.data.datastore.PreferencesKeys.USE_TURNTABLE
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.USE_SYSTEM_FONT
 import com.sosauce.chocola.core.data.datastore.PreferencesKeys.WHITELISTED_FOLDERS
-import com.sosauce.chocola.core.data.datastore.PreferencesKeys.NEW_FOLDER_POLICY
 import com.sosauce.chocola.core.data.datastore.dataStore
 import com.sosauce.chocola.core.designsystem.ArtworkShape
 import com.sosauce.chocola.core.designsystem.CutePaletteStyle
 import com.sosauce.chocola.core.designsystem.CuteTheme
 import com.sosauce.chocola.core.designsystem.LyricsAlignment
 import com.sosauce.chocola.core.designsystem.NewFolderPolicy
+import com.sosauce.chocola.core.designsystem.NowPlayingButton
 import com.sosauce.chocola.core.designsystem.ThumbStyle
 import com.sosauce.chocola.core.designsystem.TrackStyle
+import com.sosauce.chocola.core.designsystem.toHiddenNowPlayingButtons
 import com.sosauce.chocola.core.presentation.navigation.Screen
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -108,6 +114,10 @@ fun rememberArtworkShape() =
 @Composable
 fun rememberUseArtAsBackground() =
     rememberPreference(key = ART_AS_BACKGROUND, defaultValue = false)
+
+@Composable
+fun rememberUseTurntable() =
+    rememberPreference(key = USE_TURNTABLE, defaultValue = false)
 
 @Composable
 fun rememberAlbumSort() =
@@ -246,6 +256,18 @@ fun rememberAutoAddSubfolders() =
 @Composable
 fun rememberNewFolderPolicy() =
     rememberPreference(key = NEW_FOLDER_POLICY, defaultValue = NewFolderPolicy.BLACKLIST)
+
+/** Read-only: hidden now playing buttons, unknown stored names are ignored. */
+@Composable
+fun rememberHiddenNowPlayingButtons(): Set<NowPlayingButton> {
+    val stored by rememberPreference(key = NOW_PLAYING_HIDDEN_BUTTONS, defaultValue = emptySet())
+    return remember(stored) { stored.toHiddenNowPlayingButtons() }
+}
+
+@Composable
+fun rememberHideSingleAlbums() =
+    rememberPreference(key = HIDE_SINGLE_ALBUM, defaultValue = false)
+
 @Composable
 fun rememberInitialScreenBlocking(): Screen {
     val context = LocalContext.current
@@ -271,4 +293,3 @@ fun rememberInitialScreenBlocking(): Screen {
 //        defaultValue = LastPlayed("", 0L),
 //        context = context
 //    )
-

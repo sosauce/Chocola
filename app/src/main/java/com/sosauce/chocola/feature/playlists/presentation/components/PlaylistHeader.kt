@@ -1,95 +1,94 @@
-@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3ExpressiveApi::class)
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
 
 package com.sosauce.chocola.feature.playlists.presentation.components
 
-import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.unit.sp
 import com.sosauce.chocola.R
+import com.sosauce.chocola.core.designsystem.components.DetailsHeader
+import com.sosauce.chocola.core.designsystem.components.DetailsHeaderDefaults
+import com.sosauce.chocola.core.designsystem.components.DetailsHeaderPlaybackActions
 import com.sosauce.chocola.core.domain.model.CuteTrack
-import com.sosauce.chocola.core.data.local.Playlist
 import com.sosauce.chocola.core.domain.player.PlaySource
 import com.sosauce.chocola.core.domain.player.PlayerActions
-import com.sosauce.nekobites.animations.AnimatedFab
+import com.sosauce.chocola.core.presentation.util.millisToDuration
+import com.sosauce.chocola.feature.playlists.presentation.model.PlaylistUi
 
 @Composable
 fun PlaylistHeader(
-    playlist: Playlist,
+    playlist: PlaylistUi,
     tracks: List<CuteTrack>,
-    onHandlePlayerActions: (PlayerActions) -> Unit
+    onHandlePlayerActions: (PlayerActions) -> Unit,
+    onToggleFavorite: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(
-                color = MaterialTheme.colorScheme.surfaceContainer,
-                shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
-            )
-            .statusBarsPadding()
-            .padding(20.dp),
-        verticalAlignment = Alignment.Bottom
-    ) {
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
+    val colors = MaterialTheme.colorScheme
+    val emoji = playlist.emoji
 
-            if (playlist.emoji.isNotEmpty()) {
+    DetailsHeader(
+        title = { DetailsHeaderDefaults.Title(playlist.name) },
+        artwork = {
+            if (emoji != null) {
                 Text(
-                    text = playlist.emoji,
-                    style = MaterialTheme.typography.displayLargeEmphasized
+                    text = emoji,
+                    style = MaterialTheme.typography.displayLargeEmphasized.copy(fontSize = 82.sp)
+                )
+            } else {
+                Icon(
+                    painter = painterResource(R.drawable.queue_music_rounded),
+                    contentDescription = null,
+                    tint = colors.onPrimary,
+                    modifier = Modifier.fillMaxSize(0.45f)
                 )
             }
-
-            Text(
-                text = playlist.name,
-                style = MaterialTheme.typography.headlineLargeEmphasized,
-                modifier = Modifier.basicMarquee()
+        },
+        artworkShape = MaterialShapes.Cookie9Sided.toShape(),
+        artworkContainerColor = if (emoji != null) colors.surfaceContainerHigh else colors.primary,
+        backdrop = { DetailsHeaderDefaults.GradientBackdrop() },
+        info = {
+            DetailsHeaderDefaults.InfoChip(
+                text = pluralStringResource(R.plurals.tracks_plural, tracks.size, tracks.size),
+                icon = R.drawable.music_note
             )
-            FlowRow(
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-                horizontalArrangement = Arrangement.spacedBy(2.dp)
-            ) {
-                playlist.tags.forEach { tag ->
-                    Button(
-                        onClick = {},
-                        shapes = ButtonDefaults.shapes(),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                            contentColor = contentColorFor(MaterialTheme.colorScheme.surfaceContainerHigh)
-                        )
-                    ) { Text(tag) }
-                }
-            }
-        }
-
-        AnimatedFab(
-            onClick = {
-                onHandlePlayerActions(
-                    PlayerActions.StartPlaylist(
-                        source = PlaySource.ExplicitTracks(tracks)
-                    )
+            DetailsHeaderDefaults.InfoChip(
+                text = playlist.tracks.sumOf { it.durationMillis }.millisToDuration(),
+                icon = R.drawable.time_filled
+            )
+            playlist.tags.forEach { tag ->
+                DetailsHeaderDefaults.InfoChip(
+                    text = tag,
+                    containerColor = colors.tertiaryContainer,
+                    contentColor = colors.onTertiaryContainer
                 )
-            },
-            icon = R.drawable.widget_play,
-            minSize = 90.dp
-        )
-    }
+            }
+        },
+        actions = {
+            DetailsHeaderPlaybackActions(
+                isFavorite = playlist.isFavorite,
+                onShuffle = {
+                    onHandlePlayerActions(
+                        PlayerActions.PlayFromSource(
+                            mediaId = null,
+                            source = PlaySource.ExplicitTracks(tracks)
+                        )
+                    )
+                },
+                onPlay = {
+                    onHandlePlayerActions(
+                        PlayerActions.StartPlaylist(PlaySource.ExplicitTracks(tracks))
+                    )
+                },
+                onToggleFavorite = onToggleFavorite
+            )
+        }
+    )
 }

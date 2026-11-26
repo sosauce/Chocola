@@ -13,10 +13,7 @@ import com.sosauce.chocola.core.data.datastore.PreferencesKeys.WHITELISTED_FOLDE
 import com.sosauce.chocola.core.domain.model.CuteTrack
 import com.sosauce.chocola.core.domain.model.Folder
 import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonPrimitive
-import kotlin.collections.mapKeys
 
 fun CuteTrack.toMediaItem(): MediaItem {
 
@@ -60,6 +57,7 @@ fun Preferences.toJsonMap(): Map<String, SettingsWithType> {
                     SettingType.SET_STRING,
                     JsonArray(value.map { JsonPrimitive(it as String) })
                 )
+
                 else -> return@mapNotNull null
             }
             key.name to entry

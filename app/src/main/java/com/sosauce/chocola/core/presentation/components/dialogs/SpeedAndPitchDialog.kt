@@ -38,10 +38,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
+import com.sosauce.chocola.core.designsystem.components.WavySlider
 import com.sosauce.chocola.core.domain.player.MusicState
 import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.core.presentation.components.SpeedCardContent
-import com.sosauce.chocola.core.designsystem.components.WavySlider
 
 @Composable
 fun SpeedAndPitchDialog(

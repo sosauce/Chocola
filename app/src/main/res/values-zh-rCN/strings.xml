@@ -205,4 +205,16 @@
     <string name="artwork_shape">封面图形状</string>
     <string name="slider_thumb">滑块拇指</string>
     <string name="slider_track">滑块轨迹</string>
+    <string name="now_playing_buttons">播放界面按钮</string>
+    <string name="now_playing_buttons_desc">选择在正在播放界面上显示哪些按钮</string>
+    <string name="now_playing_preview">正在播放界面预览</string>
+    <string name="queue">播放队列</string>
+    <string name="more_options">更多选项</string>
+    <string name="next_song">下一首</string>
+    <string name="rewind">快退</string>
+    <string name="fast_forward">快进</string>
+    <string name="shuffle">随机播放</string>
+    <string name="repeat">重复</string>
+    <string name="favorite">收藏</string>
+    <string name="sleep_timer">睡眠定时器</string>
 </resources>

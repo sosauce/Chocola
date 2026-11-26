@@ -42,6 +42,7 @@ data object PreferencesKeys {
     val NUMBER_OF_ALBUM_GRIDS = intPreferencesKey("NUMBER_OF_ALBUM_GRIDS")
     val HIDDEN_FOLDERS = stringSetPreferencesKey("HIDDEN_FOLDERS")
     val ART_AS_BACKGROUND = booleanPreferencesKey("ART_AS_BACKGROUND")
+    val USE_TURNTABLE = booleanPreferencesKey("USE_TURNTABLE")
     val ALBUM_SORT = intPreferencesKey("ALBUM_SORT")
     val TRACK_SORT = intPreferencesKey("TRACK_SORT")
     val ARTIST_SORT = intPreferencesKey("ARTIST_SORT")
@@ -83,6 +84,10 @@ data object PreferencesKeys {
     val AOD_SHOW_CONTROLS = booleanPreferencesKey("AOD_SHOW_CONTROLS")
     val AUTO_ADD_SUBFOLDERS = booleanPreferencesKey("AUTO_ADD_SUBFOLDERS")
     val NEW_FOLDER_POLICY = stringPreferencesKey("NEW_FOLDER_POLICY")
+
+    // names of NowPlayingButton entries the user chose to hide
+    val NOW_PLAYING_HIDDEN_BUTTONS = stringSetPreferencesKey("NOW_PLAYING_HIDDEN_BUTTONS")
+    val HIDE_SINGLE_ALBUM = booleanPreferencesKey("HIDE_SINGLE_ALBUM")
 
 }
 

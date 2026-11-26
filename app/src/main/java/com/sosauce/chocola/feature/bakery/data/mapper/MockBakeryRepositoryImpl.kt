@@ -9,12 +9,9 @@ import com.sosauce.chocola.feature.bakery.presentation.model.StoryPageUi
 import com.sosauce.chocola.feature.bakery.presentation.model.StreakUi
 import com.sosauce.chocola.feature.bakery.presentation.model.TrackStatUi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 
-class MockBakeryRepositoryImpl: BakeryRepository {
+class MockBakeryRepositoryImpl : BakeryRepository {
     override fun observeAllTimeStats(): Flow<AllTimeStatsUi> = flowOf(
         AllTimeStatsUi(
             totalListens = 234,

@@ -30,7 +30,6 @@ import androidx.compose.ui.util.fastMap
 import com.sosauce.chocola.R
 import com.sosauce.chocola.core.domain.model.CuteTrack
 import com.sosauce.chocola.core.domain.player.MusicState
-import com.sosauce.chocola.core.domain.player.PlaySource
 import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.core.presentation.components.MusicListItem
 import com.sosauce.chocola.core.presentation.util.selfAlignHorizontally
@@ -110,10 +109,7 @@ fun QueueScreen(
                         track = item.track,
                         onShortClick = {
                             onHandlePlayerAction(
-                                PlayerActions.PlayFromSource(
-                                    mediaId = item.track.mediaId,
-                                    source = PlaySource.ExplicitTracks(musicState.loadedMedias)
-                                )
+                                PlayerActions.PlayTrack(item.track)
                             )
                         },
                         isActive = item.track.mediaId == activeTrackId,

@@ -32,8 +32,10 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.sosauce.chocola.R
-import com.sosauce.chocola.core.presentation.preferences.rememberInitialScreenBlocking
+import com.sosauce.chocola.core.presentation.navigation.LocalScreen
+import com.sosauce.chocola.core.presentation.navigation.Screen
 import com.sosauce.chocola.core.presentation.player.MusicViewModel
+import com.sosauce.chocola.core.presentation.preferences.rememberInitialScreenBlocking
 import com.sosauce.chocola.feature.bakery.presentation.story.BakeryStoryRoot
 import com.sosauce.chocola.feature.library.presentation.album.AlbumDetailsScreen
 import com.sosauce.chocola.feature.library.presentation.album.AlbumDetailsViewModel
@@ -43,10 +45,10 @@ import com.sosauce.chocola.feature.library.presentation.artist.ArtistDetailsScre
 import com.sosauce.chocola.feature.library.presentation.artist.ArtistDetailsViewModel
 import com.sosauce.chocola.feature.library.presentation.artist.ArtistsScreen
 import com.sosauce.chocola.feature.library.presentation.artist.ArtistsViewModel
-import com.sosauce.chocola.feature.lyrics.presentation.LyricsEditorScreen
-import com.sosauce.chocola.feature.lyrics.presentation.LyricsScreen
 import com.sosauce.chocola.feature.library.presentation.main.MainScreen
 import com.sosauce.chocola.feature.library.presentation.main.MainViewModel
+import com.sosauce.chocola.feature.lyrics.presentation.LyricsEditorScreen
+import com.sosauce.chocola.feature.lyrics.presentation.LyricsScreen
 import com.sosauce.chocola.feature.metadata.presentation.MetadataActions
 import com.sosauce.chocola.feature.metadata.presentation.MetadataEditorScreen
 import com.sosauce.chocola.feature.metadata.presentation.MetadataEvents
@@ -57,8 +59,6 @@ import com.sosauce.chocola.feature.playlists.presentation.PlaylistDetailsViewMod
 import com.sosauce.chocola.feature.playlists.presentation.PlaylistViewModel
 import com.sosauce.chocola.feature.playlists.presentation.PlaylistsScreen
 import com.sosauce.chocola.feature.settings.presentation.SettingsScreen
-import com.sosauce.chocola.core.presentation.navigation.LocalScreen
-import com.sosauce.chocola.core.presentation.navigation.Screen
 import com.sosauce.nekobites.helpers.ObserveAsEvents
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf

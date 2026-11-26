@@ -19,7 +19,7 @@
     <string name="no_artists_found">No artists found!</string>
     <string name="artwork">Artwork</string>
     <string name="artists">Artists</string>
-    <string name="albums">Album</string>
+    <string name="albums">Albums</string>
     <string name="app_icon">App Icon</string>
     <string name="close">Close</string>
     <string name="request_permission">Grant permission</string>
@@ -88,6 +88,8 @@
     <string name="library_desc">Manage all your tracks, like a DJ!</string>
     <string name="add_queue">Add to queue</string>
     <string name="art_as_bg">Art as background</string>
+    <string name="use_turntable">Vinyl turntable</string>
+    <string name="use_turntable_desc">Display the artwork as a spinning record while music is playing.</string>
     <string name="default_text">Default</string>
     <string name="font">Font</string>
     <string name="album">Album</string>
@@ -129,6 +131,7 @@
     <string name="hidden_tracks">Hidden tracks</string>
     <string name="show_album_name">Show album name</string>
     <string name="font_size">Font size</string>
+    <string name="select">Select</string>
     <string name="select_all">Select all</string>
     <string name="unselect_all">Unselect all</string>
     <string name="palette">Palette</string>
@@ -274,4 +277,23 @@
     <string name="listens_count_value">%1$d listens</string>
     <string name="monthly_bakeries">Monthly bakeries</string>
     <string name="yearly_bakeries">Yearly bakeries</string>
+    <string name="now_playing_buttons">Now playing buttons</string>
+    <string name="now_playing_buttons_desc">Choose which buttons are shown on the now playing screen</string>
+    <string name="now_playing_preview">Now playing screen preview</string>
+    <string name="queue">Queue</string>
+    <string name="more_options">More options</string>
+    <string name="next_song">Next Song</string>
+    <string name="rewind">Rewind</string>
+    <string name="fast_forward">Fast forward</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="play">Play</string>
+    <string name="repeat">Repeat</string>
+    <string name="favorite">Favorite</string>
+    <string name="sleep_timer">Sleep timer</string>
+    <string name="hide_single_album">Hide single album</string>
+    <string name="hide_single_album_desc">Only show albums with more than 1 song in album lists</string>
+    <string name="support">Support</string>
+    <string name="github" translatable="false">GitHub</string>
+    <string name="settings_alignment">Alignment</string>
+    <string name="settings_eq_presets">Presets</string>
 </resources>

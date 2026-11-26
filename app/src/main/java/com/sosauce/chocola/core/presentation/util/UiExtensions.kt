@@ -14,18 +14,14 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.media3.common.Player
 import com.materialkolor.PaletteStyle
 import com.sosauce.chocola.core.designsystem.CutePaletteStyle
@@ -102,15 +98,9 @@ fun Player.changeRepeatMode() {
 }
 
 @Composable
-fun rememberInteractionSource(): MutableInteractionSource {
-    return remember { MutableInteractionSource() }
-}
-
-@Composable
 fun rememberFocusRequester(): FocusRequester {
     return remember { FocusRequester() }
 }
-
 
 
 val barsContentTransform = ContentTransform(
@@ -161,14 +151,24 @@ fun Int.toLyricDuration(): String {
     }
 }
 
-@Composable
-fun getCuteItemShape(index: Int, count: Int): Shape {
+fun Long.millisToDuration(): String {
 
-    if (count == 1) return RoundedCornerShape(24.dp)
+    if (this == 0L) return "No time!"
 
-    return when (index) {
-        0 -> RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp, bottomStart = 2.dp, bottomEnd = 2.dp)
-        count - 1 -> RoundedCornerShape(topStart = 2.dp, topEnd = 2.dp, bottomStart = 24.dp, bottomEnd = 24.dp)
-        else -> RoundedCornerShape(2.dp)
+    val underAMinute = this < 60_000
+
+    if (underAMinute) {
+        return String.format(Locale.getDefault(), "%ds", this / 1000)
+    } else {
+        val totalMinutes = this / (1000 * 60)
+        val hours = totalMinutes / 60
+        val minutes = totalMinutes % 60
+
+        return if (hours > 0) {
+            String.format(Locale.getDefault(), "%dh%02d", hours, minutes)
+        } else {
+            String.format(Locale.getDefault(), "%dm", minutes)
+        }
     }
+
 }

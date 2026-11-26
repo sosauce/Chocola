@@ -217,4 +217,16 @@
     <string name="artwork_shape">Forme de l\'illustration</string>
     <string name="slider_thumb">Pouce curseur</string>
     <string name="slider_track">Piste de glissement</string>
+    <string name="now_playing_buttons">Boutons de lecture</string>
+    <string name="now_playing_buttons_desc">Choisissez les boutons affichés sur l\'écran de lecture</string>
+    <string name="now_playing_preview">Aperçu de l\'écran de lecture</string>
+    <string name="queue">File d\'attente</string>
+    <string name="more_options">Plus d\'options</string>
+    <string name="next_song">Chanson suivante</string>
+    <string name="rewind">Reculer</string>
+    <string name="fast_forward">Avancer</string>
+    <string name="shuffle">Aléatoire</string>
+    <string name="repeat">Répéter</string>
+    <string name="favorite">Favori</string>
+    <string name="sleep_timer">Minuteur de sommeil</string>
 </resources>

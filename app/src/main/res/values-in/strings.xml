@@ -200,4 +200,16 @@
     <plurals name="delete_tracks_u_sure">
         <item quantity="other">Apakah Anda yakin ingin menghapus %d lagu? Tindakan ini tidak dapat dibatalkan!</item>
     </plurals>
+    <string name="now_playing_buttons">Tombol layar pemutaran</string>
+    <string name="now_playing_buttons_desc">Pilih tombol yang ditampilkan di layar pemutaran</string>
+    <string name="now_playing_preview">Pratinjau layar pemutaran</string>
+    <string name="queue">Antrean</string>
+    <string name="more_options">Opsi lainnya</string>
+    <string name="next_song">Lagu berikutnya</string>
+    <string name="rewind">Mundur</string>
+    <string name="fast_forward">Maju cepat</string>
+    <string name="shuffle">Acak</string>
+    <string name="repeat">Ulangi</string>
+    <string name="favorite">Favorit</string>
+    <string name="sleep_timer">Timer tidur</string>
 </resources>

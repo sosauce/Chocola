@@ -11,6 +11,7 @@ import androidx.compose.foundation.text.input.KeyboardActionHandler
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -53,12 +54,14 @@ fun NewTagDialog(
                     onAddNewTag(textFieldState.text.toString())
                     onDismissRequest()
                 },
-                enabled = !isError
+                enabled = !isError,
+                shapes = ButtonDefaults.shapes()
             ) { Text(stringResource(R.string.add)) }
         },
         dismissButton = {
             TextButton(
-                onClick = onDismissRequest
+                onClick = onDismissRequest,
+                shapes = ButtonDefaults.shapes()
             ) { Text(stringResource(R.string.cancel)) }
         },
         icon = {

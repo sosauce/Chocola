@@ -7,4 +7,16 @@
     <string name="amoled_mode">Amoled</string>
     <string name="font">Betűtípus</string>
     <string name="system">Rendszer</string>
+    <string name="now_playing_buttons">Lejátszási gombok</string>
+    <string name="now_playing_buttons_desc">Válaszd ki, mely gombok jelenjenek meg a lejátszási képernyőn</string>
+    <string name="now_playing_preview">Lejátszási képernyő előnézete</string>
+    <string name="queue">Lejátszási sor</string>
+    <string name="more_options">További lehetőségek</string>
+    <string name="next_song">Következő dal</string>
+    <string name="rewind">Visszatekerés</string>
+    <string name="fast_forward">Előretekerés</string>
+    <string name="shuffle">Keverés</string>
+    <string name="repeat">Ismétlés</string>
+    <string name="favorite">Kedvenc</string>
+    <string name="sleep_timer">Elalvási időzítő</string>
 </resources>

@@ -84,4 +84,16 @@
         <item quantity="one">%d àlbum</item>
         <item quantity="other">%d àlbums</item>
     </plurals>
+    <string name="now_playing_buttons">Botons de la pantalla de reproducció</string>
+    <string name="now_playing_buttons_desc">Tria quins botons es mostren a la pantalla de reproducció</string>
+    <string name="now_playing_preview">Previsualització de la pantalla de reproducció</string>
+    <string name="queue">Cua</string>
+    <string name="more_options">Més opcions</string>
+    <string name="next_song">Cançó següent</string>
+    <string name="rewind">Rebobina</string>
+    <string name="fast_forward">Avança ràpid</string>
+    <string name="shuffle">Aleatori</string>
+    <string name="repeat">Repeteix</string>
+    <string name="favorite">Preferit</string>
+    <string name="sleep_timer">Temporitzador de son</string>
 </resources>

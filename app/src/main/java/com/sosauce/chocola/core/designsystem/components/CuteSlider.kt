@@ -39,14 +39,13 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.sosauce.chocola.R
+import com.sosauce.chocola.core.designsystem.ThumbStyle
+import com.sosauce.chocola.core.designsystem.TrackStyle
+import com.sosauce.chocola.core.domain.player.MusicState
+import com.sosauce.chocola.core.domain.player.PlayerActions
 import com.sosauce.chocola.core.presentation.preferences.rememberDynamicDuration
 import com.sosauce.chocola.core.presentation.preferences.rememberThumbStyle
 import com.sosauce.chocola.core.presentation.preferences.rememberTrackStyle
-import com.sosauce.chocola.core.domain.player.MusicState
-import com.sosauce.chocola.core.domain.player.PlayerActions
-import com.sosauce.chocola.core.designsystem.ThumbStyle
-import com.sosauce.chocola.core.designsystem.TrackStyle
-import com.sosauce.chocola.core.designsystem.theme.sansFlexCustomWidth
 
 @Composable
 fun CuteSlider(
@@ -122,7 +121,7 @@ fun CuteSlider(
                     )
                     Spacer(Modifier.width(4.dp))
                     Text(
-                        text =  DateUtils.formatElapsedTime(((draggingPos / multiplier) / 1000).toLong()),
+                        text = DateUtils.formatElapsedTime(((draggingPos / multiplier) / 1000).toLong()),
                         style = MaterialTheme.typography.bodyMediumEmphasized.copy(
                             color = MaterialTheme.colorScheme.primaryContainer
                         )

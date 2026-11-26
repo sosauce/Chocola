@@ -200,4 +200,16 @@
     <string name="audio_perm_desc">Оно необходимо для доступа к песням на устройстве.</string>
     <string name="navigation">Навигация</string>
     <string name="navigation_desc">Здесь вы точно не заблудитесь!</string>
+    <string name="now_playing_buttons">Кнопки экрана воспроизведения</string>
+    <string name="now_playing_buttons_desc">Выберите, какие кнопки показывать на экране воспроизведения</string>
+    <string name="now_playing_preview">Предпросмотр экрана воспроизведения</string>
+    <string name="queue">Очередь</string>
+    <string name="more_options">Дополнительно</string>
+    <string name="next_song">Следующий трек</string>
+    <string name="rewind">Перемотка назад</string>
+    <string name="fast_forward">Перемотка вперёд</string>
+    <string name="shuffle">Перемешать</string>
+    <string name="repeat">Повтор</string>
+    <string name="favorite">Избранное</string>
+    <string name="sleep_timer">Таймер сна</string>
 </resources>
