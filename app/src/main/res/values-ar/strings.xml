@@ -208,7 +208,7 @@
     <string name="rescan_tracks">إعادة فحص الاغاني</string>
     <string name="rescan_tracks_desc">سيؤدي هذا إلى إجبار نظام أندرويد على إعادة فحص جميع الملفات الموجودة على الجهاز</string>
     <string name="generic_error">حدث خطأ!</string>
-    <string name="art_lyrics">كلمات الأغاني الفنية</string>
+    <string name="art_lyrics">كلمات الأغاني</string>
     <string name="art_lyrics_desc">يعرض كلمات الأغنية مباشرةً على غلاف الألبوم بدلاً من صفحة منفصلة. انقر على غلاف الألبوم لعرض الكلمات.</string>
     <string name="play_next">تشغيل التالي</string>
     <string name="now_playing_buttons">أزرار شاشة التشغيل</string>

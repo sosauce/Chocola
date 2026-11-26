@@ -3,7 +3,7 @@
     <string name="theme">Görünüm</string>
     <string name="settings">Ayarlar</string>
     <string name="dark_mode">Karanlık</string>
-    <string name="amoled_mode">amoled_modu</string>
+    <string name="amoled_mode">Amoled</string>
     <string name="size">Boyut</string>
     <string name="type">Tür</string>
     <string name="bitrate">Bit hızı</string>
@@ -78,7 +78,7 @@
     <string name="edit_playlist">Çalma listesini düzenle</string>
     <string name="remove_from_playlist">Çalma listesinden kaldır</string>
     <string name="emoji">Emoji</string>
-    <string name="look_and_feel">Görünüm ve his</string>
+    <string name="look_and_feel">Görünüm &amp; tarz</string>
     <string name="look_and_feel_desc">Müzik sizin, neden tarz da sizin olmasın ki?</string>
     <string name="now_playing">Şu an çalan</string>
     <string name="library">Kütüphane</string>
